@@ -2,17 +2,19 @@
 import { useState, useEffect } from 'react'
 
 // ** Next Import
-import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 
 // ** MUI Imports
-import { Grid, Card, CardContent, Box, Typography, Button, styled } from '@mui/material'
+import { Grid, Card, CardContent, Box, Typography, styled } from '@mui/material'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 // ** Hooks Imports
 import dayjs from 'dayjs'
+
+// ** Views Imports
+import DialogEditProfile from 'src/views/pages/profile/EditProfile'
 
 interface ProfileTabCommonType {
   icon: string
@@ -60,6 +62,7 @@ interface Student {
   tertiaryGraduated: string
   employedAt: string
   position: string
+  image: string
 }
 
 const ProfilePicture = styled('img')(({ theme }) => ({
@@ -78,9 +81,6 @@ const ProfilePage = () => {
 
   const userID = session?.user.id
 
-  // ** Hooks
-  const router = useRouter()
-
   const capitalizeFirstLetter = string => {
     return string?.charAt(0).toUpperCase() + string?.slice(1)
   }
@@ -89,7 +89,7 @@ const ProfilePage = () => {
     fullName: capitalizeFirstLetter(session?.user.firstName) + ' ' + capitalizeFirstLetter(session?.user.lastName),
     location: capitalizeFirstLetter(session?.user.location),
     designation: capitalizeFirstLetter(session?.user.role),
-    profileImg: '/images/avatars/1.png',
+    profileImg: `/uploads/${session?.user.image}`,
     designationIcon: 'mdi:invert-colors'
   }
 
@@ -180,13 +180,16 @@ const ProfilePage = () => {
       { property: 'Father Name', value: capitalizeFirstLetter(user?.fatherName), icon: 'mdi:face-man' },
       { property: 'Mother Name', value: capitalizeFirstLetter(user?.motherName), icon: 'mdi:face-woman' },
       { property: 'Guardian Name', value: capitalizeFirstLetter(user?.guardianName), icon: 'mdi:account-child' },
+    ],
+    education: [
+
       {
         property: 'Elementary School',
         value: capitalizeFirstLetter(user?.elementary),
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Elementary School Graduation Date',
+        property: 'Graduation Date',
         value: dayjs(user?.elementaryGraduated).format('MMMM DD, YYYY'),
         icon: 'mdi:account-school-outline'
       },
@@ -196,7 +199,7 @@ const ProfilePage = () => {
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Secondary School Graduation Date',
+        property: 'Graduation Date',
         value: dayjs(user?.secondaryGraduated).format('MMMM DD, YYYY'),
         icon: 'mdi:account-school-outline'
       },
@@ -206,7 +209,7 @@ const ProfilePage = () => {
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Junior High School Graduation Date',
+        property: 'Graduation Date',
         value: dayjs(user?.juniorHighGraduated).format('MMMM DD, YYYY'),
         icon: 'mdi:account-school-outline'
       },
@@ -216,16 +219,18 @@ const ProfilePage = () => {
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Senior High School Graduation Date',
+        property: 'Graduation Date',
         value: dayjs(user?.seniorHighGraduated).format('MMMM DD, YYYY'),
         icon: 'mdi:account-school-outline'
       },
       { property: 'Tertiary School', value: capitalizeFirstLetter(user?.tertiary), icon: 'mdi:account-school-outline' },
       {
-        property: 'Tertiary School Graduation Date',
+        property: 'Graduation Date',
         value: dayjs(user?.tertiaryGraduated).format('MMMM DD, YYYY'),
         icon: 'mdi:account-school-outline'
-      },
+      }
+    ],
+    others: [
       { property: 'Employed At', value: capitalizeFirstLetter(user?.employedAt), icon: 'mdi:briefcase-outline' },
       { property: 'Position', value: capitalizeFirstLetter(user?.position), icon: 'mdi:briefcase-outline' }
     ]
@@ -311,14 +316,12 @@ const ProfilePage = () => {
                   </Box>
                 </Box>
               </Box>
-              <Button variant='contained' startIcon={<Icon icon='mdi:account-edit-outline' fontSize={20} />}>
-                Edit Profile
-              </Button>
+              <DialogEditProfile user={user} />
             </Box>
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={4}>
         <Card>
           <CardContent>
             <Box sx={{ mb: 6 }}>
@@ -326,6 +329,30 @@ const ProfilePage = () => {
                 About
               </Typography>
               {renderList(about.profile)}
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={4}>
+        <Card>
+          <CardContent>
+            <Box sx={{ mb: 6 }}>
+              <Typography variant='caption' sx={{ mb: 5, display: 'block', textTransform: 'uppercase' }}>
+                Education
+              </Typography>
+              {renderList(about.education)}
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={4}>
+        <Card>
+          <CardContent>
+            <Box sx={{ mb: 6 }}>
+              <Typography variant='caption' sx={{ mb: 5, display: 'block', textTransform: 'uppercase' }}>
+                Others
+              </Typography>
+              {renderList(about.others)}
             </Box>
           </CardContent>
         </Card>

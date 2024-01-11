@@ -12,6 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     WHERE users.id = ?`,
       [id]
     )) as RowDataPacket[]
+
     if (!result) {
       return res.status(404).json({ message: 'User not found' })
     }

@@ -274,9 +274,8 @@ const LoginPage = () => {
                       label='User Type'
                       error={!!errors.userType}
                     >
-                      <MenuItem value='Student'>Student</MenuItem>
+                      <MenuItem value='Student'>Student/Alumni</MenuItem>
                       <MenuItem value='Staff'>Staff</MenuItem>
-                      <MenuItem value='Admin'>Admin</MenuItem>
                     </Select>
                   )}
                 />

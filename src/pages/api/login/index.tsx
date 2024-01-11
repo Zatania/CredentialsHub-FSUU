@@ -28,15 +28,13 @@ const getUser = async (username: string, password: string, userType: string) => 
         'WHERE username = ? ' +
         'GROUP BY staffs.id, roles.name'
       params = [username]
-    } else if (userType === 'Admin') {
+    } else {
       query =
         'SELECT admins.*, roles.name AS role_name FROM admins ' +
         'JOIN admins_roles ON admins.id = admins_roles.admin_id ' +
         'JOIN roles ON admins_roles.role_id = roles.id ' +
         'WHERE username = ?'
       params = [username]
-    } else {
-      throw new Error('Invalid user type')
     }
     const rows = (await db.query(query, params)) as RowDataPacket[]
 

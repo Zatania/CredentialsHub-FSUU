@@ -63,6 +63,7 @@ interface TransactionData {
 const RequestCredentials = () => {
   // ** States
   const [show, setShow] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // ** Hooks
   const router = useRouter()
@@ -95,6 +96,17 @@ const RequestCredentials = () => {
       [field]: !prevShowFields[field]
     }))
   }
+
+  // ** CHECK IF STUDENT IS VERIFED OR NOT
+  // Redirect unverified users
+  useEffect(() => {
+    setLoading(true)
+    if (session && session.user.status !== 'Verified') {
+      setLoading(false)
+      toast.error('You are not verified yet')
+      router.push('/') // Redirect to a specific page for unverified users
+    }
+  }, [session, router])
 
   const {
     control,

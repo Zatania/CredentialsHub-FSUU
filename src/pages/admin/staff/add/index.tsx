@@ -29,9 +29,6 @@ import * as bcrypt from 'bcryptjs'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-// ** Hooks
-import { useSession } from 'next-auth/react'
-
 const Transition = forwardRef(function Transition(
   props: FadeProps & { children?: ReactElement<any, any> },
   ref: Ref<unknown>

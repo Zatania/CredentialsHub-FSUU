@@ -29,8 +29,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const currentDate = dayjs().format('YYYY-MM-DD')
     const results = (await db.query('SELECT * FROM transaction_history WHERE date = ?', [currentDate])) as RowDataPacket
 
-    console.log(results)
-
     // Map the rows to the desired format
     const rows = await Promise.all(
       results[0].map(async (row: TransactionHistory) => {
