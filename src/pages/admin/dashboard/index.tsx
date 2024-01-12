@@ -6,7 +6,6 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarExport } from '@mui/x-data-grid'
 import Grid from '@mui/material/Grid'
 import Dialog from '@mui/material/Dialog'
 import TextField from '@mui/material/TextField'
@@ -17,13 +16,19 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Divider from '@mui/material/Divider'
 import FormControl from '@mui/material/FormControl'
+import {
+  GridRowsProp,
+  DataGrid,
+  GridColDef,
+  GridToolbar,
+  GridRenderCellParams,
+ } from '@mui/x-data-grid'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
-import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 
 // ** Types Imports
 import { ThemeColor } from 'src/@core/layouts/types'
@@ -145,7 +150,6 @@ const escapeRegExp = (value: string) => {
 
 const DashboardAdmin = () => {
   // ** States
-  const [data, setData] = useState<DataGridRowType[]>([])
   const [dailyData, setDailyData] = useState<TransactionHistory[]>([])
   const [selectedTransaction, setSelectedTransaction] = useState<DataGridRowType | null>(null)
   const [searchText, setSearchText] = useState<string>('')
@@ -168,85 +172,12 @@ const DashboardAdmin = () => {
     setShow(false)
   }
 
-  const fetchUser = async (userID: any) => {
-    try {
-      const res = await fetch('/api/profile/student/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userID)
-      })
-      const data = await res.json()
-      setSelectedUser(data)
-    } catch (error) {
-      console.error('Error fetching user:', error)
-    }
-  }
-  const handleViewDetails = async (row: SetStateAction<DataGridRowType | null>) => {
-    setSelectedTransaction(row)
-
-    if (row?.user_id) {
-      await fetchUser(row?.user_id)
-    }
-
-    reset()
-    setShow(true)
-  }
-
-  const fetchTransactions = async (staffID: number | null) => {
-    try {
-      const response = await fetch(`/api/transactions/staff-list`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ staff_id: staffID })
-      })
-      const transactionList = await response.json()
-      setData(transactionList) // Assuming the API response is an array of transactions
-    } catch (error) {
-      console.error('Error fetching transactions:', error)
-    }
-  }
-
-  const fetchDailyTransactions = async () => {
-    try {
-      const response = await fetch('/api/admin/staff/daily-history', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-
-      const transactionList = await response.json()
-      console.log('Daily History', transactionList)
-      setDailyData(transactionList)
-    } catch (error) {
-      console.error('Error fetching transactions:', error)
-    }
-  }
-  useEffect(() => {
-    fetchTransactions(staffID)
-    fetchDailyTransactions()
-  }, [staffID])
-
-  const handleSearch = (searchValue: string) => {
-    setSearchText(searchValue)
-    const searchRegex = new RegExp(escapeRegExp(searchValue), 'i')
-    const filteredRows = data.filter(row => {
-      return Object.keys(row).some(field => {
-        // @ts-ignore
-        return searchRegex.test(row[field].toString())
-      })
-    })
-    if (searchValue.length) {
-      setFilteredData(filteredRows)
-    } else {
-      setFilteredData([])
-    }
-  }
-
+  const data = [{
+    id: 1,
+    date: '2021-10-01',
+    totalAmount: 100,
+    status: 'Submitted',
+  }]
   const columns: GridColDef[] = [
     {
       flex: 0.1,
@@ -880,6 +811,11 @@ const DashboardAdmin = () => {
     }
   ]
 
+  const staffData = [{
+    id: 1,
+    date: '2021-10-01',
+    student: 'John Doe',
+  }]
   const staffColumns: GridColDef[] = [
     {
       flex: 0.1,
@@ -913,7 +849,7 @@ const DashboardAdmin = () => {
       headerName: 'Student',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.user.firstname}
+          {params.row.student}
         </Typography>
       )
     }
@@ -922,15 +858,16 @@ const DashboardAdmin = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Card>
+        <CardHeader title='Dashboard Under Construction' />
         <CardHeader title='Staffs Daily Request Count' />
         <DataGrid
           autoHeight
           columns={staffColumns}
           pageSizeOptions={[10, 25, 50, 100]}
           paginationModel={paginationModel}
-          slots={{ toolbar: QuickSearchToolbar }}
+          slots={{ toolbar: GridToolbar }}
           onPaginationModelChange={setPaginationModel}
-          rows={filteredData.length ? filteredData : dailyData}
+          rows={filteredData.length ? filteredData : staffData}
           slotProps={{
             baseButton: {
               variant: 'outlined'
@@ -950,17 +887,15 @@ const DashboardAdmin = () => {
           columns={staffColumns}
           pageSizeOptions={[10, 25, 50, 100]}
           paginationModel={paginationModel}
-          slots={{ toolbar: QuickSearchToolbar }}
+          slots={{ toolbar: GridToolbar }}
           onPaginationModelChange={setPaginationModel}
-          rows={filteredData.length ? filteredData : data}
+          rows={filteredData.length ? filteredData : staffData}
           slotProps={{
             baseButton: {
               variant: 'outlined'
             },
             toolbar: {
-              value: searchText,
-              clearSearch: () => handleSearch(''),
-              onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
+              showQuickFilter: true,
             }
           }}
         />
@@ -972,7 +907,7 @@ const DashboardAdmin = () => {
           columns={columns}
           pageSizeOptions={[10, 25, 50, 100]}
           paginationModel={paginationModel}
-          slots={{ toolbar: QuickSearchToolbar }}
+          slots={{ toolbar: GridToolbar }}
           onPaginationModelChange={setPaginationModel}
           rows={filteredData.length ? filteredData : data}
           slotProps={{
@@ -980,9 +915,7 @@ const DashboardAdmin = () => {
               variant: 'outlined'
             },
             toolbar: {
-              value: searchText,
-              clearSearch: () => handleSearch(''),
-              onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
+              showQuickFilter: true,
             }
           }}
         />

@@ -1,12 +1,12 @@
 // ** React Imports
-import { ChangeEvent, Ref, useState, forwardRef, ReactElement, useEffect, SetStateAction } from 'react'
+import { Ref, useState, forwardRef, ReactElement, useEffect, SetStateAction } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 import Grid from '@mui/material/Grid'
 import Dialog from '@mui/material/Dialog'
 import TextField from '@mui/material/TextField'
@@ -23,7 +23,6 @@ import Icon from 'src/@core/components/icon'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
-import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 
 // ** Types Imports
 import { ThemeColor } from 'src/@core/layouts/types'
@@ -130,16 +129,10 @@ const statusObj: StatusObj = {
   Scheduled: { title: 'Scheduled', color: 'info' }
 }
 
-const escapeRegExp = (value: string) => {
-  return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
-}
-
 const DashboardStaff = () => {
   // ** States
   const [data, setData] = useState<DataGridRowType[]>([])
   const [selectedTransaction, setSelectedTransaction] = useState<DataGridRowType | null>(null)
-  const [searchText, setSearchText] = useState<string>('')
-  const [filteredData, setFilteredData] = useState<DataGridRowType[]>([])
   const [selectedUser, setSelectedUser] = useState<Student | null>(null)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [show, setShow] = useState<boolean>(false)
@@ -204,22 +197,6 @@ const DashboardStaff = () => {
   useEffect(() => {
     fetchTransactions(staffID)
   }, [staffID])
-
-  const handleSearch = (searchValue: string) => {
-    setSearchText(searchValue)
-    const searchRegex = new RegExp(escapeRegExp(searchValue), 'i')
-    const filteredRows = data.filter(row => {
-      return Object.keys(row).some(field => {
-        // @ts-ignore
-        return searchRegex.test(row[field].toString())
-      })
-    })
-    if (searchValue.length) {
-      setFilteredData(filteredRows)
-    } else {
-      setFilteredData([])
-    }
-  }
 
   const handleClaimed = async (data: DataGridRowType) => {
     try {
@@ -923,19 +900,17 @@ const DashboardStaff = () => {
         <DataGrid
           autoHeight
           columns={columns}
+          rows={data}
           pageSizeOptions={[10, 25, 50, 100]}
           paginationModel={paginationModel}
-          slots={{ toolbar: QuickSearchToolbar }}
+          slots={{ toolbar: GridToolbar }}
           onPaginationModelChange={setPaginationModel}
-          rows={filteredData.length ? filteredData : data}
           slotProps={{
             baseButton: {
               variant: 'outlined'
             },
             toolbar: {
-              value: searchText,
-              clearSearch: () => handleSearch(''),
-              onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
+              showQuickFilter: true,
             }
           }}
         />

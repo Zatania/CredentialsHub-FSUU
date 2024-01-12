@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 import Grid from '@mui/material/Grid'
 import Dialog from '@mui/material/Dialog'
 import TextField from '@mui/material/TextField'
@@ -682,7 +682,7 @@ const DashboardStudent = () => {
         columns={columns}
         pageSizeOptions={[10, 25, 50, 100]}
         paginationModel={paginationModel}
-        slots={{ toolbar: QuickSearchToolbar }}
+        slots={{ toolbar: GridToolbar }}
         onPaginationModelChange={setPaginationModel}
         rows={filteredData.length ? filteredData : data}
         slotProps={{
@@ -690,9 +690,7 @@ const DashboardStudent = () => {
             variant: 'outlined'
           },
           toolbar: {
-            value: searchText,
-            clearSearch: () => handleSearch(''),
-            onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
+            showQuickFilter: true,
           }
         }}
       />

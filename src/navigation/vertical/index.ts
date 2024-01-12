@@ -32,6 +32,27 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:shield-outline'
     },
     {
+      path: '/staff/credentials',
+      title: 'Credentials',
+      action: 'read',
+      subject: 'credentials-page',
+      icon: 'mdi:shield-outline'
+    },
+    {
+      path: '/staff/students',
+      title: 'Students',
+      action: 'read',
+      subject: 'students-page',
+      icon: 'mdi:shield-outline'
+    },
+    {
+      path: '/staff/transactions',
+      title: 'Transactions',
+      action: 'read',
+      subject: 'transactions-page',
+      icon: 'mdi:shield-outline'
+    },
+    {
       path: '/admin/staff/add',
       title: 'Add Staff',
       action: 'read',

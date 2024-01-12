@@ -956,7 +956,7 @@ const DialogEditProfile = ({ user }) => {
                   Submit
                 </Button>
                 <Button variant='outlined' color='secondary' onClick={() => handleClose()}>
-                  Discard
+                  Close
                 </Button>
               </DialogActions>
             </form>

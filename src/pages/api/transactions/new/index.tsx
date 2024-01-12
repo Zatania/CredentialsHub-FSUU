@@ -1,105 +1,53 @@
-import { NextApiResponse, NextApiRequest } from 'next/types'
-import { RowDataPacket } from 'mysql2/promise'
+import { NextApiRequest, NextApiResponse } from 'next/types'
 import db from '../../../db'
+import dayjs from 'dayjs'
+import { RowDataPacket } from 'mysql2';
 
-interface TransactionData {
-  user_id: number
-  dateFilled: string
-  transcriptCopies: number
-  dismissalCopies: number
-  moralCharacterCopies: number
-  diplomaCopies: number
-  authenticationCopies: number
-  courseDescriptionCopies: number
-  certificationType: string
-  certificationCopies: number
-  cavRedRibbonCopies: number
-  totalAmount: number
-  purpose: string
-}
-
-const insertTransaction = async (transaction: TransactionData) => {
-  const {
-    user_id,
-    dateFilled,
-    transcriptCopies,
-    dismissalCopies,
-    moralCharacterCopies,
-    diplomaCopies,
-    authenticationCopies,
-    courseDescriptionCopies,
-    certificationType,
-    certificationCopies,
-    cavRedRibbonCopies,
-    totalAmount,
-    purpose
-  } = transaction
-
+async function addTransaction(packageId, userId, totalAmount, credentials) {
   try {
-    const [rows] = (await db.query(
-      'INSERT INTO transactions (user_id, dateFilled, transcriptCopies, dismissalCopies, moralCharacterCopies, diplomaCopies, authenticationCopies, courseDescriptionCopies, certificationType, certificationCopies, cavRedRibbonCopies, totalAmount, status, purpose) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [
-        user_id,
-        dateFilled,
-        transcriptCopies,
-        dismissalCopies,
-        moralCharacterCopies,
-        diplomaCopies,
-        authenticationCopies,
-        courseDescriptionCopies,
-        certificationType,
-        certificationCopies,
-        cavRedRibbonCopies,
-        totalAmount,
-        'Submitted',
-        purpose
-      ]
-    )) as RowDataPacket[]
+    const transactionDate = dayjs().format('YYYY-MM-DD');
+    const status = 'Submitted';
 
-    return rows[0] || null
-  } catch (error) {
-    console.log(error)
-  }
-}
+    // Insert into transactions table
+    const [transaction] = await db.query(`INSERT INTO transactions (user_id, total_amount, transaction_date, status) VALUES (?, ?, ?, ?)`, [userId, totalAmount, transactionDate, status]) as RowDataPacket[]
+    const transactionId = transaction.insertId;
 
-const insertUserLog = async (user_id: number, activity: string, date: string) => {
-  try {
-    const [userRows] = (await db.query('SELECT firstName, lastName FROM users WHERE id = ?', [
-      user_id
-    ])) as RowDataPacket[]
-    const user = userRows[0]
-
-    // Create the full name
-    const fullName = user ? `${user.firstName} ${user.lastName}` : ''
-
-    // Insert into user_logs with the updated activity log
-    await db.query('INSERT INTO user_logs (user_id, activity, date) VALUES (?, ?, ?)', [
-      user_id,
-      `${fullName} ${activity}`,
-      date
-    ])
-  } catch (error) {
-    console.error('Error inserting user log:', error)
-  }
-}
-
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const data = req.body
-
-  try {
-    const transaction = await insertTransaction(data)
-
-    // Insert into user_logs after successfully inserting the transaction
-    await insertUserLog(data.user_id, 'has created a new transaction.', data.dateFilled)
-
-    return res.status(200).json(transaction)
-  } catch (error) {
-    if (error instanceof Error) {
-      return res.status(500).json({ message: error.message })
+    if (packageId !== 'others') {
+      // Handle package transaction
+      await db.query(`INSERT INTO package_transactions (transaction_id, package_id) VALUES (?, ?)`, [transactionId, packageId]);
     } else {
-      return res.status(500).json({ message: 'Something went wrong' })
+      // Handle individual credentials transaction
+      for (const cred of credentials) {
+        const subtotal = cred.quantity * cred.price;
+        await db.query(`INSERT INTO transaction_details (transaction_id, credential_id, quantity, subtotal) VALUES (?, ?, ?, ?)`, [transactionId, cred.credentialId, cred.quantity, subtotal]);
+      }
     }
+
+    return 'success';
+  } catch (error) {
+    throw error;
   }
 }
 
-export default handler
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method === 'POST') {
+    try {
+      // Extract user ID and total amount from the request body or session
+      const userId = req.body.userId || req.session.userId; // Adjust according to how you're storing the user's ID
+      const totalAmount = req.body.totalAmount; // Make sure this is passed in the request body
+      const packageId = req.body.packageId; // Make sure this is passed in the request body
+      const credentials = packageId === 'others' ? req.body.credentials : [];
+
+      await addTransaction(packageId, userId, totalAmount, credentials);
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  } else {
+    res.setHeader('Allow', ['POST']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}

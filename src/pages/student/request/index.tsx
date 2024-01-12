@@ -15,8 +15,9 @@ import Typography from '@mui/material/Typography'
 import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import Divider from '@mui/material/Divider'
-import { FormControlLabel, FormGroup, Checkbox } from '@mui/material'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
@@ -28,6 +29,7 @@ import Icon from 'src/@core/components/icon'
 // ** Hooks
 import { useSession } from 'next-auth/react'
 import dayjs from 'dayjs'
+import axios from 'axios'
 
 const Transition = forwardRef(function Transition(
   props: FadeProps & { children?: ReactElement<any, any> },
@@ -36,65 +38,61 @@ const Transition = forwardRef(function Transition(
   return <Fade ref={ref} {...props} />
 })
 
-interface TransactionData {
-  user_id: number
-  dateFilled: string
-  transcriptCopies: number
-  transcriptAmount: number
-  dismissalCopies: number
-  dismissalAmount: number
-  moralCharacterCopies: number
-  moralCharacterAmount: number
-  diplomaCopies: number
-  diplomaAmount: number
-  authenticationCopies: number
-  authenticationAmount: number
-  courseDescriptionCopies: number
-  courseDescriptionAmount: number
-  certificationType: string
-  certificationCopies: number
-  certificationAmount: number
-  cavRedRibbonCopies: number
-  cavRedRibbonAmount: number
-  totalAmoount: number
-  purpose: string
-}
-
 const RequestCredentials = () => {
   // ** States
   const [show, setShow] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
+  const [packages, setPackages] = useState<PackageData[]>([])
+  const [allCredentials, setAllCredentials] = useState<CredentialData[]>([])
+  const [selectedCredentials, setSelectedCredentials] = useState([])
+  const [selectedPackage, setSelectedPackage] = useState<number | 'others'>(0)
+  const [totalAmount, setTotalAmount] = useState<number>(0)
+  const [individualCredentials, setIndividualCredentials] = useState([])
+
 
   // ** Hooks
   const router = useRouter()
   const { data: session } = useSession()
 
-  // ** Transaction Price
-  const transcriptPrice = 500
-  const dismissalPrice = 500
-  const moralCharacterPrice = 100
-  const diplomaPrice = 500
-  const authenticationPrice = 50
-  const courseDescriptionPrice = 500
-  const certificationPrice = 100
-  const cavRedRibbonPrice = 300
+  // Fetch all credentials on mount (or based on some condition)
+  useEffect(() => {
+    axios.get('/api/credentials')
+      .then(response => setIndividualCredentials(response.data))
+      .catch(error => console.error("Error fetching credentials", error))
+  }, [])
 
-  const [showFields, setShowFields] = useState({
-    transcript: false,
-    dismissal: false,
-    moralCharacter: false,
-    diploma: false,
-    authentication: false,
-    courseDescription: false,
-    certification: false,
-    cavRedRibbon: false
-  })
+  // Fetch packages on mount
+  useEffect(() => {
+    axios.get('/api/packages')
+      .then(response => setPackages(response.data))
+      .catch(error => console.error("Error fetching packages", error))
+  }, [])
 
-  const handleCheckboxChange = field => {
-    setShowFields(prevShowFields => ({
-      ...prevShowFields,
-      [field]: !prevShowFields[field]
-    }))
+  useEffect(() => {
+    if (selectedPackage !== 'others' && selectedPackage !== 0) {
+      axios.get(`/api/packages/${selectedPackage}`)
+        .then(response => {
+          setSelectedCredentials(response.data.credentials || []);
+        })
+        .catch(error => console.error("Error fetching package credentials", error));
+    } else if (selectedPackage === 'others') {
+      setSelectedCredentials(individualCredentials.map(cred => ({ ...cred, quantity: 0 })));
+    }
+  }, [selectedPackage, individualCredentials]);
+
+  const handleCredentialQuantityChange = (credentialId, quantity) => {
+    setSelectedCredentials(prevCredentials => prevCredentials.map(cred =>
+      cred.id === credentialId ? { ...cred, quantity: parseInt(quantity, 10) || 0 } : cred
+    ));
+  }
+
+  useEffect(() => {
+    let total = selectedCredentials.reduce((acc, cred) => acc + (cred.price * cred.quantity), 0);
+    setTotalAmount(total);
+  }, [selectedCredentials]);
+
+  const handlePackageChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedPackage(event.target.value as number | 'others');
   }
 
   // ** CHECK IF STUDENT IS VERIFED OR NOT
@@ -112,7 +110,7 @@ const RequestCredentials = () => {
     control,
     handleSubmit,
     formState: { errors }
-  } = useForm<TransactionData>({
+  } = useForm<>({
     mode: 'onBlur'
   })
 
@@ -124,83 +122,43 @@ const RequestCredentials = () => {
     router.push('/')
   }
 
-  const onSubmit = async (data: TransactionData) => {
-    const dateToday = dayjs().format('YYYY-MM-DD')
-    const user_id = session?.user?.id
-
-    // ** Calculate Amount
-    const transcriptAmount = (data.transcriptCopies || 0) * transcriptPrice
-    const dismissalAmount = (data.dismissalCopies || 0) * dismissalPrice
-    const moralCharacterAmount = (data.moralCharacterCopies || 0) * moralCharacterPrice
-    const diplomaAmount = (data.diplomaCopies || 0) * diplomaPrice
-    const authenticationAmount = (data.authenticationCopies || 0) * authenticationPrice
-    const courseDescriptionAmount = (data.courseDescriptionCopies || 0) * courseDescriptionPrice
-    const certificationAmount = (data.certificationCopies || 0) * certificationPrice
-    const cavRedRibbonAmount = (data.cavRedRibbonCopies || 0) * cavRedRibbonPrice
-
-    // ** Calculate Total Amount
-    const totalAmount =
-      transcriptAmount +
-      dismissalAmount +
-      moralCharacterAmount +
-      diplomaAmount +
-      authenticationAmount +
-      courseDescriptionAmount +
-      certificationAmount +
-      cavRedRibbonAmount
-
-    // ** Insert dateToday, user_id, transcriptAmount, dismissalAmount, moralCharacterAmount, diplomaAmount, authenticationAmount, courseDescriptionAmount, certificationAmount, cavRedRibbonAmount, totalAmount into data
-
-    data = {
-      ...data,
-      user_id,
-      dateFilled: dateToday,
-      transcriptAmount,
-      dismissalAmount,
-      moralCharacterAmount,
-      diplomaAmount,
-      authenticationAmount,
-      courseDescriptionAmount,
-      certificationAmount,
-      cavRedRibbonAmount,
-      totalAmount
-    }
-
-    // Parse number fields to integers
-    const numericFields = [
-      'transcriptCopies',
-      'dismissalCopies',
-      'moralCharacterCopies',
-      'diplomaCopies',
-      'authenticationCopies',
-      'courseDescriptionCopies',
-      'certificationCopies',
-      'cavRedRibbonCopies'
-    ]
-
-    numericFields.forEach(field => {
-      data[field] = parseInt(data[field], 10) || 0
-    })
-
+  const onSubmit = async () => {
     try {
-      const response = await fetch('/api/transactions/new', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
+      setLoading(true); // Set loading state to true
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form')
+      // Assuming you have the user's ID in the session data
+      const userId = session?.user?.id;
+      const packageId = selectedPackage
+
+      // Prepare the data to be sent
+      const transactionData = {
+        userId,
+        totalAmount,
+        packageId
+      };
+
+      if (packageId === 'others') {
+        const credentials = selectedCredentials.map(cred => ({
+          credentialId: cred.id,
+          quantity: cred.quantity,
+          price: cred.price
+        }));
+        transactionData.credentials = credentials;
       }
 
-      toast.success('Request Submission Successful')
-      router.push('/')
+      // Send a POST request to your API endpoint
+      await axios.post('/api/transactions/new', transactionData);
+
+      toast.success('Transaction submitted successfully!');
+      setLoading(false); // Set loading state to false
+      // Redirect or perform other actions upon successful submission
+      router.push('/');
     } catch (error) {
-      toast.error('Request Submission Failed')
+      console.error('Error submitting transaction:', error);
+      toast.error('Failed to submit transaction');
+      setLoading(false); // Set loading state to false
     }
-  }
+  };
 
   return (
     <Dialog
@@ -216,365 +174,81 @@ const RequestCredentials = () => {
         <DialogContent
           sx={{
             position: 'relative',
-            pb: theme => `${theme.spacing(8)} !important`,
-            px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
-            pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+            pb: (theme: { spacing: (arg0: number) => any }) => `${theme.spacing(8)} !important`,
+            px: (theme: { spacing: (arg0: number) => any }) => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
+            pt: (theme: { spacing: (arg0: number) => any }) => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
           }}
         >
-          <IconButton size='small' onClick={handleClose} sx={{ position: 'absolute', right: '1rem', top: '1rem' }}>
+          <IconButton
+            size='small'
+            onClick={() => handleClose()}
+            sx={{ position: 'absolute', right: '1rem', top: '1rem' }}
+          >
             <Icon icon='mdi:close' />
           </IconButton>
           <Box sx={{ mb: 8, textAlign: 'center' }}>
             <Typography variant='h5' sx={{ mb: 3 }}>
-              Request Credentials
+              Edit Credential
             </Typography>
-            <Typography variant='body2'>
-              Only fill the number of copies of the credentials yoou wanted to request.
-            </Typography>
+            <Typography variant='body2'>Change the name and price of the credential.</Typography>
           </Box>
-          <Grid container spacing={6}>
-            <Grid item sm={12} xs={12}>
-              <FormGroup row>
-                <FormControlLabel
-                  label='Transcript of Records'
-                  control={
-                    <Checkbox
-                      name='transcript'
-                      checked={showFields.transcript}
-                      onChange={() => handleCheckboxChange('transcript')}
-                    />
-                  }
-                />
-                <FormControlLabel
-                  label='Honorable Dismissal'
-                  control={
-                    <Checkbox
-                      name='dismissal'
-                      checked={showFields.dismissal}
-                      onChange={() => handleCheckboxChange('dismissal')}
-                    />
-                  }
-                />
-                <FormControlLabel
-                  label='Good Moral Character'
-                  control={
-                    <Checkbox
-                      name='moralCharacter'
-                      checked={showFields.moralCharacter}
-                      onChange={() => handleCheckboxChange('moralCharacter')}
-                    />
-                  }
-                />
-                <FormControlLabel
-                  label='Diploma'
-                  control={
-                    <Checkbox
-                      name='diploma'
-                      checked={showFields.diploma}
-                      onChange={() => handleCheckboxChange('diploma')}
-                    />
-                  }
-                />
-                <FormControlLabel
-                  label='Authentication'
-                  control={
-                    <Checkbox
-                      name='authentication'
-                      checked={showFields.authentication}
-                      onChange={() => handleCheckboxChange('authentication')}
-                    />
-                  }
-                />
-                <FormControlLabel
-                  label='Course Description / Outline'
-                  control={
-                    <Checkbox
-                      name='courseDescription'
-                      checked={showFields.courseDescription}
-                      onChange={() => handleCheckboxChange('courseDescription')}
-                    />
-                  }
-                />
-                <FormControlLabel
-                  label='Certification'
-                  control={
-                    <Checkbox
-                      name='certification'
-                      checked={showFields.certification}
-                      onChange={() => handleCheckboxChange('certification')}
-                    />
-                  }
-                />
-                <FormControlLabel
-                  label='CAV / Red Ribbon'
-                  control={
-                    <Checkbox
-                      name='cavRedRibbon'
-                      checked={showFields.cavRedRibbon}
-                      onChange={() => handleCheckboxChange('cavRedRibbon')}
-                    />
-                  }
-                />
-              </FormGroup>
-            </Grid>
-            {showFields.transcript && (
-              <>
-                <Grid item sm={12} xs={12}>
-                  <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                    Transcript of Records
-                  </Typography>
+            <Grid container spacing={6}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Select
+                    value={selectedPackage}
+                    onChange={handlePackageChange}
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                    <MenuItem value={0} disabled>
+                      Select a Package
+                    </MenuItem>
+                    {packages.map((pkg) => (
+                      <MenuItem key={pkg.package_id} value={pkg.package_id}>{pkg.package_name} - {pkg.package_description}</MenuItem>
+                    ))}
+                    <MenuItem value="others">Others</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              {selectedPackage !== 'others' && selectedCredentials.map(cred => (
+                <Grid item xs={12} sm={6} key={cred.id}>
+                  <Typography>{cred.name} - Price: Php {cred.price}</Typography>
+                  <Typography>Quantity: {cred.quantity}</Typography>
                 </Grid>
-                <Grid item sm={12} xs={12}>
-                  <Controller
-                    name='transcriptCopies'
-                    control={control}
-                    rules={{ required: 'This field is required' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type='number'
-                        label='Number of Copy'
-                        error={!!errors.transcriptCopies}
-                        helperText={errors.transcriptCopies?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </>
-            )}
-            {showFields.dismissal && (
-              <>
-                <Grid item sm={12} xs={12}>
-                  <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                    Honorable Dismissal
-                  </Typography>
-                </Grid>
-                <Grid item sm={12} xs={12}>
-                  <Controller
-                    name='dismissalCopies'
-                    control={control}
-                    rules={{ required: 'This field is required' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type='number'
-                        label='Number of Copy'
-                        error={!!errors.dismissalCopies}
-                        helperText={errors.dismissalCopies?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </>
-            )}
-            {showFields.moralCharacter && (
-              <>
-                <Grid item sm={12} xs={12}>
-                  <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                    Good Moral Character
-                  </Typography>
-                </Grid>
-                <Grid item sm={12} xs={12}>
-                  <Controller
-                    name='moralCharacterCopies'
-                    control={control}
-                    rules={{ required: 'This field is required' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type='number'
-                        label='Number of Copy'
-                        error={!!errors.moralCharacterCopies}
-                        helperText={errors.moralCharacterCopies?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </>
-            )}
-            {showFields.diploma && (
-              <>
-                <Grid item sm={12} xs={12}>
-                  <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                    Diploma
-                  </Typography>
-                </Grid>
-                <Grid item sm={12} xs={12}>
-                  <Controller
-                    name='diplomaCopies'
-                    control={control}
-                    rules={{ required: 'This field is required' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type='number'
-                        label='Number of Copy'
-                        error={!!errors.diplomaCopies}
-                        helperText={errors.diplomaCopies?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </>
-            )}
-            {showFields.authentication && (
-              <>
-                <Grid item sm={12} xs={12}>
-                  <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                    Authentication
-                  </Typography>
-                </Grid>
-                <Grid item sm={12} xs={12}>
-                  <Controller
-                    name='authenticationCopies'
-                    control={control}
-                    rules={{ required: 'This field is required' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type='number'
-                        label='Number of Copy'
-                        error={!!errors.authenticationCopies}
-                        helperText={errors.authenticationCopies?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </>
-            )}
-            {showFields.courseDescription && (
-              <>
-                <Grid item sm={12} xs={12}>
-                  <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                    Course Description / Outline
-                  </Typography>
-                </Grid>
-                <Grid item sm={12} xs={12}>
-                  <Controller
-                    name='courseDescriptionCopies'
-                    control={control}
-                    rules={{ required: 'This field is required' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type='number'
-                        label='Number of Copy'
-                        error={!!errors.courseDescriptionCopies}
-                        helperText={errors.courseDescriptionCopies?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </>
-            )}
-            {showFields.certification && (
-              <>
-                <Grid item sm={12} xs={12}>
-                  <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                    Certification
-                  </Typography>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <Controller
-                    name='certificationType'
-                    control={control}
-                    rules={{ required: 'This field is required' }}
-                    defaultValue=''
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        label='Type of Certification'
-                        error={!!errors.certificationType}
-                        helperText={errors.certificationType?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <Controller
-                    name='certificationCopies'
-                    control={control}
-                    rules={{ required: 'This field is required' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type='number'
-                        label='Number of Copy'
-                        error={!!errors.certificationCopies}
-                        helperText={errors.certificationCopies?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </>
-            )}
-            {showFields.cavRedRibbon && (
-              <>
-                <Grid item sm={12} xs={12}>
-                  <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                    CAV / Red Ribbon
-                  </Typography>
-                </Grid>
-                <Grid item sm={12} xs={12}>
-                  <Controller
-                    name='cavRedRibbonCopies'
-                    control={control}
-                    rules={{ required: 'This field is required' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type='number'
-                        label='Number of Copy'
-                        error={!!errors.cavRedRibbonCopies}
-                        helperText={errors.cavRedRibbonCopies?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </>
-            )}
-            <Grid item sm={12} xs={12}>
-              <Divider sx={{ mb: '0 !important' }} />
-            </Grid>
-            <Grid item sm={12} xs={12}>
-              <Controller
-                name='purpose'
-                control={control}
-                rules={{ required: 'This field is required' }}
-                render={({ field }) => (
+              ))}
+              {selectedPackage === 'others' && individualCredentials.map(cred => (
+                <Grid item sm={6} xs={12} key={cred.id}>
+                  <Typography>{cred.name} - Price: Php {cred.price}</Typography>
                   <TextField
-                    {...field}
-                    fullWidth
-                    label='Purpose of Request'
-                    error={!!errors.purpose}
-                    helperText={errors.purpose?.message}
+                    label="Quantity"
+                    type="number"
+                    InputLabelProps={{ shrink: true }}
+                    variant="outlined"
+                    value={selectedCredentials.find(c => c.id === cred.id)?.quantity || 0}
+                    onChange={(e) => handleCredentialQuantityChange(cred.id, e.target.value)}
                   />
-                )}
-              />
+                </Grid>
+              ))}
+              <Grid item xs={12}>
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                  Total Amount: Php {totalAmount}
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
         </DialogContent>
         <DialogActions
           sx={{
             justifyContent: 'center',
-            px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
-            pb: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+            px: (theme: { spacing: (arg0: number) => any }) => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
+            pb: (theme: { spacing: (arg0: number) => any }) => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
           }}
         >
           <Button variant='contained' sx={{ mr: 1 }} type='submit'>
             Submit
           </Button>
-          <Button variant='outlined' color='secondary' onClick={handleClose}>
-            Cancel
+          <Button variant='outlined' color='secondary' onClick={() => handleClose()}>
+            Close
           </Button>
         </DialogActions>
       </form>
