@@ -126,8 +126,6 @@ const DashboardStaff = () => {
     for (const type of types) {
       const response = await axios.get(`/api/staff/transactions/count/${type}?staffId=${userId}`)
 
-      console.log(response.data)
-
       // Set the count based on the type
       switch (type) {
         case 'Submitted':
@@ -638,7 +636,7 @@ const DashboardStaff = () => {
           </Card>
         </Grid>
         <Grid item xs={12} md={12}>
-          <ActivityTimeline logs={logs} load={loadMoreLogs}/>
+          <ActivityTimeline logs={logs} load={loadMoreLogs} title='Activity Timeline'/>
         </Grid>
       </Grid>
     </ApexChartWrapper>

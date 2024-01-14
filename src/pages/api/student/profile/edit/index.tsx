@@ -174,7 +174,6 @@ const updateUser = async (userData: User) => {
 const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
   const data = req.body;
 
-  console.log("API")
   try {
     const user = await updateUser(data)
 

@@ -113,7 +113,6 @@ export default async function handler(
   } if (req.method === 'GET') {
     try {
       const packageData = await fetchPackage(Number(id))
-      console.log(packageData)
       res.status(200).json(packageData)
     } catch (error) {
       console.error(error);

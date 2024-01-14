@@ -178,12 +178,11 @@ const Register = () => {
 
 
   const onSubmit = async (data: FormData) => {
-    let path = '';
+    let path = ''
     try {
-      path = await handleUpload();
-      console.log(path)
+      path = await handleUpload()
     } catch (error) {
-      console.error('Failed to upload image:', error);
+      console.error('Failed to upload image:', error)
     }
 
     const password = data.password

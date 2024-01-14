@@ -28,13 +28,13 @@ const Timeline = styled(MuiTimeline)<TimelineProps>({
   }
 })
 
-const ActivityTimeline = ({ logs, load }) => {
+const ActivityTimeline = ({ logs, load, title }) => {
   const [loading, setLoading] = useState(false)
 
   return (
     <Card>
       <CardHeader
-        title='Activity Timeline'
+        title={title}
         titleTypographyProps={{ sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' } }}
       />
       <CardContent>

@@ -122,7 +122,6 @@ const DialogEditProfile = ({ user }) => {
   };
 
   const onSubmit = async (data: FormData) => {
-    console.log("I AM HERE")
     data.user_id = user?.id
     data.username = user?.username
     try {

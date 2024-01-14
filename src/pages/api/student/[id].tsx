@@ -7,7 +7,6 @@ async function verifyOrUnverify(id: number, status: string, session: any) {
   try {
     const staff = session?.user
 
-    console.log(staff.id)
     await db.query(`
       UPDATE users
       SET status = ?
@@ -34,8 +33,6 @@ export default async function handler(
   }
 
   const { id, status } = req.query
-
-  console.log(req.query)
 
   if (req.method === 'PUT') {
     try {

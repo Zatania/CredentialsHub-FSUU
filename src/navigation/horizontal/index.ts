@@ -45,6 +45,20 @@ const navigation = (): HorizontalNavItemsType => [
     icon: 'mdi:shield-outline'
   },
   {
+    path: '/admin/staffs',
+    title: 'Staffs',
+    action: 'read',
+    subject: 'staffs-list-page',
+    icon: 'mdi:shield-outline'
+  },
+  {
+    path: '/admin/logs',
+    title: 'Logs',
+    action: 'read',
+    subject: 'logs-page',
+    icon: 'mdi:shield-outline'
+  },
+  {
     path: '/staff/students',
     title: 'Students',
     action: 'read',
@@ -58,13 +72,6 @@ const navigation = (): HorizontalNavItemsType => [
     subject: 'transactions-page',
     icon: 'mdi:shield-outline'
   },
-  {
-    path: '/admin/staff/add',
-    title: 'Add Staff',
-    action: 'read',
-    subject: 'add-staff-page',
-    icon: 'mdi:shield-outline'
-  }
 ]
 
 export default navigation
