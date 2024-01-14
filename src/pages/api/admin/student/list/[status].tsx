@@ -15,7 +15,12 @@ interface StudentData {
 
 async function fetchStudents(status: string) {
   try {
-    const results = (await db.query(`SELECT * FROM users WHERE status = ?`, [status])) as RowDataPacket
+    const results = (await db.query(`
+      SELECT u.id, u.studentNumber, u.firstName, u.lastName, d.name AS department, u.course, u.image, u.status
+      FROM users AS u
+      INNER JOIN department AS d ON u.department = d.id
+      WHERE u.status = ?
+    `, [status])) as RowDataPacket;
 
     const rows = results[0].map((row: StudentData) => ({
       id: row.id,
