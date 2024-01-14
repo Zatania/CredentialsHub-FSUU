@@ -77,12 +77,14 @@ const DialogAddPackage = ({ refreshData }) => {
 
   // Fetch credentials list
   useEffect(() => {
-  axios.get('/api/credentials')
-    .then(response => {
-      setCredentials(response.data)
-    })
-    .catch(error => console.error("Error fetching credentials", error))
-  }, [])
+    if(show) {
+      axios.get('/api/credentials')
+      .then(response => {
+        setCredentials(response.data)
+      })
+      .catch(error => console.error("Error fetching credentials", error))
+    }
+  }, [show])
 
   const handleToggle = (credential: CredentialsData) => {
     const existingCredential = selectedCredentials.find(c => c.id === credential.id)

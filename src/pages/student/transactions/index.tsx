@@ -21,11 +21,11 @@ import { ThemeColor } from 'src/@core/layouts/types'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
+// ** Views Imports
+import DialogViewTransaction from 'src/views/pages/students/ViewTransaction'
+
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
-
-// ** Views Imports
-import DialogViewTransaction from 'src/views/pages/staffs/ViewTransaction'
 
 interface StatusObj {
   [key: string]: {
@@ -42,9 +42,12 @@ const statusObj: StatusObj = {
   Scheduled: { title: 'Scheduled', color: 'info' }
 }
 
-const Transactions = () => {
+const StudentTransactions = () => {
   // ** States
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 5 })
+  const [submittedPagination, setSubmittedPagination] = useState({ page: 0, pageSize: 10 })
+  const [scheduledPagination, setScheduledPagination] = useState({ page: 0, pageSize: 10 })
+  const [claimedPagination, setClaimedPagination] = useState({ page: 0, pageSize: 10 })
+  const [rejectedPagination, setRejectedPagination] = useState({ page: 0, pageSize: 10 })
   const [submittedRows, setSubmittedsRows] = useState<GridRowsProp>([])
   const [scheduledRows, setScheduledRows] = useState<GridRowsProp>([])
   const [claimedRows, setClaimedRows] = useState<GridRowsProp>([])
@@ -60,7 +63,7 @@ const Transactions = () => {
   }, []);
 
   const fetchAllTransactions = () => {
-    axios.get('/api/staff/transactions')
+    axios.get('/api/student/transactions')
       .then(response => {
         const data = response.data;
         setSubmittedsRows(data.Submitted || []);
@@ -365,9 +368,9 @@ const Transactions = () => {
             columns={submittedColumns}
             rows={submittedRows}
             pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            paginationModel={submittedPagination}
             slots={{ toolbar: GridToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setSubmittedPagination}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
@@ -381,15 +384,15 @@ const Transactions = () => {
       </Grid>
       <Grid item sm={12} xs={12}>
         <Card>
-          <CardHeader title='Schedule Transactions' />
+          <CardHeader title='Scheduled Transactions' />
           <DataGrid
             autoHeight
             columns={scheduledColumns}
             rows={scheduledRows}
             pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            paginationModel={scheduledPagination}
             slots={{ toolbar: GridToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setScheduledPagination}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
@@ -409,9 +412,9 @@ const Transactions = () => {
             columns={claimedColumns}
             rows={claimedRows}
             pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            paginationModel={claimedPagination}
             slots={{ toolbar: GridToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setClaimedPagination}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
@@ -431,9 +434,9 @@ const Transactions = () => {
             columns={rejectedColumns}
             rows={rejectedRows}
             pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            paginationModel={rejectedPagination}
             slots={{ toolbar: GridToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setRejectedPagination}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
@@ -449,9 +452,9 @@ const Transactions = () => {
   )
 }
 
-Transactions.acl = {
+StudentTransactions.acl = {
   action: 'read',
-  subject: 'transactions-page'
+  subject: 'student-transactions-page'
 }
 
-export default Transactions
+export default StudentTransactions

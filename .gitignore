@@ -32,3 +32,9 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Ignore everything in the public/uploads directory
+public/uploads/*
+
+# But not the directory itself
+!public/uploads/.gitkeep

@@ -81,8 +81,20 @@ const ProfilePage = () => {
 
   const userID = session?.user.id
 
-  const capitalizeFirstLetter = string => {
+  const capitalizeFirstLetter = (string: string | null | undefined) => {
+    if (string === null) {
+      return ' '; // Return a blank space if the string is null
+    }
+
     return string?.charAt(0).toUpperCase() + string?.slice(1)
+  }
+
+  const formatDate = (date: string) => {
+    if (date === null) {
+      return ' '; // Return a blank space if the date is null
+    }
+
+    return dayjs(date).format('MMMM DD, YYYY');
   }
 
   const data = {
@@ -132,7 +144,7 @@ const ProfilePage = () => {
         ? [
             {
               property: 'Graduation Date',
-              value: dayjs(user?.graduationDate).format('MMMM DD, YYYY'),
+              value: formatDate(user?.graduationDate),
               icon: 'mdi:account-school-outline'
             },
             {
@@ -170,7 +182,7 @@ const ProfilePage = () => {
       { property: 'Email Address', value: capitalizeFirstLetter(user?.emailAddress), icon: 'mdi:email-outline' },
       {
         property: 'Birth Date',
-        value: dayjs(user?.birthDate).format('MMMM DD, YYYY'),
+        value: formatDate(user?.birthDate),
         icon: 'mdi:cake-variant-outline'
       },
       { property: 'Birth Place', value: capitalizeFirstLetter(user?.birthPlace), icon: 'mdi:cake-variant-outline' },
@@ -190,7 +202,7 @@ const ProfilePage = () => {
       },
       {
         property: 'Graduation Date',
-        value: dayjs(user?.elementaryGraduated).format('MMMM DD, YYYY'),
+        value: formatDate(user?.elementaryGraduated),
         icon: 'mdi:account-school-outline'
       },
       {
@@ -200,7 +212,7 @@ const ProfilePage = () => {
       },
       {
         property: 'Graduation Date',
-        value: dayjs(user?.secondaryGraduated).format('MMMM DD, YYYY'),
+        value: formatDate(user?.secondaryGraduated),
         icon: 'mdi:account-school-outline'
       },
       {
@@ -210,7 +222,7 @@ const ProfilePage = () => {
       },
       {
         property: 'Graduation Date',
-        value: dayjs(user?.juniorHighGraduated).format('MMMM DD, YYYY'),
+        value: formatDate(user?.juniorHighGraduated),
         icon: 'mdi:account-school-outline'
       },
       {
@@ -220,13 +232,13 @@ const ProfilePage = () => {
       },
       {
         property: 'Graduation Date',
-        value: dayjs(user?.seniorHighGraduated).format('MMMM DD, YYYY'),
+        value: formatDate(user?.seniorHighGraduated),
         icon: 'mdi:account-school-outline'
       },
       { property: 'Tertiary School', value: capitalizeFirstLetter(user?.tertiary), icon: 'mdi:account-school-outline' },
       {
         property: 'Graduation Date',
-        value: dayjs(user?.tertiaryGraduated).format('MMMM DD, YYYY'),
+        value: formatDate(user?.tertiaryGraduated),
         icon: 'mdi:account-school-outline'
       }
     ],

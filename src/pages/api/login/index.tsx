@@ -2,6 +2,7 @@ import { NextApiResponse, NextApiRequest } from 'next/types'
 import { RowDataPacket } from 'mysql2/promise'
 import * as bcrypt from 'bcryptjs'
 import db from '../../db'
+import dayjs from 'dayjs'
 
 const comparePasswords = async (inputPassword: string, hashedPassword: string): Promise<boolean> => {
   return await bcrypt.compare(inputPassword, hashedPassword)
@@ -50,6 +51,17 @@ const getUser = async (username: string, password: string, userType: string) => 
 
     if (!passwordMatch) {
       return null
+    }
+    const message = `${user[0].firstName} ${user[0].lastName} logged in succesfully.`
+    const type = 'Login'
+
+    // Add Login to logs
+    if (userType === 'Student') {
+      await db.query('INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)', [user[0].id, message, type, dayjs().format('YYYY-MM-DD HH:mm:ss')])
+    } else if (userType === 'Staff') {
+      await db.query('INSERT INTO staff_logs (staff_id, activity, activity_type, date) VALUES (?, ?, ?, ?)', [user[0].id, message, type, dayjs().format('YYYY-MM-DD HH:mm:ss')])
+    } else {
+      await db.query('INSERT INTO admins_logs (admin_id, activity, activity_type, date) VALUES (?, ?, ?, ?)', [user[0].id, message, type, dayjs().format('YYYY-MM-DD HH:mm:ss')])
     }
 
     return user

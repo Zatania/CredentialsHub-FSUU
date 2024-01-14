@@ -1,921 +1,647 @@
 // ** React Imports
-import { Ref, useState, forwardRef, ReactElement, useEffect, SetStateAction } from 'react'
+import { useCallback, useState, useEffect, useRef } from 'react'
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
-import Button from '@mui/material/Button'
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
-import Grid from '@mui/material/Grid'
-import Dialog from '@mui/material/Dialog'
-import TextField from '@mui/material/TextField'
-import IconButton from '@mui/material/IconButton'
+import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import Fade, { FadeProps } from '@mui/material/Fade'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
 import Divider from '@mui/material/Divider'
-import FormControl from '@mui/material/FormControl'
+import Box from '@mui/material/Box'
+import { useTheme } from '@mui/material/styles'
+
+// ** Styled Component Import
+import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
+
+// ** Custome Components Import
+import CardStatisticsVerticalComponent from 'src/@core/components/card-statistics/card-stats-vertical'
+import OptionsMenu from 'src/@core/components/option-menu'
+import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-// ** Custom Components
-import CustomChip from 'src/@core/components/mui/chip'
+// ** Views Imports
+import ActivityTimeline from 'src/views/pages/dashboard/ActivityTimeline'
 
-// ** Types Imports
-import { ThemeColor } from 'src/@core/layouts/types'
-
-// ** Hooks Imports
+// ** Next Imports
 import { useSession } from 'next-auth/react'
-import dayjs from 'dayjs'
 
 // ** Third Party Imports
-import { useForm, Controller } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import axios from 'axios'
+import { ApexOptions } from 'apexcharts'
 
-//** For Date/Time Picker
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-
-const Transition = forwardRef(function Transition(
-  props: FadeProps & { children?: ReactElement<any, any> },
-  ref: Ref<unknown>
-) {
-  return <Fade ref={ref} {...props} />
-})
-interface DataGridRowType {
-  id: number
-  user_id: number
-  staff_id: number
-  dateFilled: string
-  transcriptCopies: number
-  transcriptSchedule: string
-  dismissalCopies: number
-  dismissalSchedule: string
-  moralCharacterCopies: number
-  moralCharacterSchedule: string
-  diplomaCopies: number
-  diplomaSchedule: string
-  authenticationCopies: number
-  authenticationSchedule: string
-  courseDescriptionCopies: number
-  courseDescriptionSchedule: string
-  certificationType: string
-  certificationCopies: number
-  certificationSchedule: string
-  cavRedRibbonCopies: number
-  cavRedRibbonSchedule: string
-  totalAmount: number
-  purpose: string
-  status: string
-}
-
-interface Student {
-  id: number
-  username: string
-  password: string
-  studentNumber: string
-  firstName: string
-  middleName: string
-  lastName: string
-  department: string
-  course: string
-  major: string
-  graduateCheck: string
-  graduationDate: string
-  academicHonor: string
-  yearLevel: string
-  schoolYear: string
-  semester: string
-  homeAddress: string
-  contactNumber: string
-  emailAddress: string
-  birthDate: string
-  birthPlace: string
-  religion: string
-  citizenship: string
-  sex: string
-  fatherName: string
-  motherName: string
-  guardianName: string
-  elementary: string
-  elementaryGraduated: string
-  secondary: string
-  secondaryGraduated: string
-  juniorHigh: string
-  juniorHighGraduated: string
-  seniorHigh: string
-  seniorHighGraduated: string
-  tertiary: string
-  tertiaryGraduated: string
-  employedAt: string
-  position: string
-}
-interface StatusObj {
-  [key: string]: {
-    title: string
-    color: ThemeColor
-  }
-}
-
-const statusObj: StatusObj = {
-  Submitted: { title: 'Submitted', color: 'primary' },
-  Claimed: { title: 'Claimed', color: 'success' },
-  Rejected: { title: 'Rejected', color: 'error' },
-  Resigned: { title: 'Resigned', color: 'warning' },
-  Scheduled: { title: 'Scheduled', color: 'info' }
-}
+// ** Util Import
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const DashboardStaff = () => {
   // ** States
-  const [data, setData] = useState<DataGridRowType[]>([])
-  const [selectedTransaction, setSelectedTransaction] = useState<DataGridRowType | null>(null)
-  const [selectedUser, setSelectedUser] = useState<Student | null>(null)
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
-  const [show, setShow] = useState<boolean>(false)
+  const [logs, setLogs] = useState<object[]>([])
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [submittedDailyCount, setSubmittedDailyCount] = useState()
+  const [scheduledDailyCount, setScheduledDailyCount] = useState()
+  const [claimedDailyCount, setClaimedDailyCount] = useState()
+  const [rejectedDailyCount, setRejectedDailyCount] = useState()
+  const [submittedMonthlyCount, setSubmittedMonthlyCount] = useState()
+  const [scheduledMonthlyCount, setScheduledMonthlyCount] = useState()
+  const [claimedMonthlyCount, setClaimedMonthlyCount] = useState()
+  const [rejectedMonthlyCount, setRejectedMonthlyCount] = useState()
+  const [submittedYearlyCount, setSubmittedYearlyCount] = useState()
+  const [scheduledYearlyCount, setScheduledYearlyCount] = useState()
+  const [claimedYearlyCount, setClaimedYearlyCount] = useState()
+  const [rejectedYearlyCount, setRejectedYearlyCount] = useState()
+  const totalDailyCount = useRef(0)
+  const totalMonthlyCount = useRef(0)
+  const totalYearlyCount = useRef(0)
+  const [submittedCount, setSubmittedCount] = useState()
+  const [scheduledCount, setScheduledCount] = useState()
+  const [claimedCount, setClaimedCount] = useState()
+  const [rejectedCount, setRejectedCount] = useState()
+  const totalTransactions = useRef(0)
+  const [submittedMonthly, setSubmittedMonthly] = useState()
+  const [scheduledMonthly, setScheduledMonthly] = useState()
+  const [claimedMonthly, setClaimedMonthly] = useState()
+  const [rejectedMonthly, setRejectedMonthly] = useState()
+  const totalMonthly = useRef(0)
+
+  // ** Hooks
+  const theme = useTheme()
   const { data: session } = useSession()
-  const staffID = session?.user?.id || null
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm<DataGridRowType>({
-    mode: 'onBlur'
-  })
+  const fetchLogs = useCallback(async (page: number) => {
+    setLoading(true)
+    const role = session?.user?.role
+    const userId = session?.user?.id
+    const response = await axios.get(`/api/logs/${role}?userId=${userId}&page=${page}&limit=5`)
+    const newLogs = await response.data
+    setLogs(prevLogs => [...prevLogs, ...newLogs])
+    setLoading(false)
+  }, [session])
 
-  const handleClose = () => {
-    setShow(false)
-  }
+  const fetchCounts = useCallback(async () => {
+    const userId = session?.user?.id
+    const types = ['Submitted Transaction', 'Scheduled Transaction', 'Claimed Transaction', 'Rejected Transaction']
 
-  const fetchUser = async (userID: any) => {
-    try {
-      const res = await fetch('/api/profile/student/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userID)
-      })
-      const data = await res.json()
-      setSelectedUser(data)
-    } catch (error) {
-      console.error('Error fetching user:', error)
+    for (const type of types) {
+      const response = await axios.get(`/api/staff/transactions/count/logs/${type}?userId=${userId}`)
+
+      // Set the count based on the type
+      switch (type) {
+        case 'Submitted Transaction':
+          setSubmittedDailyCount(response.data.dailyCount)
+          setSubmittedMonthlyCount(response.data.monthlyCount)
+          setSubmittedYearlyCount(response.data.yearlyCount)
+          break
+        case 'Scheduled Transaction':
+          setScheduledDailyCount(response.data.dailyCount)
+          setScheduledMonthlyCount(response.data.monthlyCount)
+          setScheduledYearlyCount(response.data.yearlyCount)
+          break
+        case 'Claimed Transaction':
+          setClaimedDailyCount(response.data.dailyCount)
+          setClaimedMonthlyCount(response.data.monthlyCount)
+          setClaimedYearlyCount(response.data.yearlyCount)
+          break
+        case 'Rejected Transaction':
+          setRejectedDailyCount(response.data.dailyCount)
+          setRejectedMonthlyCount(response.data.monthlyCount)
+          setRejectedYearlyCount(response.data.yearlyCount)
+          break
+        default:
+          break
+      }
     }
-  }
-  const handleViewDetails = async (row: SetStateAction<DataGridRowType | null>) => {
-    setSelectedTransaction(row)
 
-    if (row?.user_id) {
-      await fetchUser(row?.user_id)
+    totalDailyCount.current = (submittedDailyCount || 0) + (scheduledDailyCount || 0) + (claimedDailyCount || 0) + (rejectedDailyCount || 0)
+    totalMonthlyCount.current = (submittedMonthlyCount || 0) + (scheduledMonthlyCount || 0) + (claimedMonthlyCount || 0) + (rejectedMonthlyCount || 0)
+    totalYearlyCount.current = (submittedYearlyCount || 0) + (scheduledYearlyCount || 0) + (claimedYearlyCount || 0) + (rejectedYearlyCount || 0)
+  }, [session, submittedDailyCount, scheduledDailyCount, claimedDailyCount, rejectedDailyCount, submittedMonthlyCount, scheduledMonthlyCount, claimedMonthlyCount, rejectedMonthlyCount, submittedYearlyCount, scheduledYearlyCount, claimedYearlyCount, rejectedYearlyCount])
+
+  const fetchTransactionCounts = useCallback(async () => {
+    const userId = session?.user?.id
+    const types = ['Submitted', 'Scheduled', 'Claimed', 'Rejected']
+
+    for (const type of types) {
+      const response = await axios.get(`/api/staff/transactions/count/${type}?staffId=${userId}`)
+
+      console.log(response.data)
+
+      // Set the count based on the type
+      switch (type) {
+        case 'Submitted':
+          setSubmittedCount(response.data.dailyCount)
+          setSubmittedMonthly(response.data.monthlyCount)
+          break
+        case 'Scheduled':
+          setScheduledCount(response.data.dailyCount)
+          setScheduledMonthly(response.data.monthlyCount)
+          break
+        case 'Claimed':
+          setClaimedCount(response.data.dailyCount)
+          setClaimedMonthly(response.data.monthlyCount)
+          break
+        case 'Rejected':
+          setRejectedCount(response.data.dailyCount)
+          setRejectedMonthly(response.data.monthlyCount)
+          break
+        default:
+          break
+      }
     }
-
-    reset()
-    setShow(true)
+    totalTransactions.current = (submittedCount || 0) + (scheduledCount || 0) + (claimedCount || 0) + (rejectedCount || 0)
+    totalMonthly.current = (submittedMonthly || 0) + (scheduledMonthly || 0) + (claimedMonthly || 0) + (rejectedMonthly || 0)
   }
-
-  const fetchTransactions = async staffID => {
-    try {
-      const response = await fetch(`/api/transactions/staff-list`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ staff_id: staffID })
-      })
-      const transactionList = await response.json()
-      setData(transactionList) // Assuming the API response is an array of transactions
-    } catch (error) {
-      console.error('Error fetching transactions:', error)
-    }
-  }
+  , [session, submittedCount, scheduledCount, claimedCount, rejectedCount, submittedMonthly, scheduledMonthly, claimedMonthly, rejectedMonthly])
 
   useEffect(() => {
-    fetchTransactions(staffID)
-  }, [staffID])
+    fetchCounts()
+    fetchTransactionCounts()
+  }, [fetchCounts, fetchTransactionCounts])
 
-  const handleClaimed = async (data: DataGridRowType) => {
-    try {
-      data.staff_id = staffID!
-      const response = await fetch(`/api/transactions/claimed/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
+  useEffect(() => {
+    fetchLogs(page)
+  }, [page, fetchLogs])
 
-      if (response.status === 200) {
-        toast.success('Transaction claimed successfully')
-        handleClose()
+  const loadMoreLogs = () => {
+    setPage(prevPage => prevPage + 1)
+  }
 
-        // Fetch updated transactions after submission
-        fetchTransactions(staffID)
+  const options: ApexOptions = {
+    chart: {
+      sparkline: { enabled: true }
+    },
+    colors: [
+      theme.palette.primary.main,
+      hexToRGBA(theme.palette.primary.main, 0.7),
+      hexToRGBA(theme.palette.primary.main, 0.5),
+      theme.palette.customColors.trackBg
+    ],
+    stroke: { width: 0 },
+    legend: { show: false },
+    dataLabels: { enabled: false },
+    labels: ['Submitted Transaction', 'Scheduled Transaction', 'Claimed Transaction', 'Rejected Transaction'],
+    states: {
+      hover: {
+        filter: { type: 'none' }
+      },
+      active: {
+        filter: { type: 'none' }
       }
-    } catch (error) {
-      console.error('Error updating transaction:', error)
+    },
+    plotOptions: {
+      pie: {
+        customScale: 0.9,
+        donut: {
+          size: '80%',
+          labels: {
+            show: true,
+            name: {
+              offsetY: 25,
+              fontSize: '0.875rem',
+              color: theme.palette.text.secondary
+            },
+            value: {
+              offsetY: -15,
+              fontWeight: 500,
+              formatter: value => `${value}`,
+              color: theme.palette.text.primary
+            },
+            total: {
+              show: true,
+              fontSize: '0.875rem',
+              label: 'Transactions Done',
+              color: theme.palette.text.secondary,
+              formatter: value => `${value.globals.seriesTotals.reduce((total: number, num: number) => total + num)}`
+            }
+          }
+        }
+      }
     }
   }
-  const columns: GridColDef[] = [
-    {
-      flex: 0.1,
-      type: 'id',
-      minWidth: 50,
-      headerName: 'ID',
-      field: 'id',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.id}
-        </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      type: 'date',
-      minWidth: 120,
-      headerName: 'Date',
-      field: 'dateFilled',
-      valueGetter: params => new Date(params.value),
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {dayjs(params.row.dateFilled).format('MM/DD/YYYY')}
-        </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      minWidth: 110,
-      field: 'totalAmount',
-      headerName: 'Total Amount',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.totalAmount}
-        </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      minWidth: 140,
-      field: 'status',
-      headerName: 'Status',
-      renderCell: (params: GridRenderCellParams) => {
-        const status = statusObj[params.row.status]
 
-        return (
-          <CustomChip
-            size='small'
-            skin='light'
-            color={status.color}
-            label={status.title}
-            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-          />
-        )
+  const transactionOptions: ApexOptions = {
+    chart: {
+      sparkline: { enabled: true }
+    },
+    colors: [
+      theme.palette.primary.main,
+      hexToRGBA(theme.palette.primary.main, 0.7),
+      hexToRGBA(theme.palette.primary.main, 0.5),
+      theme.palette.customColors.trackBg
+    ],
+    stroke: { width: 0 },
+    legend: { show: false },
+    dataLabels: { enabled: false },
+    labels: ['Submitted Transactions', 'Scheduled Transactions', 'Claimed Transactions', 'Rejected Transactions'],
+    states: {
+      hover: {
+        filter: { type: 'none' }
+      },
+      active: {
+        filter: { type: 'none' }
       }
     },
-    {
-      flex: 0.2,
-      minWidth: 140,
-      field: 'action',
-      headerName: 'Actions',
-      renderCell: (params: GridRenderCellParams) => {
-        return (
-          <>
-            <Button variant='contained' onClick={() => handleViewDetails(params.row)}>
-              View
-            </Button>
-
-            {/* Dialog */}
-            <Dialog
-              fullWidth
-              open={show}
-              maxWidth='md'
-              scroll='body'
-              onClose={handleClose}
-              TransitionComponent={Transition}
-              onBackdropClick={handleClose}
-            >
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <DialogContent
-                  sx={{
-                    position: 'relative',
-                    pb: theme => `${theme.spacing(8)} !important`,
-                    px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
-                    pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
-                  }}
-                >
-                  <IconButton
-                    size='small'
-                    onClick={handleClose}
-                    sx={{ position: 'absolute', right: '1rem', top: '1rem' }}
-                  >
-                    <Icon icon='mdi:close' />
-                  </IconButton>
-                  <Box sx={{ mb: 8, textAlign: 'center' }}>
-                    <Typography variant='h5' sx={{ mb: 3 }}>
-                      Request Credentials
-                    </Typography>
-                    <Typography variant='body2'>
-                      Only fill the number of copies of the credentials yoou wanted to request.
-                    </Typography>
-                  </Box>
-                  <Grid container spacing={6}>
-                    <>
-                      <Grid item sm={12} xs={12}>
-                        <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                          Student Information
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <TextField
-                          value={selectedUser?.studentNumber}
-                          fullWidth
-                          label='Student Number'
-                          InputProps={{
-                            readOnly: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={4}>
-                        <TextField
-                          value={selectedUser?.firstName + ' ' + selectedUser?.lastName}
-                          fullWidth
-                          label='Full Name'
-                          InputProps={{
-                            readOnly: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={4}>
-                        <TextField
-                          value={selectedUser?.department}
-                          fullWidth
-                          label='Department'
-                          InputProps={{
-                            readOnly: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <TextField
-                          value={selectedUser?.contactNumber}
-                          fullWidth
-                          label='Contact Number'
-                          InputProps={{
-                            readOnly: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <TextField
-                          value={selectedUser?.emailAddress}
-                          fullWidth
-                          label='Email Address'
-                          InputProps={{
-                            readOnly: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          value={selectedUser?.homeAddress}
-                          fullWidth
-                          label='Home Address'
-                          InputProps={{
-                            readOnly: true
-                          }}
-                        />
-                      </Grid>
-                      {selectedTransaction?.transcriptCopies !== 0 ? (
-                        <>
-                          <Grid item sm={12} xs={12}>
-                            <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                              Transcript of Records
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={6} xs={12}>
-                            <Controller
-                              name='transcriptCopies'
-                              control={control}
-                              defaultValue={selectedTransaction?.transcriptCopies || 0}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  fullWidth
-                                  label='Number of Copy'
-                                  error={!!errors.transcriptCopies}
-                                  helperText={errors.transcriptCopies?.message}
-                                  InputProps={{
-                                    readOnly: true
-                                  }}
-                                />
-                              )}
-                            />
-                          </Grid>
-                          {['Scheduled', 'Claimed'].includes(selectedTransaction?.status) ? (
-                            <Grid item xs={6}>
-                              <TextField
-                                value={dayjs(selectedTransaction?.transcriptSchedule).format('MM/DD/YYYY')}
-                                fullWidth
-                                label='Schedule'
-                                InputProps={{
-                                  readOnly: true
-                                }}
-                              />
-                            </Grid>
-                          ) : (
-                            <Grid item sm={6} xs={12}>
-                              <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                  name='transcriptSchedule'
-                                  control={control}
-                                  value={selectedTransaction?.transcriptSchedule || ''}
-                                  render={({ field }) => <DatePicker label='Schedule' {...field} />}
-                                />
-                              </FormControl>
-                            </Grid>
-                          )}
-                        </>
-                      ) : null}
-                      {selectedTransaction?.dismissalCopies !== 0 ? (
-                        <>
-                          <Grid item sm={12} xs={12}>
-                            <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                              Honorable Dismissal
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={6} xs={12}>
-                            <Controller
-                              name='dismissalCopies'
-                              control={control}
-                              defaultValue={selectedTransaction?.dismissalCopies || 0}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  fullWidth
-                                  label='Number of Copy'
-                                  error={!!errors.dismissalCopies}
-                                  helperText={errors.dismissalCopies?.message}
-                                  InputProps={{
-                                    readOnly: true
-                                  }}
-                                />
-                              )}
-                            />
-                          </Grid>
-                          {['Scheduled', 'Claimed'].includes(selectedTransaction?.status) ? (
-                            <Grid item xs={6}>
-                              <TextField
-                                value={dayjs(selectedTransaction?.dismissalSchedule).format('MM/DD/YYYY')}
-                                fullWidth
-                                label='Schedule'
-                                InputProps={{
-                                  readOnly: true
-                                }}
-                              />
-                            </Grid>
-                          ) : (
-                            <Grid item sm={6} xs={12}>
-                              <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                  name='dismissalSchedule'
-                                  control={control}
-                                  render={({ field }) => <DatePicker label='Schedule' {...field} />}
-                                />
-                              </FormControl>
-                            </Grid>
-                          )}
-                        </>
-                      ) : null}
-                      {selectedTransaction?.moralCharacterCopies !== 0 ? (
-                        <>
-                          <Grid item sm={12} xs={12}>
-                            <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                              Good Moral Character
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={6} xs={12}>
-                            <Controller
-                              name='moralCharacterCopies'
-                              control={control}
-                              defaultValue={selectedTransaction?.moralCharacterCopies || 0}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  fullWidth
-                                  label='Number of Copy'
-                                  error={!!errors.moralCharacterCopies}
-                                  helperText={errors.moralCharacterCopies?.message}
-                                  InputProps={{
-                                    readOnly: true
-                                  }}
-                                />
-                              )}
-                            />
-                          </Grid>
-                          {['Scheduled', 'Claimed'].includes(selectedTransaction?.status) ? (
-                            <Grid item xs={6}>
-                              <TextField
-                                value={dayjs(selectedTransaction?.moralCharacterSchedule).format('MM/DD/YYYY')}
-                                fullWidth
-                                label='Schedule'
-                                InputProps={{
-                                  readOnly: true
-                                }}
-                              />
-                            </Grid>
-                          ) : (
-                            <Grid item sm={6} xs={12}>
-                              <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                  name='moralCharacterSchedule'
-                                  control={control}
-                                  render={({ field }) => <DatePicker label='Schedule' {...field} />}
-                                />
-                              </FormControl>
-                            </Grid>
-                          )}
-                        </>
-                      ) : null}
-                      {selectedTransaction?.diplomaCopies !== 0 ? (
-                        <>
-                          <Grid item sm={12} xs={12}>
-                            <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                              Diploma
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={6} xs={12}>
-                            <Controller
-                              name='diplomaCopies'
-                              control={control}
-                              defaultValue={selectedTransaction?.diplomaCopies || 0}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  fullWidth
-                                  label='Number of Copy'
-                                  error={!!errors.diplomaCopies}
-                                  helperText={errors.diplomaCopies?.message}
-                                  InputProps={{
-                                    readOnly: true
-                                  }}
-                                />
-                              )}
-                            />
-                          </Grid>
-                          {['Scheduled', 'Claimed'].includes(selectedTransaction?.status) ? (
-                            <Grid item xs={6}>
-                              <TextField
-                                value={dayjs(selectedTransaction?.diplomaSchedule).format('MM/DD/YYYY')}
-                                fullWidth
-                                label='Schedule'
-                                InputProps={{
-                                  readOnly: true
-                                }}
-                              />
-                            </Grid>
-                          ) : (
-                            <Grid item sm={6} xs={12}>
-                              <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                  name='diplomaSchedule'
-                                  control={control}
-                                  render={({ field }) => <DatePicker label='Schedule' {...field} />}
-                                />
-                              </FormControl>
-                            </Grid>
-                          )}
-                        </>
-                      ) : null}
-                      {selectedTransaction?.authenticationCopies !== 0 ? (
-                        <>
-                          <Grid item sm={12} xs={12}>
-                            <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                              Authentication
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={6} xs={12}>
-                            <Controller
-                              name='authenticationCopies'
-                              control={control}
-                              defaultValue={selectedTransaction?.authenticationCopies || 0}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  fullWidth
-                                  label='Number of Copy'
-                                  error={!!errors.authenticationCopies}
-                                  helperText={errors.authenticationCopies?.message}
-                                  InputProps={{
-                                    readOnly: true
-                                  }}
-                                />
-                              )}
-                            />
-                          </Grid>
-                          {['Scheduled', 'Claimed'].includes(selectedTransaction?.status) ? (
-                            <Grid item xs={6}>
-                              <TextField
-                                value={dayjs(selectedTransaction?.authenticationSchedule).format('MM/DD/YYYY')}
-                                fullWidth
-                                label='Schedule'
-                                InputProps={{
-                                  readOnly: true
-                                }}
-                              />
-                            </Grid>
-                          ) : (
-                            <Grid item sm={6} xs={12}>
-                              <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                  name='authenticationSchedule'
-                                  control={control}
-                                  render={({ field }) => <DatePicker label='Schedule' {...field} />}
-                                />
-                              </FormControl>
-                            </Grid>
-                          )}
-                        </>
-                      ) : null}
-                      {selectedTransaction?.courseDescriptionCopies !== 0 ? (
-                        <>
-                          <Grid item sm={12} xs={12}>
-                            <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                              Course Description / Outline
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={6} xs={12}>
-                            <Controller
-                              name='courseDescriptionCopies'
-                              control={control}
-                              defaultValue={selectedTransaction?.courseDescriptionCopies || 0}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  fullWidth
-                                  label='Number of Copy'
-                                  error={!!errors.courseDescriptionCopies}
-                                  helperText={errors.courseDescriptionCopies?.message}
-                                  InputProps={{
-                                    readOnly: true
-                                  }}
-                                />
-                              )}
-                            />
-                          </Grid>
-                          {['Scheduled', 'Claimed'].includes(selectedTransaction?.status) ? (
-                            <Grid item xs={6}>
-                              <TextField
-                                value={dayjs(selectedTransaction?.courseDescriptionSchedule).format('MM/DD/YYYY')}
-                                fullWidth
-                                label='Schedule'
-                                InputProps={{
-                                  readOnly: true
-                                }}
-                              />
-                            </Grid>
-                          ) : (
-                            <Grid item sm={6} xs={12}>
-                              <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                  name='courseDescriptionSchedule'
-                                  control={control}
-                                  render={({ field }) => <DatePicker label='Schedule' {...field} />}
-                                />
-                              </FormControl>
-                            </Grid>
-                          )}
-                        </>
-                      ) : null}
-                      {selectedTransaction?.certificationCopies !== 0 ? (
-                        <>
-                          <Grid item sm={12} xs={12}>
-                            <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                              Certification
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={4} xs={12}>
-                            <Controller
-                              name='certificationType'
-                              control={control}
-                              defaultValue={selectedTransaction?.certificationType || ''}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  fullWidth
-                                  label='Type of Certification'
-                                  error={!!errors.certificationType}
-                                  helperText={errors.certificationType?.message}
-                                  InputProps={{
-                                    readOnly: true
-                                  }}
-                                />
-                              )}
-                            />
-                          </Grid>
-                          <Grid item sm={4} xs={12}>
-                            <Controller
-                              name='certificationCopies'
-                              control={control}
-                              defaultValue={selectedTransaction?.certificationCopies || 0}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  fullWidth
-                                  label='Number of Copy'
-                                  error={!!errors.certificationCopies}
-                                  helperText={errors.certificationCopies?.message}
-                                  InputProps={{
-                                    readOnly: true
-                                  }}
-                                />
-                              )}
-                            />
-                          </Grid>
-                          {['Scheduled', 'Claimed'].includes(selectedTransaction?.status) ? (
-                            <Grid item xs={6}>
-                              <TextField
-                                value={dayjs(selectedTransaction?.certificationSchedule).format('MM/DD/YYYY')}
-                                fullWidth
-                                label='Schedule'
-                                InputProps={{
-                                  readOnly: true
-                                }}
-                              />
-                            </Grid>
-                          ) : (
-                            <Grid item sm={4} xs={12}>
-                              <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                  name='certificationSchedule'
-                                  control={control}
-                                  render={({ field }) => <DatePicker label='Schedule' {...field} />}
-                                />
-                              </FormControl>
-                            </Grid>
-                          )}
-                        </>
-                      ) : null}
-                      {selectedTransaction?.cavRedRibbonCopies !== 0 ? (
-                        <>
-                          <Grid item sm={12} xs={12}>
-                            <Typography variant='body2' sx={{ textAlign: 'center' }}>
-                              CAV / Red Ribbon
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={6} xs={12}>
-                            <Controller
-                              name='cavRedRibbonCopies'
-                              control={control}
-                              defaultValue={selectedTransaction?.cavRedRibbonCopies || 0}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  fullWidth
-                                  label='Number of Copy'
-                                  error={!!errors.cavRedRibbonCopies}
-                                  helperText={errors.cavRedRibbonCopies?.message}
-                                  InputProps={{
-                                    readOnly: true
-                                  }}
-                                />
-                              )}
-                            />
-                          </Grid>
-                          {['Scheduled', 'Claimed'].includes(selectedTransaction?.status) ? (
-                            <Grid item xs={6}>
-                              <TextField
-                                value={dayjs(selectedTransaction?.cavRedRibbonSchedule).format('MM/DD/YYYY')}
-                                fullWidth
-                                label='Schedule'
-                                InputProps={{
-                                  readOnly: true
-                                }}
-                              />
-                            </Grid>
-                          ) : (
-                            <Grid item sm={6} xs={12}>
-                              <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                  name='cavRedRibbonSchedule'
-                                  control={control}
-                                  render={({ field }) => <DatePicker label='Schedule' {...field} />}
-                                />
-                              </FormControl>
-                            </Grid>
-                          )}
-                        </>
-                      ) : null}
-                      <Grid item sm={12} xs={12}>
-                        <Divider sx={{ mb: '0 !important' }} />
-                      </Grid>
-                      {selectedTransaction?.purpose !== '' ? (
-                        <Grid item sm={12} xs={12}>
-                          <Controller
-                            name='purpose'
-                            control={control}
-                            defaultValue={selectedTransaction?.purpose || ''}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                fullWidth
-                                label='Purpose of Request'
-                                error={!!errors.purpose}
-                                helperText={errors.purpose?.message}
-                                InputProps={{
-                                  readOnly: true
-                                }}
-                              />
-                            )}
-                          />
-                        </Grid>
-                      ) : null}
-                    </>
-                  </Grid>
-                </DialogContent>
-                <DialogActions
-                  sx={{
-                    justifyContent: 'center',
-                    px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
-                    pb: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
-                  }}
-                >
-                  {selectedTransaction?.status === 'Scheduled' ? (
-                    <Button variant='contained' sx={{ mr: 1 }} onClick={() => handleClaimed(selectedTransaction)}>
-                      Claimed
-                    </Button>
-                  ) : selectedTransaction?.status === 'Claimed' ? null : (
-                    <Button variant='contained' sx={{ mr: 1 }} type='submit'>
-                      Submit
-                    </Button>
-                  )}
-                  <Button variant='outlined' color='secondary' onClick={handleClose}>
-                    Cancel
-                  </Button>
-                </DialogActions>
-              </form>
-            </Dialog>
-          </>
-        )
+    plotOptions: {
+      pie: {
+        customScale: 0.9,
+        donut: {
+          size: '80%',
+          labels: {
+            show: true,
+            name: {
+              offsetY: 25,
+              fontSize: '0.875rem',
+              color: theme.palette.text.secondary
+            },
+            value: {
+              offsetY: -15,
+              fontWeight: 500,
+              formatter: value => `${value}`,
+              color: theme.palette.text.primary
+            },
+            total: {
+              show: true,
+              fontSize: '0.875rem',
+              label: 'Transactions',
+              color: theme.palette.text.secondary,
+              formatter: value => `${value.globals.seriesTotals.reduce((total: number, num: number) => total + num)}`
+            }
+          }
+        }
       }
-    }
-  ]
-
-  const onSubmit = async (data: DataGridRowType) => {
-    try {
-      // Include the selected transaction ID in the form data
-      if (selectedTransaction) {
-        data.id = selectedTransaction.id
-        data.user_id = selectedTransaction.user_id
-        data.staff_id = staffID
-      }
-
-      const response = await fetch(`/api/transactions/schedule`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-
-      if (response.status === 200) {
-        toast.success('Transaction scheduled successfully')
-        handleClose()
-
-        // Fetch updated transactions after submission
-        fetchTransactions()
-      }
-    } catch (error) {
-      console.error('Error updating transaction:', error)
     }
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Card>
-        <CardHeader title='Transactions' />
-        <DataGrid
-          autoHeight
-          columns={columns}
-          rows={data}
-          pageSizeOptions={[10, 25, 50, 100]}
-          paginationModel={paginationModel}
-          slots={{ toolbar: GridToolbar }}
-          onPaginationModelChange={setPaginationModel}
-          slotProps={{
-            baseButton: {
-              variant: 'outlined'
-            },
-            toolbar: {
-              showQuickFilter: true,
-            }
-          }}
-        />
-      </Card>
-    </LocalizationProvider>
+    <ApexChartWrapper>
+      <Grid container spacing={6}>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
+              title='Daily Activity Overview'
+              titleTypographyProps={{
+                sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+              }}
+              action={
+                <OptionsMenu
+                  options={['Today', 'This Month', 'This Year']}
+                  iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
+                />
+              }
+            />
+            <CardContent>
+              <Grid container sx={{ my: [0, 4, 1.625] }}>
+                <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
+                <ReactApexcharts type='donut' height={220} series={[submittedDailyCount || 0, scheduledDailyCount || 0, claimedDailyCount || 0, rejectedDailyCount || 0]} options={options} />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
+                  <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant='body2'>Total Transactions</Typography>
+                      <Typography variant='h6'>{String(totalDailyCount.current)}</Typography>
+                    </Box>
+                  </Box>
+                  <Divider sx={{ my: theme => `${theme.spacing(4)} !important` }} />
+                  <Grid container>
+                    <Grid item xs={6} sx={{ mb: 4 }}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Submitted Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(submittedDailyCount)}</Typography>
+                    </Grid>
+                    <Grid item xs={6} sx={{ mb: 4 }}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Scheduled Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(scheduledDailyCount)}</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.5) }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Claimed Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(claimedDailyCount)}</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'customColors.trackBg' }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Rejected Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(rejectedDailyCount)}</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
+              title='Monthly Activity Overview'
+              titleTypographyProps={{
+                sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+              }}
+              action={
+                <OptionsMenu
+                  options={['Today', 'This Month', 'This Year']}
+                  iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
+                />
+              }
+            />
+            <CardContent>
+              <Grid container sx={{ my: [0, 4, 1.625] }}>
+                <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
+                  <ReactApexcharts type='donut' height={220} series={[submittedMonthlyCount || 0, scheduledMonthlyCount || 0, claimedMonthlyCount || 0, rejectedMonthlyCount || 0]} options={options} />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
+                  <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant='body2'>Total Transactions</Typography>
+                      <Typography variant='h6'>{String(totalDailyCount.current)}</Typography>
+                    </Box>
+                  </Box>
+                  <Divider sx={{ my: theme => `${theme.spacing(4)} !important` }} />
+                  <Grid container>
+                    <Grid item xs={6} sx={{ mb: 4 }}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Submitted Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(submittedMonthlyCount)}</Typography>
+                    </Grid>
+                    <Grid item xs={6} sx={{ mb: 4 }}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Scheduled Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(scheduledMonthlyCount)}</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.5) }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Claimed Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(claimedMonthlyCount)}</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'customColors.trackBg' }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Rejected Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(rejectedMonthlyCount)}</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
+              title='Daily Transactions Overview'
+              titleTypographyProps={{
+                sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+              }}
+              action={
+                <OptionsMenu
+                  options={['Today', 'This Month', 'This Year']}
+                  iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
+                />
+              }
+            />
+            <CardContent>
+              <Grid container sx={{ my: [0, 4, 1.625] }}>
+                <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
+                  <ReactApexcharts type='donut' height={220} series={[submittedCount || 0, scheduledCount || 0, claimedCount || 0, rejectedCount || 0]} options={transactionOptions} />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
+                  <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant='body2'>Total Transactions</Typography>
+                      <Typography variant='h6'>{String(totalTransactions.current)}</Typography>
+                    </Box>
+                  </Box>
+                  <Divider sx={{ my: theme => `${theme.spacing(4)} !important` }} />
+                  <Grid container>
+                    <Grid item xs={6} sx={{ mb: 4 }}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Submitted Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(submittedCount)}</Typography>
+                    </Grid>
+                    <Grid item xs={6} sx={{ mb: 4 }}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Scheduled Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(scheduledCount)}</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.5) }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Claimed Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(claimedCount)}</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'customColors.trackBg' }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Rejected Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(rejectedCount)}</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
+              title='Monthly Transactions Overview'
+              titleTypographyProps={{
+                sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+              }}
+              action={
+                <OptionsMenu
+                  options={['Today', 'This Month', 'This Year']}
+                  iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
+                />
+              }
+            />
+            <CardContent>
+              <Grid container sx={{ my: [0, 4, 1.625] }}>
+                <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
+                  <ReactApexcharts type='donut' height={220} series={[submittedMonthly || 0, scheduledMonthly || 0, claimedMonthly || 0, rejectedMonthly || 0]} options={transactionOptions} />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
+                  <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant='body2'>Total Transactions</Typography>
+                      <Typography variant='h6'>{String(totalMonthly.current)}</Typography>
+                    </Box>
+                  </Box>
+                  <Divider sx={{ my: theme => `${theme.spacing(4)} !important` }} />
+                  <Grid container>
+                    <Grid item xs={6} sx={{ mb: 4 }}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Submitted Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(submittedMonthly)}</Typography>
+                    </Grid>
+                    <Grid item xs={6} sx={{ mb: 4 }}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Scheduled Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(scheduledMonthly)}</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.5) }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Claimed Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(claimedMonthly)}</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        sx={{
+                          mb: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'customColors.trackBg' }
+                        }}
+                      >
+                        <Icon icon='mdi:circle' />
+                        <Typography variant='body2'>Rejected Transaction</Typography>
+                      </Box>
+                      <Typography sx={{ fontWeight: 600 }}>{String(rejectedMonthly)}</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <ActivityTimeline logs={logs} load={loadMoreLogs}/>
+        </Grid>
+      </Grid>
+    </ApexChartWrapper>
   )
 }
 

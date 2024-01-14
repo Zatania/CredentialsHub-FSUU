@@ -109,7 +109,8 @@ function CustomPackagesToolbar(props: PackagesProps) {
 
 const Credentials = () => {
   // ** States
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 5 })
+  const [credentialPaginationModel, setCredentialPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [packagePaginationModel, setPackagePaginationModel] = useState({ page: 0, pageSize: 10 })
   const [credentialsRows, setCredentialsRows] = useState<GridRowsProp>([])
   const [packageRows, setPackageRows] = useState<GridRowsProp>([])
 
@@ -143,7 +144,11 @@ const Credentials = () => {
         toast.success('Credential deleted successfully')
         fetchData()
       })
-      .catch(error => console.error("Error deleting data", error))
+      .catch((error) => {
+        console.error(error)
+        const errorMessage = error.response?.data?.message || "Error deleting data";
+        toast.error(errorMessage);
+      })
   }
 
   const handlePackageDeleteClick = (id: SetStateAction<PackagesData | null>) => {
@@ -152,7 +157,11 @@ const Credentials = () => {
         toast.success('Package deleted successfully')
         fetchPackages()
       })
-      .catch(error => console.error("Error deleting data", error))
+      .catch((error) => {
+        console.error(error)
+        const errorMessage = error.response?.data?.message || "Error deleting data";
+        toast.error(errorMessage);
+      })
   }
 
   const credentialsColumns: GridColDef[] = [
@@ -246,10 +255,10 @@ const Credentials = () => {
             autoHeight
             columns={credentialsColumns}
             rows={credentialsRows}
-            pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            pageSizeOptions={[10, 25, 50, 100]}
+            paginationModel={credentialPaginationModel}
             slots={{ toolbar: CustomCredentialsToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setCredentialPaginationModel}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
@@ -269,10 +278,10 @@ const Credentials = () => {
             columns={packageColumns}
             rows={packageRows}
             getRowId={(row) => row.package_id}
-            pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            pageSizeOptions={[10, 25, 50, 100]}
+            paginationModel={packagePaginationModel}
             slots={{ toolbar: CustomPackagesToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setPackagePaginationModel}
             slotProps={{
               baseButton: {
                 variant: 'outlined'

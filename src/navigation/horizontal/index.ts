@@ -31,7 +31,14 @@ const navigation = (): HorizontalNavItemsType => [
     icon: 'mdi:shield-outline'
   },
   {
-    path: '/staff/credentials',
+    path: '/student/transactions',
+    title: 'Transactions',
+    action: 'read',
+    subject: 'student-transactions-page',
+    icon: 'mdi:shield-outline'
+  },
+  {
+    path: '/admin/credentials',
     title: 'Credentials',
     action: 'read',
     subject: 'credentials-page',

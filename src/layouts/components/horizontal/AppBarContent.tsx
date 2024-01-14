@@ -7,7 +7,6 @@ import { Settings } from 'src/@core/context/settingsContext'
 // ** Components
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import UserDropdown from 'src/layouts/components/UserDropdown'
-import UserNotificationDropdown from 'src/layouts/components/UserNotificationDropdown'
 
 const notifications: NotificationsType[] = [
   {
@@ -65,7 +64,6 @@ const AppBarContent = (props: Props) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <ModeToggler settings={settings} saveSettings={saveSettings} />
-      <UserNotificationDropdown settings={settings} notifications={notifications} />
       <UserDropdown settings={settings} />
     </Box>
   )

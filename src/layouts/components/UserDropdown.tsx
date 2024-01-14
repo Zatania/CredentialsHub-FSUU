@@ -26,6 +26,9 @@ import { Settings } from 'src/@core/context/settingsContext'
 // ** Hooks
 import { useSession } from 'next-auth/react'
 
+// ** Third Party Imports
+import axios from 'axios'
+
 interface Props {
   settings: Settings
 }
@@ -80,6 +83,14 @@ const UserDropdown = (props: Props) => {
 
   const handleLogout = () => {
     signOut({ callbackUrl: '/', redirect: false }).then(() => {
+      axios.post('/api/logout', { user: session?.user })
+        .then(() => {
+          console.log('Logged out successfully.')
+        })
+        .catch((error) => {
+          console.log(error)
+          console.error(error)
+        })
       router.asPath = '/'
     })
     handleDropdownClose()

@@ -1,16 +1,26 @@
 import { NextApiRequest, NextApiResponse } from 'next/types'
 import db from '../../db'
-import { RowDataPacket } from 'mysql2'
+import { getSession } from 'next-auth/react'
+import dayjs from 'dayjs'
 
-async function verifyStudent(id: number) {
+async function verifyOrUnverify(id: number, status: string, session: any) {
   try {
+    const staff = session?.user
+
+    console.log(staff.id)
     await db.query(`
       UPDATE users
-      SET status = 'Verified'
+      SET status = ?
       WHERE id = ?
-    `, [id])
+    `, [status, id])
+
+    const message = `${staff.firstName} ${staff.lastName} has ${status} a student.`
+    const activity = `${status} Student`
+
+    await db.query(`INSERT INTO staff_logs (staff_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [staff.id, message, activity, dayjs().format('YYYY-MM-DD HH:mm:ss')])
   } catch(error) {
-    throw error
+    console.error("Error in verifyOrUnverify:", error);
+    throw error;
   }
 }
 
@@ -18,17 +28,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id } = req.query
+  const session = await getSession({ req });
+  if (!session || !session.user) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  const { id, status } = req.query
+
+  console.log(req.query)
 
   if (req.method === 'PUT') {
     try {
-      await verifyStudent(Number(id))
+      await verifyOrUnverify(Number(id), String(status), session)
       res.status(200).end()
     } catch (error) {
       res.status(500).json({ message: 'Internal Server Error' })
     }
   } else {
-    res.setHeader('Allow', ['GET'])
+    res.setHeader('Allow', ['PUT'])
     res.status(405).end(`Method ${req.method} Not Allowed`)
   }
 }

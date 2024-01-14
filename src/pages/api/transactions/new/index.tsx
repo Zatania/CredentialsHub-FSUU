@@ -5,7 +5,7 @@ import { RowDataPacket } from 'mysql2';
 
 async function addTransaction(packageId, userId, totalAmount, credentials) {
   try {
-    const transactionDate = dayjs().format('YYYY-MM-DD');
+    const transactionDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
     const status = 'Submitted';
 
     // Insert into transactions table
@@ -22,6 +22,8 @@ async function addTransaction(packageId, userId, totalAmount, credentials) {
         await db.query(`INSERT INTO transaction_details (transaction_id, credential_id, quantity, subtotal) VALUES (?, ?, ?, ?)`, [transactionId, cred.credentialId, cred.quantity, subtotal]);
       }
     }
+
+    await db.query('INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)', [userId, `User has submitted a new transaction.`, 'Transaction', dayjs().format('YYYY-MM-DD HH:mm:ss')])
 
     return 'success';
   } catch (error) {

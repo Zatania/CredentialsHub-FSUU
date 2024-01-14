@@ -71,6 +71,12 @@ async function updatePackage(id: number, data: PackageData) {
 
 async function deletePackage(id: number) {
   try {
+    // Check if the credential is in use
+    const [transactions] = await db.query(`SELECT * FROM package_transactions WHERE package_id = ?`, [id]) as RowDataPacket[]
+    if (transactions.length > 0) {
+      throw new Error('Package is in use in a transaction and cannot be deleted.')
+    }
+
     await db.query(`DELETE FROM package_contents WHERE package_id = ?`, [id])
 
     await db.query(`DELETE FROM packages WHERE id = ?`, [id])
@@ -100,7 +106,9 @@ export default async function handler(
       await deletePackage(Number(id))
       res.status(204).end()
     } catch (error) {
-      res.status(500).json({ message: 'Internal Server Error' })
+      console.error(error)
+      const errorMessage = error.message || 'Internal Server Error';
+      res.status(500).json({ message: errorMessage });
     }
   } if (req.method === 'GET') {
     try {
@@ -108,10 +116,11 @@ export default async function handler(
       console.log(packageData)
       res.status(200).json(packageData)
     } catch (error) {
-      res.status(500).json({ message: 'Internal Server Error' })
+      console.error(error);
+      res.status(500).json({ message: error.message });
     }
   } else {
-    res.setHeader('Allow', ['PUT', 'DELETE'])
+    res.setHeader('Allow', ['PUT', 'GET', 'DELETE'])
     res.status(405).end(`Method ${req.method} Not Allowed`)
   }
 }

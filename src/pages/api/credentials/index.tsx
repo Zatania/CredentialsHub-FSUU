@@ -8,7 +8,7 @@ interface CredentialData {
   price: number
 }
 async function fetchCredentials() {
-  const results = (await db.query('SELECT * FROM credentials')) as RowDataPacket
+  const results = (await db.query('SELECT * FROM credentials ORDER BY name')) as RowDataPacket
 
   const rows = results[0].map((row: CredentialData) => ({
     id: row.id,
@@ -47,7 +47,7 @@ export default async function handler(
       res.status(500).json({ message: 'Internal Server Error' });
     }
   } else {
-    res.setHeader('Allow', ['GET'])
+    res.setHeader('Allow', ['GET', 'POST'])
     res.status(405).end(`Method ${req.method} Not Allowed`)
   }
 }

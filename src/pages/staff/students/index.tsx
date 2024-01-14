@@ -114,6 +114,17 @@ const Students = () => {
           {params.row.course}
         </Typography>
       )
+    },
+    {
+      flex: 0.1,
+      minWidth: 140,
+      field: 'action',
+      headerName: 'Actions',
+      renderCell: (params: GridRenderCellParams) => {
+        return (
+          <DialogViewStudent student={params.row} refreshData={fetchAll} actionType="unverify"/>
+        )
+      }
     }
   ]
 
@@ -180,7 +191,7 @@ const Students = () => {
       headerName: 'Actions',
       renderCell: (params: GridRenderCellParams) => {
         return (
-          <DialogViewStudent student={params.row} refreshData={fetchAll}/>
+          <DialogViewStudent student={params.row} refreshData={fetchAll} actionType="verify"/>
         )
       }
     }

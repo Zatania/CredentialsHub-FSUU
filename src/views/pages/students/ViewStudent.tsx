@@ -48,7 +48,7 @@ interface StudentData {
   status: string
 }
 
-const DialogViewStudent  = ({ student, refreshData }) => {
+const DialogViewStudent  = ({ student, refreshData, actionType }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
   const [loading, setLoading] = useState(false)
@@ -80,10 +80,16 @@ const DialogViewStudent  = ({ student, refreshData }) => {
   const onSubmit = async () => {
     setLoading(true)
 
-    axios.put(`/api/student/${student.id}`, { status: 'verified' })
+    const newStatus = actionType === 'verify' ? 'Verified' : 'Unverified';
+
+    axios.put(`/api/student/${student.id}?status=${newStatus}`)
       .then(() => {
         setLoading(false)
-        toast.success('Student Verified Successfully')
+        if (actionType === 'verify') {
+          toast.success('Student Verified Successfully')
+        } else {
+          toast.success('Student Unverified Successfully')
+        }
         handleClose()
       })
       .catch((error) => {
@@ -193,9 +199,15 @@ const DialogViewStudent  = ({ student, refreshData }) => {
                 pb: (theme: { spacing: (arg0: number) => any }) => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
               }}
             >
-              <Button variant='contained' sx={{ mr: 1 }} type='submit'>
-                Verify
-              </Button>
+              {student.status === 'Unverified' ? (
+                <Button variant='contained' sx={{ mr: 1 }} type='submit'>
+                  Verify
+                </Button>
+              ) : student.status === 'Verified' ?(
+                <Button variant='contained' sx={{ mr: 1 }} type='submit'>
+                  Unverify
+                </Button>
+              ) : null}
               <Button variant='outlined' color='secondary' onClick={() => handleClose()}>
                 Close
               </Button>

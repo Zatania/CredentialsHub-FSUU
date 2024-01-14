@@ -170,7 +170,7 @@ const Register = () => {
 
       return(response.data.imagePath)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
     setUploading(false)
   }
@@ -181,11 +181,10 @@ const Register = () => {
     let path = '';
     try {
       path = await handleUpload();
+      console.log(path)
     } catch (error) {
       console.error('Failed to upload image:', error);
     }
-
-    console.log(path)
 
     const password = data.password
 
@@ -212,6 +211,7 @@ const Register = () => {
     } catch (error) {
       setLoading(false)
       toast.error('Registration Failed')
+      console.error(error)
     }
   }
 

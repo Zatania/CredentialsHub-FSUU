@@ -152,7 +152,7 @@ const RequestCredentials = () => {
       toast.success('Transaction submitted successfully!');
       setLoading(false); // Set loading state to false
       // Redirect or perform other actions upon successful submission
-      router.push('/');
+      router.push('/student/transactions');
     } catch (error) {
       console.error('Error submitting transaction:', error);
       toast.error('Failed to submit transaction');
@@ -188,9 +188,9 @@ const RequestCredentials = () => {
           </IconButton>
           <Box sx={{ mb: 8, textAlign: 'center' }}>
             <Typography variant='h5' sx={{ mb: 3 }}>
-              Edit Credential
+              Request Credential
             </Typography>
-            <Typography variant='body2'>Change the name and price of the credential.</Typography>
+            <Typography variant='body2'>Choose from packages or individual credentials.</Typography>
           </Box>
             <Grid container spacing={6}>
               <Grid item xs={12}>
