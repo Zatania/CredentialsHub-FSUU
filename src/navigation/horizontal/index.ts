@@ -24,6 +24,13 @@ const navigation = (): HorizontalNavItemsType => [
     icon: 'mdi:home-outline'
   },
   {
+    path: '/admin/students',
+    title: 'Students',
+    action: 'read',
+    subject: 'students-page',
+    icon: 'mdi:account-school'
+  },
+  {
     path: '/student/request',
     title: 'Request Credentials',
     action: 'read',

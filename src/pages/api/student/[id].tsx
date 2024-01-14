@@ -5,18 +5,32 @@ import dayjs from 'dayjs'
 
 async function verifyOrUnverify(id: number, status: string, session: any) {
   try {
-    const staff = session?.user
+    if(session?.user.role === 'admin') {
+      const admin = session?.user
+      await db.query(`
+        UPDATE users
+        SET status = ?
+        WHERE id = ?
+      `, [status, id])
 
-    await db.query(`
-      UPDATE users
-      SET status = ?
-      WHERE id = ?
-    `, [status, id])
+      const message = `${admin.firstName} ${admin.lastName} has ${status} a student.`
+      const activity = `${status} Student`
 
-    const message = `${staff.firstName} ${staff.lastName} has ${status} a student.`
-    const activity = `${status} Student`
+      await db.query(`INSERT INTO admins_logs (admin_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [admin.id, message, activity, dayjs().format('YYYY-MM-DD HH:mm:ss')])
+    } else {
+      const staff = session?.user
 
-    await db.query(`INSERT INTO staff_logs (staff_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [staff.id, message, activity, dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      await db.query(`
+        UPDATE users
+        SET status = ?
+        WHERE id = ?
+      `, [status, id])
+
+      const message = `${staff.firstName} ${staff.lastName} has ${status} a student.`
+      const activity = `${status} Student`
+
+      await db.query(`INSERT INTO staff_logs (staff_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [staff.id, message, activity, dayjs().format('YYYY-MM-DD HH:mm:ss')])
+    }
   } catch(error) {
     console.error("Error in verifyOrUnverify:", error);
     throw error;
