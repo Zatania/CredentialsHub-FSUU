@@ -53,9 +53,9 @@ const RegisterIllustrationWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 }))
 
 const RegisterIllustration = styled('img')(({ theme }) => ({
-  maxWidth: '45rem',
+  maxWidth: '30rem',
   [theme.breakpoints.down('lg')]: {
-    maxWidth: '35rem'
+    maxWidth: '25rem'
   }
 }))
 
