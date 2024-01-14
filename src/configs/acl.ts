@@ -27,7 +27,7 @@ const defineRulesFor = (role: string, subject: string) => {
     can(['read'], 'credentials-page')
     can(['read'], 'staffs-list-page')
     can(['read'], 'logs-page')
-    can(['read'], 'students-page')
+    can(['read'], 'admin-students-page')
   } else if (role === 'student') {
     can(['read'], 'student-page')
     can(['read'], 'request-page')

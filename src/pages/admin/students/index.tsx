@@ -20,7 +20,7 @@ import axios from 'axios'
 // ** Views Imports
 import DialogViewStudent from 'src/views/pages/students/ViewStudent'
 
-const Students = () => {
+const AdminStudents = () => {
   // ** States
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 5 })
   const [studentsRows, setStudentsRows] = useState<GridRowsProp>([])
@@ -247,9 +247,9 @@ const Students = () => {
   )
 }
 
-Students.acl = {
+AdminStudents.acl = {
   action: 'read',
-  subject: 'students-page'
+  subject: 'admin-students-page'
 }
 
-export default Students
+export default AdminStudents
