@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, SetStateAction } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -22,43 +22,68 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 
 // ** Third Party Props
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
 // ** Views Imports
 import DialogAddStaff from 'src/views/pages/staffs/AddStaff'
+import DialogEditStaff from 'src/views/pages/staffs/EditStaff'
 
-import DialogEditCredential from 'src/views/pages/credentials/EditCredential'
-import toast from 'react-hot-toast'
-
-interface CredentialsData {
+interface StaffData {
   id: number
-  name: string
-  price: number
+  username: string
+  employeeNumber: string
+  firstName: string
+  middleName: string
+  lastName: string
+  address: string
+  departments: Array<{ id: number, name: string }>
+  transactionCounts: {
+    Scheduled: {
+      dailyCount: number
+      monthlyCount: number
+    }
+    Claimed: {
+      dailyCount: number
+      monthlyCount: number
+    }
+    Rejected: {
+      dailyCount: number
+      monthlyCount: number
+    }
+    Submitted: {
+      dailyCount: number
+      monthlyCount: number
+    }
+  }
 }
 
-interface CredentialsProps {
-  setCredentialsRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
+interface StaffsProps {
+  setStaffsRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
 }
 
-function CustomCredentialsToolbar(props: CredentialsProps) {
-  const { setCredentialsRows } = props
+function customToolbar(props: StaffsProps) {
+  const { setStaffsRows } = props
 
   // Refresh list of credentials
-  const fetchData = () => {
-    axios.get('/api/credentials')
-      .then(response => setCredentialsRows(response.data))
+  const fetchStaffs = () => {
+    axios.get('/api/admin/staff')
+      .then(response => {
+        // Assuming the response data is structured correctly
+        setStaffsRows(response.data)
+      })
       .catch(error => console.error("Error fetching data", error))
   }
 
   return (
     <GridToolbarContainer style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div>
-        <DialogAddStaff refreshData={fetchData}/>
+        <DialogAddStaff refreshData={fetchStaffs}/>
         <GridToolbarColumnsButton style={{ marginRight: '8px', marginBottom: '8px' }} />
         <GridToolbarFilterButton style={{ marginRight: '8px', marginBottom: '8px' }} />
         <GridToolbarExport style={{ marginBottom: '8px' }} />
       </div>
       <div>
-        <Button size='small' variant='outlined' style={{ marginLeft: '8px', marginRight: '8px', marginBottom: '8px' }} onClick={() => fetchData()} >
+        <Button size='small' variant='outlined' style={{ marginLeft: '8px', marginRight: '8px', marginBottom: '8px' }} onClick={() => fetchStaffs()} >
           Refresh
         </Button>
         <GridToolbarQuickFilter style={{ marginBottom: '8px' }} />
@@ -70,78 +95,138 @@ function CustomCredentialsToolbar(props: CredentialsProps) {
 const StaffsList = () => {
   // ** States
   const [credentialPaginationModel, setCredentialPaginationModel] = useState({ page: 0, pageSize: 10 })
-  const [credentialsRows, setCredentialsRows] = useState<GridRowsProp>([])
-  const [staffsRows, setStaffsRows] = useState<GridRowsProp>([])
+  const [staffsRows, setStaffsRows] = useState<Array<StaffData>>([])
 
   // ** Hooks
 
   // ** Vars
 
-  // Fetch Credentials and Packages List
+  // Fetch Staffs and their Departments
+  const fetchStaffs = () => {
+    axios.get('/api/admin/staff')
+      .then(response => {
+        setStaffsRows(response.data)
+      })
+      .catch(error => console.error("Error fetching data", error))
+  }
+
   useEffect(() => {
-    fetchData()
     fetchStaffs()
   }, [])
 
-  // Call Function For Fetching Credentials List
-  const fetchData = () => {
-    axios.get('/api/credentials')
-      .then(response => setCredentialsRows(response.data))
-      .catch(error => console.error("Error fetching data", error))
-  }
-
-  const fetchStaffs = () => {
-    axios.get('/api/admin/staff')
-      .then(response => setStaffsRows(response.data))
-      .catch(error => console.error("Error fetching data", error))
-  }
-
   console.log(staffsRows)
-  const handleDeleteClick = (id: SetStateAction<CredentialsData | null>) => {
-    axios.delete(`/api/credentials/${id}`)
+
+  const handleDeleteClick = (id: any) => {
+    axios.delete(`/api/admin/staff/delete/${id}`)
       .then(() => {
-        toast.success('Credential deleted successfully')
-        fetchData()
+        toast.success('Staff deleted successfully');
+        fetchStaffs(); // Assuming this function refreshes the list of staffs
       })
       .catch((error) => {
-        console.error(error)
+        console.error(error);
         const errorMessage = error.response?.data?.message || "Error deleting data";
         toast.error(errorMessage);
-      })
+      });
   }
 
-  const credentialsColumns: GridColDef[] = [
+  const staffsColumn: GridColDef[] = [
     {
-      flex: 0.3,
-      minWidth: 110,
-      field: 'name',
-      headerName: 'name',
+      flex: 0.1,
+      minWidth: 150,
+      field: 'employeeNumber',
+      headerName: 'Employee Number',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.name}
+          {params.row.employeeNumber}
         </Typography>
       )
     },
     {
       flex: 0.1,
-      minWidth: 110,
-      field: 'price',
-      headerName: 'price',
+      minWidth: 200,
+      field: 'fullName',
+      headerName: 'Full Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.price}
+          {params.row.firstName + ' ' + params.row.middleName + ' ' + params.row.lastName}
         </Typography>
       )
     },
     {
-      flex: 0.15,
-      minWidth: 140,
+      flex: 0.1,
+      minWidth: 150,
+      field: 'dailyScheduled',
+      headerName: 'Daily Scheduled',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.transactionCounts.Scheduled_Transaction.dailyCount}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 150,
+      field: 'dailyClaimed',
+      headerName: 'Daily Claimed',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.transactionCounts.Claimed_Transaction.dailyCount}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 150,
+      field: 'dailyRejected',
+      headerName: 'Daily Rejected',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.transactionCounts.Rejected_Transaction.dailyCount}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 200,
+      field: 'monthlyScheduled',
+      headerName: 'Monthly Scheduled',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.transactionCounts.Scheduled_Transaction.monthlyCount}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 150,
+      field: 'monthlyClaimed',
+      headerName: 'Monthly Claimed',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.transactionCounts.Claimed_Transaction.monthlyCount}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 150,
+      field: 'monthlyRejected',
+      headerName: 'Monthly Rejected',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.transactionCounts.Rejected_Transaction.monthlyCount}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.2,
+      minWidth: 250,
       field: 'action',
       headerName: 'Actions',
       renderCell: (params: GridRenderCellParams) => {
         return (
           <>
-            <DialogEditCredential credential={params.row} refreshData={fetchData}/>
+            <DialogEditStaff staff={params.row} refreshData={fetchStaffs}/>
             <Button size='small' startIcon={<DeleteIcon />} variant='outlined' onClick={() => handleDeleteClick(params.row.id)}>
               Delete
             </Button>
@@ -153,23 +238,23 @@ const StaffsList = () => {
 
   return (
     <Grid container spacing={8}>
-      <Grid item sm={12} xs={12}>
+      <Grid item sm={12} xs={12} sx={{ width: "100%" }}>
         <Card>
           <CardHeader title='Staffs' />
           <DataGrid
             autoHeight
-            columns={credentialsColumns}
-            rows={credentialsRows}
+            columns={staffsColumn}
+            rows={staffsRows}
             pageSizeOptions={[10, 25, 50, 100]}
             paginationModel={credentialPaginationModel}
-            slots={{ toolbar: CustomCredentialsToolbar }}
+            slots={{ toolbar: customToolbar }}
             onPaginationModelChange={setCredentialPaginationModel}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
               },
               toolbar: {
-                setCredentialsRows
+                setStaffsRows
               }
             }}
           />
