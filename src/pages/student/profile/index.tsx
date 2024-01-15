@@ -143,7 +143,7 @@ const ProfilePage = () => {
       ...(user?.graduateCheck === 'yes'
         ? [
             {
-              property: 'Graduation Date',
+              property: 'Year Graduated',
               value: formatDate(user?.graduationDate),
               icon: 'mdi:account-school-outline'
             },
@@ -201,7 +201,7 @@ const ProfilePage = () => {
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Graduation Date',
+        property: 'Year Graduated',
         value: formatDate(user?.elementaryGraduated),
         icon: 'mdi:account-school-outline'
       },
@@ -211,7 +211,7 @@ const ProfilePage = () => {
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Graduation Date',
+        property: 'Year Graduated',
         value: formatDate(user?.secondaryGraduated),
         icon: 'mdi:account-school-outline'
       },
@@ -221,7 +221,7 @@ const ProfilePage = () => {
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Graduation Date',
+        property: 'Year Graduated',
         value: formatDate(user?.juniorHighGraduated),
         icon: 'mdi:account-school-outline'
       },
@@ -231,13 +231,13 @@ const ProfilePage = () => {
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Graduation Date',
+        property: 'Year Graduated',
         value: formatDate(user?.seniorHighGraduated),
         icon: 'mdi:account-school-outline'
       },
       { property: 'Tertiary School', value: capitalizeFirstLetter(user?.tertiary), icon: 'mdi:account-school-outline' },
       {
-        property: 'Graduation Date',
+        property: 'Year Graduated',
         value: formatDate(user?.tertiaryGraduated),
         icon: 'mdi:account-school-outline'
       }

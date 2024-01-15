@@ -431,7 +431,7 @@ const DialogEditProfile = ({ user }) => {
                             <Controller
                               name='graduationDate'
                               control={control}
-                              render={({ field }) => <DatePicker label='Graduation Date' {...field} />}
+                              render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                             />
                           </FormControl>
                         </Grid>
@@ -772,7 +772,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='elementaryGraduated'
                           control={control}
-                          render={({ field }) => <DatePicker label='Graduation Date' {...field} />}
+                          render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
                     </Grid>
@@ -801,7 +801,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='secondaryGraduated'
                           control={control}
-                          render={({ field }) => <DatePicker label='Graduation Date' {...field} />}
+                          render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
                     </Grid>
@@ -830,7 +830,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='juniorHighGraduated'
                           control={control}
-                          render={({ field }) => <DatePicker label='Graduation Date' {...field} />}
+                          render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
                     </Grid>
@@ -859,7 +859,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='seniorHighGraduated'
                           control={control}
-                          render={({ field }) => <DatePicker label='Graduation Date' {...field} />}
+                          render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
                     </Grid>
@@ -893,7 +893,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='tertiaryGraduated'
                           control={control}
-                          render={({ field }) => <DatePicker label='Graduation Date' {...field} />}
+                          render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
                     </Grid>
