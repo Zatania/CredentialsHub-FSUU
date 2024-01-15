@@ -340,33 +340,35 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
               ) : null}
             {transaction.status === 'Submitted' ? (
               <>
-                <Box sx={{ mb: 2}}>
-                  <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
-                    Proof of Payment
-                  </Typography>
-                  {transaction.image ? (
-                    <img src={`/uploads/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
-                  ) : (
-                    <Typography variant='body1'>No image attached</Typography>
-                  )}
-                  <DatePicker
-                    sx={{ mt: 5 }}
-                    label="Schedule Date"
-                    value={scheduleDate}
-                    onChange={(newValue) => setScheduleDate(newValue)}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                  <TextField
-                    fullWidth
-                    sx={{ mt: 5 }}
-                    label="Remarks"
-                    margin="normal"
-                    value={remarks}
-                    onChange={(e) => setRemarks(e.target.value)}
-                    error={!!remarksError}
-                    helperText={remarksError}
-                  />
-                </Box>
+                  <Grid container spacing={6}>
+                    <Grid item xs={12} sm={12}>
+                      <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                        Proof of Payment
+                      </Typography>
+                      {transaction.image ? (
+                        <img src={`/uploads/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
+                      ) : (
+                        <Typography variant='body1'>No image attached</Typography>
+                      )}
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                      <DatePicker
+                        label="Schedule Date"
+                        value={scheduleDate}
+                        onChange={(newValue) => setScheduleDate(newValue)}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                      <TextField
+                        fullWidth
+                        label="Remarks"
+                        margin="normal"
+                        value={remarks}
+                        onChange={(e) => setRemarks(e.target.value)}
+                        error={!!remarksError}
+                        helperText={remarksError}
+                      />
+                    </Grid>
+                  </Grid>
               </>
             ) : null }
             {transaction.status === 'Scheduled' ? (
@@ -391,7 +393,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
             ) : null}
             {transaction.status === 'Claimed' ? (
               <>
-                <Box sx={{ mb: 2}}>
+                <Grid item xs={12} sm={12}>
                   <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                     Proof of Payment
                   </Typography>
@@ -400,7 +402,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                   ) : (
                     <Typography variant='body1'>No image attached</Typography>
                   )}
-                </Box>
+                </Grid>
                 <Grid item sm={6} xs={12}>
                   <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                     Claimed on:
@@ -417,7 +419,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
             ) : null }
             {transaction.status === 'Rejected' ? (
               <>
-                <Box sx={{ mb: 2}}>
+                <Grid item xs={12} sm={12}>
                   <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                     Proof of Payment
                   </Typography>
@@ -426,7 +428,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                   ) : (
                     <Typography variant='body1'>No image attached</Typography>
                   )}
-                </Box>
+                </Grid>
                 <Grid item sm={6} xs={12}>
                   <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                     Rejected on:
