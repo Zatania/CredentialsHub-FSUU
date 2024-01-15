@@ -11,7 +11,7 @@ import { Grid, Card, CardContent, Box, Typography, styled } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 
 // ** Views Imports
-import DialogStaffEditProfile from 'src/views/pages/staffs/EditProfile'
+import DialogAdminEditProfile from 'src/views/pages/admin/EditProfile'
 
 interface ProfileTabCommonType {
   icon: string
@@ -19,15 +19,12 @@ interface ProfileTabCommonType {
   property: string
 }
 
-interface Staff {
+interface Admin {
   id: number
   username: string
-  password: string
-  employeeNumber: string
   firstName: string
   middleName: string
   lastName: string
-  address: string
 }
 
 const ProfilePicture = styled('img')(({ theme }) => ({
@@ -40,11 +37,11 @@ const ProfilePicture = styled('img')(({ theme }) => ({
   }
 }))
 
-const StaffProfile = () => {
+const AdminProfile = () => {
   const { data: session } = useSession()
-  const [staff, setStaff] = useState<Staff | null>(null)
+  const [admin, setAdmin] = useState<Admin | null>(null)
 
-  const staffID = session?.user.id
+  const adminID = session?.user.id
 
   const capitalizeFirstLetter = string => {
     return string?.charAt(0).toUpperCase() + string?.slice(1)
@@ -58,40 +55,38 @@ const StaffProfile = () => {
     designationIcon: 'mdi:invert-colors'
   }
 
-  const fetchStaff = useCallback(async () => {
-    const res = await fetch('/api/profile/staff/', {
+  const fetchAdmin = useCallback(async () => {
+    const res = await fetch('/api/profile/admin/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(staffID)
+      body: JSON.stringify(adminID)
     })
     const data = await res.json()
-    setStaff(data)
-  }, [staffID])
+    setAdmin(data)
+  }, [adminID])
 
   useEffect(() => {
 
-    fetchStaff()
-  }, [fetchStaff])
+    fetchAdmin()
+  }, [fetchAdmin])
 
   let fullName
 
-  if (staff?.middleName !== null) {
+  if (admin?.middleName !== null) {
     fullName =
-      capitalizeFirstLetter(staff?.firstName) +
+      capitalizeFirstLetter(admin?.firstName) +
       ' ' +
-      capitalizeFirstLetter(staff?.middleName) +
+      capitalizeFirstLetter(admin?.middleName) +
       ' ' +
-      capitalizeFirstLetter(staff?.lastName)
+      capitalizeFirstLetter(admin?.lastName)
   } else {
-    fullName = capitalizeFirstLetter(staff?.firstName) + ' ' + capitalizeFirstLetter(staff?.lastName)
+    fullName = capitalizeFirstLetter(admin?.firstName) + ' ' + capitalizeFirstLetter(admin?.lastName)
   }
   const about = {
     profile: [
-      { property: 'Employee Number', value: staff?.employeeNumber, icon: 'mdi:account-card-outline' },
       { property: 'Full Name', value: fullName, icon: 'mdi:account-outline' },
-      { property: 'Address', value: capitalizeFirstLetter(staff?.address), icon: 'mdi:account-details-outline' }
     ]
   }
 
@@ -152,7 +147,7 @@ const StaffProfile = () => {
             >
               <Box sx={{ mb: [6, 0], display: 'flex', flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
                 <Typography variant='h5' sx={{ mb: 4 }}>
-                  {staff?.firstName + ' ' + staff?.lastName}
+                  {admin?.firstName + ' ' + admin?.lastName}
                 </Typography>
                 <Box
                   sx={{
@@ -167,15 +162,9 @@ const StaffProfile = () => {
                     <Icon icon={designationIcon} />
                     <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>Staff</Typography>
                   </Box>
-                  <Box
-                    sx={{ mr: 5, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}
-                  >
-                    <Icon icon='mdi:map-marker-outline' />
-                    <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>{staff?.address}</Typography>
-                  </Box>
                 </Box>
               </Box>
-              <DialogStaffEditProfile staff={staff} refreshData={fetchStaff}/>
+              <DialogAdminEditProfile admin={admin} refreshData={fetchAdmin}/>
             </Box>
           </CardContent>
         </Card>
@@ -196,9 +185,9 @@ const StaffProfile = () => {
   )
 }
 
-StaffProfile.acl = {
+AdminProfile.acl = {
   action: 'read',
-  subject: 'staff-profile-page'
+  subject: 'admin-profile-page'
 }
 
-export default StaffProfile
+export default AdminProfile

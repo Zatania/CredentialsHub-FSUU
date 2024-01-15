@@ -248,7 +248,7 @@ const DialogEditProfile = ({ user }) => {
                         1. Personal Data
                       </Typography>
                     </Grid>
-                    <Grid item sm={3} xs={12}>
+                    {/* <Grid item sm={3} xs={12}>
                       <FormControl fullWidth sx={{ mb: 4 }}>
                         <Controller
                           name='studentNumber'
@@ -267,8 +267,8 @@ const DialogEditProfile = ({ user }) => {
                           <FormHelperText sx={{ color: 'error.main' }}>{errors.studentNumber.message}</FormHelperText>
                         )}
                       </FormControl>
-                    </Grid>
-                    <Grid item sm={3} xs={12}>
+                    </Grid> */}
+                    <Grid item sm={4} xs={12}>
                       <FormControl fullWidth sx={{ mb: 4 }}>
                         <Controller
                           name='firstName'
@@ -288,7 +288,7 @@ const DialogEditProfile = ({ user }) => {
                         )}
                       </FormControl>
                     </Grid>
-                    <Grid item sm={3} xs={12}>
+                    <Grid item sm={4} xs={12}>
                       <FormControl fullWidth sx={{ mb: 4 }}>
                         <Controller
                           name='middleName'
@@ -308,7 +308,7 @@ const DialogEditProfile = ({ user }) => {
                         )}
                       </FormControl>
                     </Grid>
-                    <Grid item sm={3} xs={12}>
+                    <Grid item sm={4} xs={12}>
                       <FormControl fullWidth sx={{ mb: 4 }}>
                         <Controller
                           name='lastName'

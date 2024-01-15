@@ -80,7 +80,6 @@ const updateUser = async (userData: User) => {
   const {
     user_id,
     username,
-    studentNumber,
     firstName,
     middleName,
     lastName,
@@ -120,9 +119,8 @@ const updateUser = async (userData: User) => {
 
   try {
     const [rows] = (await db.query(
-      'UPDATE users SET studentNumber = ?, firstName = ?, middleName = ?, lastName = ?, department = ?, course = ?, major = ?, graduateCheck = ?, graduationDate = ?, academicHonor = ?, yearLevel = ?, schoolYear = ?, semester = ?, homeAddress = ?, contactNumber = ?, emailAddress = ?, birthDate = ?, birthPlace = ?, religion = ?, citizenship = ?, sex = ?, fatherName = ?, motherName = ?, guardianName = ?, elementary = ?, elementaryGraduated = ?, secondary = ?, secondaryGraduated = ?, juniorHigh = ?, juniorHighGraduated = ?, seniorHigh = ?, seniorHighGraduated = ?, tertiary = ?, tertiaryGraduated = ?, employedAt = ?, position = ? WHERE username = ?',
+      'UPDATE users SET firstName = ?, middleName = ?, lastName = ?, department = ?, course = ?, major = ?, graduateCheck = ?, graduationDate = ?, academicHonor = ?, yearLevel = ?, schoolYear = ?, semester = ?, homeAddress = ?, contactNumber = ?, emailAddress = ?, birthDate = ?, birthPlace = ?, religion = ?, citizenship = ?, sex = ?, fatherName = ?, motherName = ?, guardianName = ?, elementary = ?, elementaryGraduated = ?, secondary = ?, secondaryGraduated = ?, juniorHigh = ?, juniorHighGraduated = ?, seniorHigh = ?, seniorHighGraduated = ?, tertiary = ?, tertiaryGraduated = ?, employedAt = ?, position = ? WHERE username = ?',
       [
-        studentNumber,
         firstName,
         middleName,
         lastName,
