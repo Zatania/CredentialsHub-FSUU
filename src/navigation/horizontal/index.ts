@@ -31,6 +31,13 @@ const navigation = (): HorizontalNavItemsType => [
     icon: 'mdi:account-school'
   },
   {
+    path: '/admin/transactions',
+    title: 'Transactions',
+    action: 'read',
+    subject: 'admin-transactions-page',
+    icon: 'mdi:text-box'
+  },
+  {
     path: '/student/request',
     title: 'Request Credentials',
     action: 'read',
