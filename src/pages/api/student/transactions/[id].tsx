@@ -9,31 +9,51 @@ async function updateTransaction(id: number, data: any, user: any) {
     // Update each credential and its subtotal
     if(data.credentials) {
       for (const credential of data.credentials) {
-        const subtotal = credential.quantity * credential.price; // Calculate subtotal
-        await db.query(`UPDATE transaction_details SET quantity = ?, subtotal = ? WHERE transaction_id = ? AND credential_id = ?`, [credential.quantity, subtotal, id, credential.id]);
+        const subtotal = credential.quantity * credential.price // Calculate subtotal
+        await db.query(`UPDATE transaction_details SET quantity = ?, subtotal = ? WHERE transaction_id = ? AND credential_id = ?`, [credential.quantity, subtotal, id, credential.id])
       }
-    }
 
-    // Check conditions and perform appropriate update
-    if (data.totalAmount && data.imagePath) {
-      // Update both total_amount and attachment
-      await db.query(`UPDATE transactions SET total_amount = ?, attachment = ? WHERE id = ?`, [data.totalAmount, data.imagePath, id]);
-      const message = `${user.firstName} ${user.lastName} has updated an individual credential transaction.`;
-      await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Update Transaction', dayjs().format('YYYY-MM-DD HH:mm:ss')]);
-    } else if (data.totalAmount) {
-      // Update only total_amount
-      await db.query(`UPDATE transactions SET total_amount = ? WHERE id = ?`, [data.totalAmount, id]);
-      const message = `${user.firstName} ${user.lastName} has updated an individual credential transaction's total amount.`;
-      await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Update Amount', dayjs().format('YYYY-MM-DD HH:mm:ss')]);
-    } else if (data.imagePath) {
-      // Update only attachment
-      await db.query(`UPDATE transactions SET attachment = ? WHERE id = ?`, [data.imagePath, id]);
-      const message = `${user.firstName} ${user.lastName} has added an attachment in a transaction.`;
-      await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Image Attachment', dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      const message = `${user.firstName} ${user.lastName} has edited/removed credential/s in an individual credential transaction.`
+      await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Edit/Remove Credentials', dayjs().format('YYYY-MM-DD HH:mm:ss')])
+
+      if (data.totalAmount && data.imagePath && !data.payment_date) {
+        // IF ONLY IMAGE PATH IS PRESENT
+        await db.query(`UPDATE transactions SET attachment = ? WHERE id = ?`, [data.imagePath, id])
+        const message = `${user.firstName} ${user.lastName} has added an attachment in an individual credential transaction.`
+        await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Add Image Attachment', dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      } else if (data.totalAmount && !data.imagePath && data.payment_date) {
+        // IF ONLY PAYMENT DATE IS PRESENT
+        await db.query(`UPDATE transactions SET payment_date = ? WHERE id = ?`, [dayjs(data.payment_date).format('YYYY-MM-DD'), id])
+        const message = `${user.firstName} ${user.lastName} has added a payment date in an individual credential transaction.`
+        await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Add Payment Date', dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      } else if (data.totalAmount && data.imagePath && data.payment_date) {
+        // IF ALL ARE PRESENT
+        await db.query(`UPDATE transactions SET total_amount = ?, attachment = ?, payment_date = ? WHERE id = ?`, [data.totalAmount, data.imagePath, dayjs(data.payment_date).format('YYYY-MM-DD'), id])
+        const message = `${user.firstName} ${user.lastName} has updated an individual credential transaction.`
+        await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Update Transaction', dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      }
+    } else {
+      if (data.imagePath && data.payment_date) {
+        // IF IMAGE PATH AND PAYMENT DATE ARE BOTH PRESENT
+        await db.query(`UPDATE transactions SET attachment = ?, payment_date = ? WHERE id = ?`, [data.imagePath, dayjs(data.payment_date).format('YYYY-MM-DD'), id])
+        const message = `${user.firstName} ${user.lastName} has added an attachment and payment date in a package transaction.`
+        await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Update Transaction', dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      } else if (data.imagePath && !data.payment_date) {
+        // IF ONLY IMAGE PATH IS PRESENT
+        await db.query(`UPDATE transactions SET attachment = ? WHERE id = ?`, [data.imagePath, id])
+        const message = `${user.firstName} ${user.lastName} has added an attachment in a package transaction.`
+        await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Add Image Attachment', dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      } else if (!data.imagePath && data.payment_date) {
+        // IF ONLY PAYMENT DATE IS PRESENT
+        await db.query(`UPDATE transactions SET payment_date = ? WHERE id = ?`, [dayjs(data.payment_date).format('YYYY-MM-DD'), id])
+        const message = `${user.firstName} ${user.lastName} has added a payment date in a package transaction.`
+        await db.query(`INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, 'Add Payment Date', dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      }
     }
 
     return 'Transaction updated successfully'
   } catch(error) {
+    console.log(error)
     throw error
   }
 }
@@ -86,8 +106,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'PUT') {
     try {
-      const { credentials, totalAmount, imagePath, user } = req.body
-      await updateTransaction(Number(id), { credentials, totalAmount, imagePath }, user)
+      const { credentials, totalAmount, imagePath, user, payment_date } = req.body
+      await updateTransaction(Number(id), { credentials, totalAmount, imagePath, payment_date }, user)
       res.status(204).end()
     } catch (error) {
       res.status(500).json({ message: 'Internal Server Error', error: error.message })

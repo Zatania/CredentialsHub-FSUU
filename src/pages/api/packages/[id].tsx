@@ -29,6 +29,7 @@ async function fetchPackage(id: number) {
         FROM package_contents pc
         JOIN credentials c ON pc.credential_id = c.id
         WHERE pc.package_id = ?
+        ORDER BY c.name
       `, [id]) as RowDataPacket[]
 
       // Format the response

@@ -20,7 +20,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 
 // ** Third Party Imports
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 
 // ** Icon Imports
@@ -28,7 +28,6 @@ import Icon from 'src/@core/components/icon'
 
 // ** Hooks
 import { useSession } from 'next-auth/react'
-import dayjs from 'dayjs'
 import axios from 'axios'
 
 const Transition = forwardRef(function Transition(
@@ -192,8 +191,8 @@ const RequestCredentials = () => {
             </Typography>
             <Typography variant='body2'>Choose from packages or individual credentials.</Typography>
           </Box>
-            <Grid container spacing={6}>
-              <Grid item xs={12}>
+            <Grid container spacing={6} sx={{ textAlign: 'center' }}>
+              <Grid item xs={12} sm={12}>
                 <FormControl fullWidth>
                   <Select
                     value={selectedPackage}
@@ -212,22 +211,34 @@ const RequestCredentials = () => {
                 </FormControl>
               </Grid>
               {selectedPackage !== 'others' && selectedCredentials.map(cred => (
-                <Grid item xs={12} sm={6} key={cred.id}>
-                  <Typography>{cred.name} - Price: Php {cred.price}</Typography>
-                  <Typography>Quantity: {cred.quantity}</Typography>
+                <Grid item xs={12} sm={12} key={cred.id}>
+                  <Grid container spacing={6}>
+                    <Grid item xs={12} sm={6}>
+                      <Typography>{cred.name} (Php {cred.price})</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography>Quantity: {cred.quantity}</Typography>
+                    </Grid>
+                  </Grid>
                 </Grid>
               ))}
               {selectedPackage === 'others' && individualCredentials.map(cred => (
-                <Grid item sm={6} xs={12} key={cred.id}>
-                  <Typography>{cred.name} - Price: Php {cred.price}</Typography>
-                  <TextField
-                    label="Quantity"
-                    type="number"
-                    InputLabelProps={{ shrink: true }}
-                    variant="outlined"
-                    value={selectedCredentials.find(c => c.id === cred.id)?.quantity || 0}
-                    onChange={(e) => handleCredentialQuantityChange(cred.id, e.target.value)}
-                  />
+                <Grid item sm={12} xs={12} key={cred.id} sx={{mb:5}}>
+                  <Grid container spacing={6}>
+                    <Grid item xs={12} sm={6}>
+                      <Typography>{cred.name} (Php {cred.price})</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Quantity"
+                        type="number"
+                        InputLabelProps={{ shrink: true }}
+                        variant="outlined"
+                        value={selectedCredentials.find(c => c.id === cred.id)?.quantity || 0}
+                        onChange={(e) => handleCredentialQuantityChange(cred.id, e.target.value)}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
               ))}
               <Grid item xs={12}>

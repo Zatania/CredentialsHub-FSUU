@@ -8,7 +8,7 @@ interface Department {
 }
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const results = (await db.query('SELECT * FROM department')) as RowDataPacket
+    const results = (await db.query('SELECT * FROM department ORDER BY name')) as RowDataPacket
 
     const rows = results[0].map((row: Department) => ({
       id: row.id,

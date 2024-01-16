@@ -37,13 +37,19 @@ const handler: NextApiHandler = async (req, res) => {
   } catch (error) {
     await fs.mkdir(path.join(process.cwd() + "/public", "/uploads"))
   }
-  const file = await readFile(req, true)
-  const myImage = file.files.myImage;
-  if (myImage instanceof Array && myImage.length > 0) {
-    const fullPath = myImage[0].filepath;
-    const relativePath = path.relative(path.join(process.cwd(), "public/uploads"), fullPath);
 
-    res.json({ imagePath: relativePath.replace(/\\/g, '/') });
+  try {
+    const file = await readFile(req, true)
+    const myImage = file.files.myImage;
+    if (myImage instanceof Array && myImage.length > 0) {
+      const fullPath = myImage[0].filepath;
+      const relativePath = path.relative(path.join(process.cwd(), "public/uploads"), fullPath);
+
+      res.json({ imagePath: relativePath.replace(/\\/g, '/') });
+    }
+  } catch (error) {
+    console.log(error)
+    console.error(error)
   }
 }
 

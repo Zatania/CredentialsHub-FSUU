@@ -64,6 +64,8 @@
     "payment": "2.4.6",
     "pdf-lib": "^1.17.1",
     "prismjs": "1.29.0",
+    "pusher": "^5.2.0",
+    "pusher-js": "^8.4.0-rc2",
     "react": "18.2.0",
     "react-apexcharts": "1.4.0",
     "react-chartjs-2": "5.2.0",

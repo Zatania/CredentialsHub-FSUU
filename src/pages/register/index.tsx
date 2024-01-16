@@ -21,6 +21,13 @@ import FormHelperText from '@mui/material/FormHelperText'
 import InputAdornment from '@mui/material/InputAdornment'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import Input from '@mui/material/Input'
+import FormLabel from '@mui/material/FormLabel'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -116,6 +123,12 @@ interface FormData {
   department: string
   course: string
   major: string
+  graduateCheck: string
+  graduationDate: string
+  academicHonor: string
+  yearLevel: string
+  schoolYear: string
+  semester: string
   contactNumber: string
   emailAddress: string
   imagePath: string
@@ -135,6 +148,7 @@ const Register = () => {
   const [uploading, setUploading] = useState(false)
   const [selectedImage, setSelectedImage] = useState("")
   const [selectedFile, setSelectedFile] = useState<File>()
+  const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
   // ** Hooks
   const theme = useTheme()
@@ -148,11 +162,57 @@ const Register = () => {
   const {
     control,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors }
   } = useForm<FormData>({
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+
+
+  const graduateCheckValue = watch('graduateCheck')
+  const graduationDate = watch('graduationDate')
+  const academicHonor = watch('academicHonor')
+  const yearLevel = watch('yearLevel')
+  const schoolYear = watch('schoolYear')
+  const semester = watch('semester')
+
+  const isGraduatedYes = graduateCheckValue === 'yes'
+
+  // Define a function to check if all fields are filled
+  const areAllFieldsFilled = () => {
+    if (isGraduatedYes) {
+      return (
+        !!watch('graduationDate') &&
+        !!watch('academicHonor')
+      )
+    } else {
+      return (
+        !!watch('yearLevel') &&
+        !!watch('schoolYear') &&
+        !!watch('semester')
+      )
+    }
+  }
+
+  // Define a function to check if an image is attached
+  const isImageAttached = !!selectedFile
+
+  const isRegisterButtonDisabled =
+    graduateCheckValue === '' || // Check if "Yes" or "No" is selected
+    !areAllFieldsFilled() || // Check if all required fields are filled
+    !isImageAttached // Check if an image is attached
+
+  useEffect(() => {
+    const isGraduateCheckFilled = graduateCheckValue === 'yes' || graduateCheckValue === 'no'
+    const isYesFieldsFilled = graduateCheckValue === 'yes' && graduationDate && academicHonor
+    const isNoFieldsFilled = graduateCheckValue === 'no' && yearLevel && schoolYear && semester
+    const isImageAttached = selectedImage !== ''
+
+    setIsFormValid(isGraduateCheckFilled && (isYesFieldsFilled || isNoFieldsFilled) && isImageAttached)
+  }, [graduateCheckValue, graduationDate, academicHonor, yearLevel, schoolYear, semester, selectedImage])
+
 
   const handleUpload = async () => {
     setUploading(true)
@@ -230,394 +290,553 @@ const Register = () => {
   }, [])
 
   return (
-    <Box className='content-right'>
-      {!hidden ? (
-        <Box sx={{ flex: 1, display: 'flex', position: 'relative', alignItems: 'center', justifyContent: 'center' }}>
-          <RegisterIllustrationWrapper>
-            <RegisterIllustration alt='login-illustration' src={`/images/wallpaper.png`} />
-          </RegisterIllustrationWrapper>
-        </Box>
-      ) : null}
-      <RightWrapper sx={skin === 'bordered' && !hidden ? { borderLeft: `1px solid ${theme.palette.divider}` } : {}}>
-        <Box
-          sx={{
-            p: 12,
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'background.paper'
-          }}
-        >
-          <BoxWrapper>
-            <Box
-              sx={{
-                top: 30,
-                left: 40,
-                display: 'flex',
-                position: 'absolute',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <svg
-                width={35}
-                height={29}
-                version='1.1'
-                viewBox='0 0 30 23'
-                xmlns='http://www.w3.org/2000/svg'
-                xmlnsXlink='http://www.w3.org/1999/xlink'
-              >
-                <g stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
-                  <g id='Artboard' transform='translate(-95.000000, -51.000000)'>
-                    <g id='logo' transform='translate(95.000000, 50.000000)'>
-                      <image x='0' y='0' width='25' height='25' xlinkHref='/images/logos/logo.png' />
-                    </g>
-                  </g>
-                </g>
-              </svg>
-              <Typography
-                variant='h6'
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Box className='content-right'>
+        {!hidden ? (
+          <Box sx={{ flex: 1, display: 'flex', position: 'relative', alignItems: 'center', justifyContent: 'center' }}>
+            <RegisterIllustrationWrapper>
+              <RegisterIllustration alt='login-illustration' src={`/images/wallpaper.png`} />
+            </RegisterIllustrationWrapper>
+          </Box>
+        ) : null}
+        <RightWrapper sx={skin === 'bordered' && !hidden ? { borderLeft: `1px solid ${theme.palette.divider}` } : {}}>
+          <Box
+            sx={{
+              p: 12,
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'background.paper'
+            }}
+          >
+            <BoxWrapper>
+              <Box
                 sx={{
-                  ml: 3,
-                  lineHeight: 1,
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  fontSize: '1.5rem !important'
+                  top: 30,
+                  left: 40,
+                  display: 'flex',
+                  position: 'absolute',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                {themeConfig.templateName}
-              </Typography>
-            </Box>
-            <Box sx={{ mb: 6 }}>
-              <TypographyStyled variant='h5'>Register your account!</TypographyStyled>
-              <Typography variant='body2'>Please fill-in completely.</Typography>
-            </Box>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container spacing={5}>
-                <Grid item sm={12} xs={12}>
-                  <Typography variant='body1' sx={{ fontWeight: 600 }}>
-                    1. Personal Data
-                  </Typography>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Controller
-                      name='studentNumber'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <TextField
-                          label='Student Number'
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.studentNumber)}
-                        />
+                <svg
+                  width={35}
+                  height={29}
+                  version='1.1'
+                  viewBox='0 0 30 23'
+                  xmlns='http://www.w3.org/2000/svg'
+                  xmlnsXlink='http://www.w3.org/1999/xlink'
+                >
+                  <g stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
+                    <g id='Artboard' transform='translate(-95.000000, -51.000000)'>
+                      <g id='logo' transform='translate(95.000000, 50.000000)'>
+                        <image x='0' y='0' width='25' height='25' xlinkHref='/images/logos/logo.png' />
+                      </g>
+                    </g>
+                  </g>
+                </svg>
+                <Typography
+                  variant='h6'
+                  sx={{
+                    ml: 3,
+                    lineHeight: 1,
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    fontSize: '1.5rem !important'
+                  }}
+                >
+                  {themeConfig.templateName}
+                </Typography>
+              </Box>
+              <Box sx={{ mb: 6 }}>
+                <TypographyStyled variant='h5'>Register your account!</TypographyStyled>
+                <Typography variant='body2'>Please fill-in completely.</Typography>
+              </Box>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Grid container spacing={5}>
+                  <Grid item sm={12} xs={12}>
+                    <Typography variant='body1' sx={{ fontWeight: 600 }}>
+                      1. Personal Data
+                    </Typography>
+                  </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='studentNumber'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Student Number'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.studentNumber)}
+                          />
+                        )}
+                      />
+                      {errors.studentNumber && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.studentNumber.message}</FormHelperText>
                       )}
-                    />
-                    {errors.studentNumber && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.studentNumber.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Controller
-                      name='username'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <TextField
-                          label='Username'
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.username)}
-                        />
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='username'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Username'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.username)}
+                          />
+                        )}
+                      />
+                      {errors.username && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>
                       )}
-                    />
-                    {errors.username && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
-                    <Controller
-                      name='password'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <OutlinedInput
-                          value={value}
-                          onBlur={onBlur}
-                          label='Password'
-                          onChange={onChange}
-                          id='auth-login-v2-password'
-                          error={Boolean(errors.password)}
-                          type={showPassword ? 'text' : 'password'}
-                          endAdornment={
-                            <InputAdornment position='end'>
-                              <IconButton
-                                edge='end'
-                                onMouseDown={e => e.preventDefault()}
-                                onClick={() => setShowPassword(!showPassword)}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
+                      <Controller
+                        name='password'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <OutlinedInput
+                            value={value}
+                            onBlur={onBlur}
+                            label='Password'
+                            onChange={onChange}
+                            id='auth-login-v2-password'
+                            error={Boolean(errors.password)}
+                            type={showPassword ? 'text' : 'password'}
+                            endAdornment={
+                              <InputAdornment position='end'>
+                                <IconButton
+                                  edge='end'
+                                  onMouseDown={e => e.preventDefault()}
+                                  onClick={() => setShowPassword(!showPassword)}
+                                >
+                                  <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
+                                </IconButton>
+                              </InputAdornment>
+                            }
+                          />
+                        )}
+                      />
+                      {errors.password && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.password.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <InputLabel htmlFor='auth-login-v2-confirm-password'>Confirm Password</InputLabel>
+                      <Controller
+                        name='confirmPassword'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <OutlinedInput
+                            value={value}
+                            onBlur={onBlur}
+                            label='Confirm Password'
+                            onChange={onChange}
+                            id='auth-login-v2-confirmPassword'
+                            error={Boolean(errors.confirmPassword)}
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            endAdornment={
+                              <InputAdornment position='end'>
+                                <IconButton
+                                  edge='end'
+                                  onMouseDown={e => e.preventDefault()}
+                                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                  <Icon icon={showConfirmPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
+                                </IconButton>
+                              </InputAdornment>
+                            }
+                          />
+                        )}
+                      />
+                      {errors.confirmPassword && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.confirmPassword.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='firstName'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='First Name'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.firstName)}
+                          />
+                        )}
+                      />
+                      {errors.firstName && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.firstName.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='middleName'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Middle Name'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.middleName)}
+                          />
+                        )}
+                      />
+                      {errors.middleName && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.middleName.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='lastName'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Last Name'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.lastName)}
+                          />
+                        )}
+                      />
+                      {errors.lastName && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.lastName.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='contactNumber'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Contact Number'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.contactNumber)}
+                          />
+                        )}
+                      />
+                      {errors.contactNumber && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.contactNumber.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='emailAddress'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Email Address'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.emailAddress)}
+                          />
+                        )}
+                      />
+                      {errors.emailAddress && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.emailAddress.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <InputLabel>Department</InputLabel>
+                      <Controller
+                        name='department'
+                        control={control}
+                        defaultValue=''
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <Select {...field} label='Department' error={!!errors.department}>
+                            {departments.map((department, index) => (
+                              <MenuItem key={department.id || index} value={department.id}>
+                                {department.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      />
+                      {errors.department && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.department.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='course'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Course'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.course)}
+                          />
+                        )}
+                      />
+                      {errors.course && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.course.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='major'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Major / Specialization'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.major)}
+                          />
+                        )}
+                      />
+                      {errors.major && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.major.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item sm={4} xs={12}>
+                      <FormControl fullWidth sx={{ mb: 4 }}>
+                        <Controller
+                          name='graduateCheck'
+                          control={control}
+                          render={({ field: { value, onChange, onBlur } }) => (
+                            <>
+                              <FormLabel id='graduatecheck'>Graduated: </FormLabel>
+                              <RadioGroup
+                                row
+                                aria-labelledby='graduateCheck'
+                                name='graduatecheck-group'
+                                value={value}
+                                onBlur={onBlur}
+                                onChange={e => {
+                                  onChange(e)
+                                  setValue('graduationDate', '') // Reset graduationDate when changing graduateCheck
+                                  setValue('academicHonor', '') // Reset academicHonor when changing graduateCheck
+                                  setValue('yearLevel', '1st Year') // Reset yearLevel when changing graduateCheck
+                                  setValue('schoolYear', '') // Reset schoolYear when changing graduateCheck
+                                  setValue('semester', '1st') // Reset semester when changing graduateCheck
+                                }}
                               >
-                                <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-                              </IconButton>
-                            </InputAdornment>
-                          }
+                                <FormControlLabel value='yes' control={<Radio />} label='Yes' />
+                                <FormControlLabel value='no' control={<Radio />} label='No' />
+                              </RadioGroup>
+                            </>
+                          )}
                         />
-                      )}
-                    />
-                    {errors.password && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.password.message}</FormHelperText>
+                        {errors.graduateCheck && (
+                          <FormHelperText sx={{ color: 'error.main' }}>{errors.graduateCheck.message}</FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    {graduateCheckValue === 'yes' && (
+                      <>
+                        <Grid item sm={4} xs={12}>
+                          <FormControl fullWidth sx={{ mb: 4 }}>
+                            <Controller
+                              name='graduationDate'
+                              control={control}
+                              render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
+                            />
+                          </FormControl>
+                        </Grid>
+                        <Grid item sm={4} xs={12}>
+                          <FormControl fullWidth sx={{ mb: 4 }}>
+                            <Controller
+                              name='academicHonor'
+                              control={control}
+                              rules={{ required: false }}
+                              render={({ field: { value, onChange, onBlur } }) => (
+                                <TextField
+                                  label='Academic Honor'
+                                  value={value}
+                                  onBlur={onBlur}
+                                  onChange={onChange}
+                                  error={Boolean(errors.academicHonor)}
+                                />
+                              )}
+                            />
+                            {errors.academicHonor && (
+                              <FormHelperText sx={{ color: 'error.main' }}>{errors.academicHonor.message}</FormHelperText>
+                            )}
+                          </FormControl>
+                        </Grid>
+                      </>
                     )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <InputLabel htmlFor='auth-login-v2-confirm-password'>Confirm Password</InputLabel>
-                    <Controller
-                      name='confirmPassword'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <OutlinedInput
-                          value={value}
-                          onBlur={onBlur}
-                          label='Confirm Password'
-                          onChange={onChange}
-                          id='auth-login-v2-confirmPassword'
-                          error={Boolean(errors.confirmPassword)}
-                          type={showConfirmPassword ? 'text' : 'password'}
-                          endAdornment={
-                            <InputAdornment position='end'>
-                              <IconButton
-                                edge='end'
-                                onMouseDown={e => e.preventDefault()}
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                              >
-                                <Icon icon={showConfirmPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                      )}
-                    />
-                    {errors.confirmPassword && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.confirmPassword.message}</FormHelperText>
+                    {graduateCheckValue === 'no' && (
+                      <>
+                        <Grid item sm={3} xs={12}>
+                          <FormControl fullWidth sx={{ mb: 4 }}>
+                            <InputLabel>Year Level</InputLabel>
+                            <Controller
+                              name='yearLevel'
+                              control={control}
+                              rules={{ required: true }}
+                              render={({ field: { value, onChange, onBlur } }) => (
+                                <Select
+                                  value={value}
+                                  onBlur={onBlur}
+                                  onChange={onChange}
+                                  label='Year Level'
+                                  error={!!errors.yearLevel}
+                                >
+                                  <MenuItem value=''></MenuItem>
+                                  <MenuItem value='1st Year'>1st Year</MenuItem>
+                                  <MenuItem value='2nd Year'>2nd Year</MenuItem>
+                                  <MenuItem value='3rd Year'>3rd Year</MenuItem>
+                                  <MenuItem value='4th Year'>4th Year</MenuItem>
+                                </Select>
+                              )}
+                            />
+                            {errors.yearLevel && (
+                              <FormHelperText sx={{ color: 'error.main' }}>{errors.yearLevel.message}</FormHelperText>
+                            )}
+                          </FormControl>
+                        </Grid>
+                        <Grid item sm={3} xs={12}>
+                          <FormControl fullWidth sx={{ mb: 4 }}>
+                            <Controller
+                              name='schoolYear'
+                              control={control}
+                              rules={{ required: false }}
+                              render={({ field: { value, onChange, onBlur } }) => (
+                                <TextField
+                                  label='School Year'
+                                  value={value}
+                                  onBlur={onBlur}
+                                  onChange={onChange}
+                                  error={Boolean(errors.schoolYear)}
+                                />
+                              )}
+                            />
+                            {errors.schoolYear && (
+                              <FormHelperText sx={{ color: 'error.main' }}>{errors.schoolYear.message}</FormHelperText>
+                            )}
+                          </FormControl>
+                        </Grid>
+                        <Grid item sm={2} xs={12}>
+                          <FormControl fullWidth sx={{ mb: 4 }}>
+                            <InputLabel>Semester</InputLabel>
+                            <Controller
+                              name='semester'
+                              control={control}
+                              rules={{ required: false }}
+                              render={({ field: { value, onChange, onBlur } }) => (
+                                <Select
+                                  value={value}
+                                  onBlur={onBlur}
+                                  onChange={onChange}
+                                  label='Semester'
+                                  error={!!errors.semester}
+                                >
+                                  <MenuItem value=''></MenuItem>
+                                  <MenuItem value='1st'>1st</MenuItem>
+                                  <MenuItem value='2nd'>2nd</MenuItem>
+                                </Select>
+                              )}
+                            />
+                            {errors.semester && (
+                              <FormHelperText sx={{ color: 'error.main' }}>{errors.semester.message}</FormHelperText>
+                            )}
+                          </FormControl>
+                        </Grid>
+                      </>
                     )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={4} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Controller
-                      name='firstName'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <TextField
-                          label='First Name'
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.firstName)}
-                        />
-                      )}
-                    />
-                    {errors.firstName && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.firstName.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={4} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Controller
-                      name='middleName'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <TextField
-                          label='Middle Name'
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.middleName)}
-                        />
-                      )}
-                    />
-                    {errors.middleName && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.middleName.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={4} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Controller
-                      name='lastName'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <TextField
-                          label='Last Name'
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.lastName)}
-                        />
-                      )}
-                    />
-                    {errors.lastName && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.lastName.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Controller
-                      name='contactNumber'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <TextField
-                          label='Contact Number'
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.contactNumber)}
-                        />
-                      )}
-                    />
-                    {errors.contactNumber && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.contactNumber.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Controller
-                      name='emailAddress'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <TextField
-                          label='Email Address'
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.emailAddress)}
-                        />
-                      )}
-                    />
-                    {errors.emailAddress && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.emailAddress.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={4} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <InputLabel>Department</InputLabel>
-                    <Controller
-                      name='department'
-                      control={control}
-                      defaultValue=''
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <Select {...field} label='Department' error={!!errors.department}>
-                          {departments.map((department, index) => (
-                            <MenuItem key={department.id || index} value={department.id}>
-                              {department.name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      )}
-                    />
-                    {errors.department && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.department.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={4} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Controller
-                      name='course'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <TextField
-                          label='Course'
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.course)}
-                        />
-                      )}
-                    />
-                    {errors.course && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.course.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={4} xs={12}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Controller
-                      name='major'
-                      control={control}
-                      render={({ field: { value, onChange, onBlur } }) => (
-                        <TextField
-                          label='Major / Specialization'
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.major)}
-                        />
-                      )}
-                    />
-                    {errors.major && (
-                      <FormHelperText sx={{ color: 'error.main' }}>{errors.major.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={12} xs={12}>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      id="image-upload"
-                      style={{ display: "none" }}
-                      onChange={({ target }) => {
-                        if (target.files && target.files.length > 0) {
-                          const file = target.files[0]
-                          setSelectedImage(URL.createObjectURL(file))
-                          setSelectedFile(file)
-                        }
-                      }}
-                    />
-                    <Button
-                      variant="outlined"
-                      component="label"
-                      htmlFor="image-upload"
-                      className="w-40 aspect-video rounded border-2 border-dashed cursor-pointer"
-                    >
-                      {selectedImage ? (
-                        <img src={selectedImage} alt="" style={{ maxWidth: "100%" }} />
-                      ) : (
-                        "Select Image"
-                      )}
+                  <Grid item sm={12} xs={12}>
+                    <Grid container spacing={6} sx={{ textAlign: 'center' }}>
+                      <Grid item sm={12} xs={12}>
+                        <Typography variant='body1' sx={{ fontWeight: 600 }}>
+                          Upload Photo with your face and valid id in the same image.
+                        </Typography>
+                      </Grid>
+                      <Grid item sm={12} xs={12}>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            id="image-upload"
+                            style={{ display: "none" }}
+                            onChange={({ target }) => {
+                              if (target.files && target.files.length > 0) {
+                                const file = target.files[0]
+                                setSelectedImage(URL.createObjectURL(file))
+                                setSelectedFile(file)
+                              }
+                            }}
+                          />
+                          <Button
+                            variant="outlined"
+                            component="label"
+                            htmlFor="image-upload"
+                            className="w-40 aspect-video rounded border-2 border-dashed cursor-pointer"
+                          >
+                            {selectedImage ? (
+                              <img src={selectedImage} alt="" style={{ maxWidth: "100%" }} />
+                            ) : (
+                              "Select Image"
+                            )}
+                          </Button>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item sm={12} xs={12}>
+                    <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }} disabled={isRegisterButtonDisabled}>
+                      Register
                     </Button>
-                  </FormControl>
+                    <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                      <Typography variant='body2' sx={{ mr: 2 }}>
+                        Already have an account?
+                      </Typography>
+                      <Typography variant='body2'>
+                        <LinkStyled href='/login'>Log in instead</LinkStyled>
+                      </Typography>
+                    </Box>
+                  </Grid>
                 </Grid>
-                <Grid item sm={12} xs={12}>
-                  <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                    Register
-                  </Button>
-                  <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <Typography variant='body2' sx={{ mr: 2 }}>
-                      Already have an account?
-                    </Typography>
-                    <Typography variant='body2'>
-                      <LinkStyled href='/login'>Log in instead</LinkStyled>
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-            </form>
-          </BoxWrapper>
-        </Box>
-      </RightWrapper>
-    </Box>
+              </form>
+            </BoxWrapper>
+          </Box>
+        </RightWrapper>
+      </Box>
+    </LocalizationProvider>
   )
 }
 
