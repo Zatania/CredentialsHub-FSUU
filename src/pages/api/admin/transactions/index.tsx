@@ -5,10 +5,10 @@ import { RowDataPacket } from 'mysql2'
 // Function to fetch user details
 async function fetchUserDetails(userId: number) {
   const [userDetails] = (await db.query(`
-    SELECT firstName, lastName, course, major FROM users WHERE id = ?
-  `, [userId])) as RowDataPacket[];
+    SELECT * FROM users WHERE id = ?
+  `, [userId])) as RowDataPacket[]
 
-  return userDetails.length > 0 ? userDetails[0] : null;
+  return userDetails.length > 0 ? userDetails[0] : null
 }
 
 async function queryTransactionsBasedOnStatus(status: string) {
@@ -17,9 +17,9 @@ async function queryTransactionsBasedOnStatus(status: string) {
     INNER JOIN users u ON t.user_id = u.id
     WHERE t.status = ?
     ORDER BY t.transaction_date DESC
-  `, [status])) as RowDataPacket[];
+  `, [status])) as RowDataPacket[]
 
-  return transactions;
+  return transactions
 }
 
 async function formatPackageTransaction(packageTransaction) {
@@ -90,12 +90,17 @@ async function formatData(transactions: any[]) {
     }
 
     // Fetch and add user details
-    const userDetails = await fetchUserDetails(transaction.user_id);
+    const userDetails = await fetchUserDetails(transaction.user_id)
     if (userDetails) {
-      transaction.firstName = userDetails.firstName;
-      transaction.lastName = userDetails.lastName;
-      transaction.course = userDetails.course;
-      transaction.major = userDetails.major;
+      transaction.firstName = userDetails.firstName
+      transaction.lastName = userDetails.lastName
+      transaction.course = userDetails.course
+      transaction.major = userDetails.major
+      transaction.graduateCheck = userDetails.graduateCheck
+      transaction.graduationDate = userDetails.graduationDate
+      transaction.yearLevel = userDetails.yearLevel
+      transaction.schoolYear = userDetails.schoolYear
+      transaction.semester = userDetails.semester
     }
 
     return {
@@ -105,6 +110,11 @@ async function formatData(transactions: any[]) {
       lastName: transaction.lastName,
       course: transaction.course,
       major: transaction.major,
+      graduateCheck: transaction.graduateCheck,
+      graduationDate: transaction.graduationDate,
+      yearLevel: transaction.yearLevel,
+      schoolYear: transaction.schoolYear,
+      semester: transaction.semester,
       total_amount: transaction.total_amount,
       transaction_date: transaction.transaction_date,
       status: transaction.status,
@@ -122,17 +132,17 @@ async function formatData(transactions: any[]) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected']; // Define the statuses
+  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected'] // Define the statuses
   if (req.method === 'GET') {
     try {
-      const allTransactions = {};
+      const allTransactions = {}
 
       for (const status of statuses) {
-        const transactions = await queryTransactionsBasedOnStatus(status);
-        allTransactions[status] = await formatData(transactions);
+        const transactions = await queryTransactionsBasedOnStatus(status)
+        allTransactions[status] = await formatData(transactions)
       }
 
-      res.status(200).json(allTransactions); // Send all transactions in a single response
+      res.status(200).json(allTransactions) // Send all transactions in a single response
     } catch (error) {
       res.status(500).json({ message: 'Internal Server Error', error: error.message })
     }
