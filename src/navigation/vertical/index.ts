@@ -53,6 +53,13 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:text-box'
     },
     {
+      path: '/pdf/FSUU_CLEARANCE_FORM.pdf',
+      title: 'Get Clearance Form',
+      action: 'read',
+      subject: 'clearance-form',
+      icon: 'mdi:file-pdf-box'
+    },
+    {
       path: '/admin/credentials',
       title: 'Credentials',
       action: 'read',
