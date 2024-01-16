@@ -26,6 +26,8 @@ const Timeline = styled(MuiTimeline)<TimelineProps>({
 })
 
 const ActivityTimeline = ({ logs, load, title }) => {
+  const loading = false
+
   return (
     <Card>
       <CardHeader
