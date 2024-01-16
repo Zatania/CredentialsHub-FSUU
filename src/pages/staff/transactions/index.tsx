@@ -56,19 +56,19 @@ const Transactions = () => {
 
   // Fetch All Transactions
   useEffect(() => {
-    fetchAllTransactions();
-  }, []);
+    fetchAllTransactions()
+  }, [])
 
   const fetchAllTransactions = () => {
     axios.get('/api/staff/transactions')
       .then(response => {
-        const data = response.data;
-        setSubmittedsRows(data.Submitted || []);
-        setScheduledRows(data.Scheduled || []);
-        setClaimedRows(data.Claimed || []);
-        setRejectedRows(data.Rejected || []);
+        const data = response.data
+        setSubmittedsRows(data.Submitted || [])
+        setScheduledRows(data.Scheduled || [])
+        setClaimedRows(data.Claimed || [])
+        setRejectedRows(data.Rejected || [])
       })
-      .catch(error => console.error("Error fetching data", error));
+      .catch(error => console.error("Error fetching data", error))
   }
 
   const submittedColumns: GridColDef[] = [

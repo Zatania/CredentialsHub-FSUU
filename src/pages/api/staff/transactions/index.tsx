@@ -6,18 +6,18 @@ import { getSession } from 'next-auth/react'
 // Function to fetch user details
 async function fetchUserDetails(userId: number) {
   const [userDetails] = (await db.query(`
-    SELECT firstName, lastName, course, major FROM users WHERE id = ?
-  `, [userId])) as RowDataPacket[];
+    SELECT * FROM users WHERE id = ?
+  `, [userId])) as RowDataPacket[]
 
-  return userDetails.length > 0 ? userDetails[0] : null;
+  return userDetails.length > 0 ? userDetails[0] : null
 }
 
 async function fetchStaffDepartments(staffId: number) {
   const [results] = (await db.query(`
     SELECT department_id FROM staffs_departments WHERE staff_id = ?
-  `, [staffId])) as RowDataPacket[];
+  `, [staffId])) as RowDataPacket[]
 
-  return results.map((row: any) => row.department_id);
+  return results.map((row: any) => row.department_id)
 }
 
 async function queryTransactionsBasedOnStatus(status: string, departments: number[]) {
@@ -26,9 +26,9 @@ async function queryTransactionsBasedOnStatus(status: string, departments: numbe
     INNER JOIN users u ON t.user_id = u.id
     WHERE t.status = ? AND u.department IN (?)
     ORDER BY t.transaction_date DESC
-  `, [status, departments])) as RowDataPacket[];
+  `, [status, departments])) as RowDataPacket[]
 
-  return transactions;
+  return transactions
 }
 
 async function formatPackageTransaction(packageTransaction) {
@@ -99,12 +99,17 @@ async function formatData(transactions: any[]) {
     }
 
     // Fetch and add user details
-    const userDetails = await fetchUserDetails(transaction.user_id);
+    const userDetails = await fetchUserDetails(transaction.user_id)
     if (userDetails) {
-      transaction.firstName = userDetails.firstName;
-      transaction.lastName = userDetails.lastName;
-      transaction.course = userDetails.course;
-      transaction.major = userDetails.major;
+      transaction.firstName = userDetails.firstName
+      transaction.lastName = userDetails.lastName
+      transaction.course = userDetails.course
+      transaction.major = userDetails.major
+      transaction.graduateCheck = userDetails.graduateCheck
+      transaction.graduationDate = userDetails.graduationDate
+      transaction.yearLevel = userDetails.yearLevel
+      transaction.schoolYear = userDetails.schoolYear
+      transaction.semester = userDetails.semester
     }
 
     return {
@@ -114,6 +119,11 @@ async function formatData(transactions: any[]) {
       lastName: transaction.lastName,
       course: transaction.course,
       major: transaction.major,
+      graduateCheck: transaction.graduateCheck,
+      graduationDate: transaction.graduationDate,
+      yearLevel: transaction.yearLevel,
+      schoolYear: transaction.schoolYear,
+      semester: transaction.semester,
       total_amount: transaction.total_amount,
       transaction_date: transaction.transaction_date,
       status: transaction.status,
@@ -132,25 +142,25 @@ async function formatData(transactions: any[]) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected']; // Define the statuses
-  const session = await getSession({ req });
+  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected'] // Define the statuses
+  const session = await getSession({ req })
   if (!session || !session.user) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: 'Unauthorized' })
   }
 
-  const staffId = session.user.id;
+  const staffId = session.user.id
 
   if (req.method === 'GET') {
     try {
-      const allTransactions = {};
-      const departments = await fetchStaffDepartments(staffId);
+      const allTransactions = {}
+      const departments = await fetchStaffDepartments(staffId)
 
       for (const status of statuses) {
-        const transactions = await queryTransactionsBasedOnStatus(status, departments);
-        allTransactions[status] = await formatData(transactions);
+        const transactions = await queryTransactionsBasedOnStatus(status, departments)
+        allTransactions[status] = await formatData(transactions)
       }
 
-      res.status(200).json(allTransactions); // Send all transactions in a single response
+      res.status(200).json(allTransactions) // Send all transactions in a single response
     } catch (error) {
       res.status(500).json({ message: 'Internal Server Error', error: error.message })
     }

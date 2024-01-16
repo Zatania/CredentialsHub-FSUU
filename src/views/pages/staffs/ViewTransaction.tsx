@@ -44,6 +44,11 @@ interface TransactionData {
   lastName: string
   course: string
   major: string
+  graduateCheck: string
+  graduationDate: string
+  yearLevel: string
+  schoolYear: string
+  semester: string
   total_amount: number
   transaction_date: string
   status: string
@@ -275,6 +280,37 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                   <Typography variant='body1'>{transaction.course}</Typography>
                 </Grid>
               ) }
+              {transaction.graduateCheck === 'yes' ? (
+                <Grid item sm={12} xs={12}>
+                  <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                    Graduation Date:
+                  </Typography>
+                  <Typography variant='body1'>{dayjs(transaction.graduationDate).format('MMMM DD, YYYY')}</Typography>
+                </Grid>
+              ) : transaction.graduateCheck === 'no' ? (
+                <Grid item sm={12} xs={12}>
+                  <Grid container spacing={6}>
+                    <Grid item sm={4} xs={12}>
+                      <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                        Year Level:
+                      </Typography>
+                      <Typography variant='body1'>{transaction.yearLevel}</Typography>
+                    </Grid>
+                    <Grid item sm={4} xs={12}>
+                      <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                        School Year:
+                      </Typography>
+                      <Typography variant='body1'>{transaction.schoolYear}</Typography>
+                    </Grid>
+                    <Grid item sm={4} xs={12}>
+                      <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                        Semester:
+                      </Typography>
+                      <Typography variant='body1'>{transaction.semester}</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              ) : null}
               {(transaction.packages.length > 0) ? (
                 <>
                   <Grid item sm={12} xs={12}>
