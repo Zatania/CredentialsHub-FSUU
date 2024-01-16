@@ -1,5 +1,5 @@
 // ** React Imports
-import { Ref, useState, forwardRef, ReactElement, useEffect } from 'react'
+import { Ref, useState, forwardRef, ReactElement } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -7,26 +7,18 @@ import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import FormControl from '@mui/material/FormControl'
 import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import FormHelperText from '@mui/material/FormHelperText'
 import EditIcon from '@mui/icons-material/Edit'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
-import Input from '@mui/material/Input'
-import Checkbox from '@mui/material/Checkbox'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 // ** Third Party Imports
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 
@@ -51,14 +43,11 @@ interface StudentData {
 const DialogViewStudent  = ({ student, refreshData, actionType }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
+  const [setLoading] = useState(false)
 
   const {
-    control,
     handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm<StudentData>({
+    reset  } = useForm<StudentData>({
     mode: 'onBlur',
     defaultValues: {
       studentNumber: student.studentNumber,

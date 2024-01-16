@@ -21,12 +21,6 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-// ** Views Imports
-import ActivityTimeline from 'src/views/pages/dashboard/ActivityTimeline'
-
-// ** Next Imports
-import { useSession } from 'next-auth/react'
-
 // ** Third Party Imports
 import axios from 'axios'
 import { ApexOptions } from 'apexcharts'
@@ -39,20 +33,27 @@ interface Department {
   id: number
 }
 
+interface TransactionCount {
+  daily: number
+  monthly: number
+  yearly: number
+}
+
 interface DepartmentCount {
   id: number
   name: string
-  [key: string]: {
-    daily: number
-    monthly: number
-    yearly: number
-  } | number | string
+  submitted: TransactionCount
+  scheduled: TransactionCount
+  claimed: TransactionCount
+  rejected: TransactionCount
+  totalDaily?: number
+  totalMonthly?: number
+  totalYearly?: number
 }
 
 const DashboardAdmin = () => {
   // ** States
   const [departments, setDepartments] = useState<Department[]>([])
-  const [loading, setLoading] = useState(false)
   const [departmentTransactionCounts, setDepartmentTransactionCounts] = useState<any[]>([])
   const [submittedDaily, setSubmittedDaily] = useState()
   const [scheduledDaily, setScheduledDaily] = useState()
@@ -96,36 +97,40 @@ const DashboardAdmin = () => {
     }))
 
     for (const department of departments) {
-      let totalDaily = 0;
-      let totalMonthly = 0;
-      let totalYearly = 0;
+      let totalDaily = 0
+      let totalMonthly = 0
+      let totalYearly = 0
 
       for (const type of types) {
         try {
           const id = department.id
           const response = await axios.get(`/api/admin/transaction/count/department/${id}?type=${type}`)
           const data = response.data
+          const transactionType = type.toLowerCase();
 
           // Update the corresponding department's transaction counts
-          const departmentIndex = departmentCounts.findIndex(dept => dept.id === department.id)
+          const departmentIndex = departmentCounts.findIndex(dept => dept.id === department.id);
           if (departmentIndex !== -1) {
-            departmentCounts[departmentIndex][type.toLowerCase()].daily = data.dailyCount;   // Access as property
-            departmentCounts[departmentIndex][type.toLowerCase()].monthly = data.monthlyCount; // Access as property
-            departmentCounts[departmentIndex][type.toLowerCase()].yearly = data.yearlyCount; // Access as property
+            const departmentCount = departmentCounts[departmentIndex];
+            if (transactionType === 'submitted' || transactionType === 'scheduled' || transactionType === 'claimed' || transactionType === 'rejected') {
+              departmentCount[transactionType].daily = data.dailyCount;
+              departmentCount[transactionType].monthly = data.monthlyCount;
+              departmentCount[transactionType].yearly = data.yearlyCount;
+            }
           }
 
-          totalDaily += data.dailyCount;
-          totalMonthly += data.monthlyCount;
-          totalYearly += data.yearlyCount;
+          totalDaily += data.dailyCount
+          totalMonthly += data.monthlyCount
+          totalYearly += data.yearlyCount
         } catch (error) {
           console.error(`Error fetching data for department ${department.name}: `, error)
         }
 
-        const departmentIndex = departmentCounts.findIndex(dept => dept.id === department.id);
+        const departmentIndex = departmentCounts.findIndex(dept => dept.id === department.id)
         if (departmentIndex !== -1) {
-          departmentCounts[departmentIndex].totalDaily = totalDaily;
-          departmentCounts[departmentIndex].totalMonthly = totalMonthly;
-          departmentCounts[departmentIndex].totalYearly = totalYearly;
+          departmentCounts[departmentIndex].totalDaily = totalDaily
+          departmentCounts[departmentIndex].totalMonthly = totalMonthly
+          departmentCounts[departmentIndex].totalYearly = totalYearly
         }
       }
     }
@@ -137,7 +142,7 @@ const DashboardAdmin = () => {
 
   useEffect(() => {
     if (departments.length > 0) {
-      fetchDepartmentCounts();
+      fetchDepartmentCounts()
     }
   }, [fetchDepartmentCounts, departments])
 

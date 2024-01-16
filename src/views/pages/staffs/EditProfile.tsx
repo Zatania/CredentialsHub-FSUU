@@ -15,12 +15,6 @@ import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import FormHelperText from '@mui/material/FormHelperText'
-import InputLabel from '@mui/material/InputLabel'
-import RadioGroup from '@mui/material/RadioGroup'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import Radio from '@mui/material/Radio'
-import FormControlLabel from '@mui/material/FormControlLabel'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -28,15 +22,6 @@ import Icon from 'src/@core/components/icon'
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
 import toast from 'react-hot-toast'
-
-//** For Date/Time Picker
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { FormLabel } from '@mui/material'
-
-// ** Next Import
-import { useRouter } from 'next/router'
 
 const Transition = forwardRef(function Transition(
   props: FadeProps & { children?: ReactElement<any, any> },
@@ -57,7 +42,6 @@ interface FormData {
 const DialogStaffEditProfile = ({ staff, refreshData }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
 
   const {
     control,
@@ -76,7 +60,6 @@ const DialogStaffEditProfile = ({ staff, refreshData }) => {
   }
 
   const onSubmit = async (data: FormData) => {
-    setLoading(true)
     data.id = staff?.id
     try {
       const response = await fetch('/api/staff/profile/edit', {
@@ -91,11 +74,9 @@ const DialogStaffEditProfile = ({ staff, refreshData }) => {
         throw new Error('Failed to submit form')
       }
 
-      setLoading(false)
       toast.success('Profiled Edited Successfully')
       handleClose()
     } catch (error) {
-      setLoading(false)
       toast.error('Profiled Edited Failed')
       console.error(error)
     }
@@ -111,188 +92,186 @@ const DialogStaffEditProfile = ({ staff, refreshData }) => {
 
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Card>
-        <Button variant='contained' onClick={() => setShow(true)} startIcon={<Icon icon='mdi:account-edit-outline' fontSize={20} />}>
-          Edit Profile
-        </Button>
-          <Dialog
-            fullWidth
-            open={show}
-            maxWidth='md'
-            scroll='body'
-            onClose={() => handleClose()}
-            TransitionComponent={Transition}
-            onBackdropClick={() => handleClose()}
-          >
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <DialogContent
-                sx={{
-                  position: 'relative',
-                  pb: theme => `${theme.spacing(8)} !important`,
-                  px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
-                  pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
-                }}
+    <Card>
+      <Button variant='contained' onClick={() => setShow(true)} startIcon={<Icon icon='mdi:account-edit-outline' fontSize={20} />}>
+        Edit Profile
+      </Button>
+        <Dialog
+          fullWidth
+          open={show}
+          maxWidth='md'
+          scroll='body'
+          onClose={() => handleClose()}
+          TransitionComponent={Transition}
+          onBackdropClick={() => handleClose()}
+        >
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <DialogContent
+              sx={{
+                position: 'relative',
+                pb: theme => `${theme.spacing(8)} !important`,
+                px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
+                pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+              }}
+            >
+              <IconButton
+                size='small'
+                onClick={() => handleClose()}
+                sx={{ position: 'absolute', right: '1rem', top: '1rem' }}
               >
-                <IconButton
-                  size='small'
-                  onClick={() => handleClose()}
-                  sx={{ position: 'absolute', right: '1rem', top: '1rem' }}
-                >
-                  <Icon icon='mdi:close' />
-                </IconButton>
-                <Box sx={{ mb: 8, textAlign: 'center' }}>
-                  <Typography variant='h5' sx={{ mb: 3 }}>
-                    Edit Staff Profile
-                  </Typography>
-                  <Typography variant='body2'>Update and fill up all required fields.</Typography>
-                </Box>
-                  <Grid container spacing={6}>
-                    <Grid item sm={12} xs={12}>
-                      <Typography variant='body1' sx={{ fontWeight: 600 }}>
-                        1. Personal Data
-                      </Typography>
-                    </Grid>
-                    {/* <Grid item sm={3} xs={12}>
-                      <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                          name='studentNumber'
-                          control={control}
-                          render={({ field: { value, onChange, onBlur } }) => (
-                            <TextField
-                              label='Student Number'
-                              value={value}
-                              onBlur={onBlur}
-                              onChange={onChange}
-                              error={Boolean(errors.studentNumber)}
-                            />
-                          )}
-                        />
-                        {errors.studentNumber && (
-                          <FormHelperText sx={{ color: 'error.main' }}>{errors.studentNumber.message}</FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid> */}
-                    <Grid item sm={12} xs={12}>
-                      <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                          name='username'
-                          control={control}
-                          render={({ field: { value, onChange, onBlur } }) => (
-                            <TextField
-                              label='User Name'
-                              value={value}
-                              onBlur={onBlur}
-                              onChange={onChange}
-                              error={Boolean(errors.username)}
-                            />
-                          )}
-                        />
-                        {errors.username && (
-                          <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item sm={4} xs={12}>
-                      <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                          name='firstName'
-                          control={control}
-                          render={({ field: { value, onChange, onBlur } }) => (
-                            <TextField
-                              label='First Name'
-                              value={value}
-                              onBlur={onBlur}
-                              onChange={onChange}
-                              error={Boolean(errors.firstName)}
-                            />
-                          )}
-                        />
-                        {errors.firstName && (
-                          <FormHelperText sx={{ color: 'error.main' }}>{errors.firstName.message}</FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item sm={4} xs={12}>
-                      <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                          name='middleName'
-                          control={control}
-                          render={({ field: { value, onChange, onBlur } }) => (
-                            <TextField
-                              label='Middle Name'
-                              value={value}
-                              onBlur={onBlur}
-                              onChange={onChange}
-                              error={Boolean(errors.middleName)}
-                            />
-                          )}
-                        />
-                        {errors.middleName && (
-                          <FormHelperText sx={{ color: 'error.main' }}>{errors.middleName.message}</FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item sm={4} xs={12}>
-                      <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                          name='lastName'
-                          control={control}
-                          render={({ field: { value, onChange, onBlur } }) => (
-                            <TextField
-                              label='Last Name'
-                              value={value}
-                              onBlur={onBlur}
-                              onChange={onChange}
-                              error={Boolean(errors.lastName)}
-                            />
-                          )}
-                        />
-                        {errors.lastName && (
-                          <FormHelperText sx={{ color: 'error.main' }}>{errors.lastName.message}</FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item sm={12} xs={12}>
-                      <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                          name='address'
-                          control={control}
-                          render={({ field: { value, onChange, onBlur } }) => (
-                            <TextField
-                              label='Home Address'
-                              value={value}
-                              onBlur={onBlur}
-                              onChange={onChange}
-                              error={Boolean(errors.address)}
-                            />
-                          )}
-                        />
-                        {errors.address && (
-                          <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
+                <Icon icon='mdi:close' />
+              </IconButton>
+              <Box sx={{ mb: 8, textAlign: 'center' }}>
+                <Typography variant='h5' sx={{ mb: 3 }}>
+                  Edit Staff Profile
+                </Typography>
+                <Typography variant='body2'>Update and fill up all required fields.</Typography>
+              </Box>
+                <Grid container spacing={6}>
+                  <Grid item sm={12} xs={12}>
+                    <Typography variant='body1' sx={{ fontWeight: 600 }}>
+                      1. Personal Data
+                    </Typography>
                   </Grid>
-              </DialogContent>
-              <DialogActions
-                sx={{
-                  justifyContent: 'center',
-                  px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
-                  pb: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
-                }}
-              >
-                <Button variant='contained' sx={{ mr: 1 }} type='submit'>
-                  Submit
-                </Button>
-                <Button variant='outlined' color='secondary' onClick={() => handleClose()}>
-                  Close
-                </Button>
-              </DialogActions>
-            </form>
-          </Dialog>
-      </Card>
-    </LocalizationProvider>
+                  {/* <Grid item sm={3} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='studentNumber'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Student Number'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.studentNumber)}
+                          />
+                        )}
+                      />
+                      {errors.studentNumber && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.studentNumber.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid> */}
+                  <Grid item sm={12} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='username'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='User Name'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.username)}
+                          />
+                        )}
+                      />
+                      {errors.username && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='firstName'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='First Name'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.firstName)}
+                          />
+                        )}
+                      />
+                      {errors.firstName && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.firstName.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='middleName'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Middle Name'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.middleName)}
+                          />
+                        )}
+                      />
+                      {errors.middleName && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.middleName.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='lastName'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Last Name'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.lastName)}
+                          />
+                        )}
+                      />
+                      {errors.lastName && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.lastName.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={12} xs={12}>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                      <Controller
+                        name='address'
+                        control={control}
+                        render={({ field: { value, onChange, onBlur } }) => (
+                          <TextField
+                            label='Home Address'
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.address)}
+                          />
+                        )}
+                      />
+                      {errors.address && (
+                        <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                </Grid>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                justifyContent: 'center',
+                px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
+                pb: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+              }}
+            >
+              <Button variant='contained' sx={{ mr: 1 }} type='submit'>
+                Submit
+              </Button>
+              <Button variant='outlined' color='secondary' onClick={() => handleClose()}>
+                Close
+              </Button>
+            </DialogActions>
+          </form>
+        </Dialog>
+    </Card>
   )
 }
 

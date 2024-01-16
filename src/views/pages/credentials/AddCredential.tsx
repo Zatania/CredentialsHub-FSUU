@@ -4,7 +4,6 @@ import { Ref, useState, forwardRef, ReactElement } from 'react'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Card from '@mui/material/Card'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
@@ -54,7 +53,6 @@ interface CredentialsData {
 const DialogAddCredential = ({ refreshData }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
 
   const {
     control,
@@ -75,13 +73,11 @@ const DialogAddCredential = ({ refreshData }) => {
   const onSubmit = async (data: CredentialsData) => {
     axios.post(`/api/credentials`, data)
       .then(() => {
-        setLoading(false)
         toast.success('Credential Added Successfully')
         handleClose()
       })
       .catch((error) => {
         console.error(error)
-        setLoading(false)
         toast.error('Credential Adding Failed')
       })
   }

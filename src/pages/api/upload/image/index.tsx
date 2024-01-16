@@ -16,7 +16,7 @@ const readFile = (
   const options: formidable.Options = {}
   if (saveLocally) {
     options.uploadDir = path.join(process.cwd(), "/public/uploads")
-    options.filename = (name, ext, path, form) => {
+    options.filename = (name, ext, path) => {
       return Date.now().toString() + "_" + path.originalFilename
     }
   }

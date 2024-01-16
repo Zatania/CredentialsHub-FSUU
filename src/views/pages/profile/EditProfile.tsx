@@ -35,9 +35,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
-// ** Next Import
-import { useRouter } from 'next/router'
-
 const Transition = forwardRef(function Transition(
   props: FadeProps & { children?: ReactElement<any, any> },
   ref: Ref<unknown>
@@ -96,11 +93,8 @@ interface Department {
 const DialogEditProfile = ({ user }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
   const [departments, setDepartments] = useState<Department[]>([])
   const [userDepartmentId, setUserDepartmentId] = useState<number | undefined>();
-
-  const router = useRouter()
 
   const {
     control,
@@ -137,11 +131,9 @@ const DialogEditProfile = ({ user }) => {
         throw new Error('Failed to submit form')
       }
 
-      setLoading(false)
       toast.success('Profiled Edited Successfully')
       handleClose()
     } catch (error) {
-      setLoading(false)
       toast.error('Profiled Edited Failed')
     }
   }

@@ -118,6 +118,7 @@ async function formatData(transactions: any[]) {
       transaction_date: transaction.transaction_date,
       status: transaction.status,
       image: transaction.attachment,
+      payment_date: transaction.payment_date,
       schedule: transaction.schedule,
       remarks: transaction.remarks,
       claim: transaction.claim,

@@ -10,14 +10,10 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import FormControl from '@mui/material/FormControl'
 import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import EditIcon from '@mui/icons-material/Edit'
-import InputLabel from '@mui/material/InputLabel'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import InputAdornment from '@mui/material/InputAdornment'
 import Checkbox from '@mui/material/Checkbox'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -74,9 +70,8 @@ interface Department {
 const DialogEditStaff = ({ staff, refreshData }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [selectedDepartments, setSelectedDepartments] = useState<number[]>([]);
-  const [loading, setLoading] = useState(false)
+  const [departments, setDepartments] = useState<Department[]>([])
+  const [selectedDepartments, setSelectedDepartments] = useState<number[]>([])
 
   const {
     control,
@@ -92,70 +87,67 @@ const DialogEditStaff = ({ staff, refreshData }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/departments/list');
-        const data = await response.json();
-        setDepartments(data);
+        const response = await fetch('/api/departments/list')
+        const data = await response.json()
+        setDepartments(data)
 
         // Create a mapping of department names to IDs
         const departmentNameToId = data.reduce((acc, department) => {
-          acc[department.name.toLowerCase()] = department.id;
+          acc[department.name.toLowerCase()] = department.id
 
-          return acc;
-        }, {});
+          return acc
+        }, {})
 
         // Prepopulate selected departments using the staff's department names
         if (staff && staff.departments) {
           const mappedDepartments = staff.departments.map(depName =>
             departmentNameToId[depName.toLowerCase()] // Convert each name to lowercase and find the ID
-          );
-          setSelectedDepartments(mappedDepartments.filter(id => id !== undefined)); // Filter out any undefined IDs
+          )
+          setSelectedDepartments(mappedDepartments.filter(id => id !== undefined)) // Filter out any undefined IDs
         }
       } catch (error) {
-        console.error('Error fetching departments: ', error);
+        console.error('Error fetching departments: ', error)
       }
-    };
+    }
 
-    fetchData();
-  }, [staff]);
+    fetchData()
+  }, [staff])
 
   const handleDepartmentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const departmentId = Number(event.target.name); // Convert the name to a number
+    const departmentId = Number(event.target.name) // Convert the name to a number
     setSelectedDepartments(prevSelectedDepartments => {
       if (prevSelectedDepartments.includes(departmentId)) {
-        return prevSelectedDepartments.filter(dep => dep !== departmentId);
+        return prevSelectedDepartments.filter(dep => dep !== departmentId)
       } else {
-        return [...prevSelectedDepartments, departmentId];
+        return [...prevSelectedDepartments, departmentId]
       }
-    });
-  };
+    })
+  }
 
   const handleClose = () => {
-    setShow(false);
-    reset();  // Reset the form fields to their default values
+    setShow(false)
+    reset()  // Reset the form fields to their default values
     refreshData()
-  };
+  }
 
   const onSubmit = async (data: StaffData) => {
-    setLoading(true);
 
     // Prepare data to be sent to the API
     const updatedData = {
       ...data,
       departments: selectedDepartments // This assumes 'selectedDepartments' holds the IDs of the selected departments
-    };
+    }
 
     try {
       // Make the API request to update the staff details
-      await axios.put(`/api/admin/staff/edit/${staff?.id}`, updatedData);
+      await axios.put(`/api/admin/staff/edit/${staff?.id}`, updatedData)
 
       // Handle successful update
-      toast.success('Staff Edited Successfully');
-      handleClose(); // Close the dialog and reset form
+      toast.success('Staff Edited Successfully')
+      handleClose() // Close the dialog and reset form
     } catch (error) {
-      console.error(error);
-      toast.error('Error updating staff details');
-    } finally {
-      setLoading(false); // Reset loading state in both success and error cases
+      console.error(error)
+      toast.error('Error updating staff details')
     }
   }
 

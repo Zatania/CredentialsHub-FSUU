@@ -1,5 +1,5 @@
 // ** React Imports
-import { Ref, useState, forwardRef, ReactElement, useEffect } from 'react'
+import { Ref, useState, forwardRef, ReactElement } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -89,7 +89,6 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
   const [show, setShow] = useState<boolean>(false)
   const [scheduleDate, setScheduleDate] = useState(null);
   const [remarks, setRemarks] = useState('');
-  const [scheduleError, setScheduleError] = useState('');
   const [remarksError, setRemarksError] = useState('');
 
   const { data: session } = useSession()
@@ -101,18 +100,6 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
     setRemarks('')
     refreshData()
   }
-
-  const validateSched = () => {
-    let isValid = true;
-    if (!scheduleDate) {
-      setScheduleError('Schedule date is required');
-      isValid = false;
-    } else {
-      setScheduleError('');
-    }
-
-    return isValid;
-  };
 
   const validateRemarks = () => {
     let isValid = true;

@@ -61,7 +61,6 @@ interface CredentialsData {
 const DialogAddPackage = ({ refreshData }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
   const [credentials, setCredentials] = useState<CredentialsData[]>([])
   const [selectedCredentials, setSelectedCredentials] = useState<CredentialsData[]>([])
 
@@ -111,16 +110,13 @@ const DialogAddPackage = ({ refreshData }) => {
       credentials: selectedCredentials
     }
 
-    setLoading(true)
     axios.post(`/api/packages`, packageData)
       .then(() => {
-        setLoading(false)
         toast.success('Package Added Successfully')
         handleClose()
       })
       .catch((error) => {
         console.error(error)
-        setLoading(false)
         toast.error('Package Adding Failed')
       })
   }

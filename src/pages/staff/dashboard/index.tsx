@@ -15,7 +15,6 @@ import { useTheme } from '@mui/material/styles'
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 // ** Custome Components Import
-import CardStatisticsVerticalComponent from 'src/@core/components/card-statistics/card-stats-vertical'
 import OptionsMenu from 'src/@core/components/option-menu'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
@@ -39,7 +38,6 @@ const DashboardStaff = () => {
   // ** States
   const [logs, setLogs] = useState<object[]>([])
   const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(false)
   const [submittedDailyCount, setSubmittedDailyCount] = useState()
   const [scheduledDailyCount, setScheduledDailyCount] = useState()
   const [claimedDailyCount, setClaimedDailyCount] = useState()
@@ -71,13 +69,11 @@ const DashboardStaff = () => {
   const { data: session } = useSession()
 
   const fetchLogs = useCallback(async (page: number) => {
-    setLoading(true)
     const role = session?.user?.role
     const userId = session?.user?.id
     const response = await axios.get(`/api/logs/${role}?userId=${userId}&page=${page}&limit=5`)
     const newLogs = await response.data
     setLogs(prevLogs => [...prevLogs, ...newLogs])
-    setLoading(false)
   }, [session])
 
   const fetchCounts = useCallback(async () => {

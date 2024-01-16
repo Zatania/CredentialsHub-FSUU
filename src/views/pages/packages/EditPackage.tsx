@@ -66,7 +66,6 @@ interface PackageData {
 const DialogEditPackage  = ({ packageId, refreshData }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
   const [allCredentials, setAllCredentials] = useState<CredentialsData[]>([])
   const [selectedCredentials, setSelectedCredentials] = useState<{ [key: number]: { data: CredentialsData, quantity: number } }>({})
 
@@ -138,16 +137,13 @@ const DialogEditPackage  = ({ packageId, refreshData }) => {
       }))
     }
 
-    setLoading(true)
     axios.put(`/api/packages/${packageId}`, updatedPackageData)
       .then(() => {
-        setLoading(false)
         toast.success('Package Edited Successfully')
         handleClose()
       })
       .catch((error) => {
         console.error(error)
-        setLoading(false)
         toast.error('Package Editing Failed')
       })
   }

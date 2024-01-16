@@ -16,14 +16,11 @@ const LogsPage = () => {
   const [staffLogs, setStaffLogs] = useState<object[]>([])
   const [adminLogs, setAdminLogs] = useState<object[]>([])
   const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(false)
 
   const fetchRoleLogs = useCallback(async (role: any, setter: (arg0: (prevLogs: any) => any[]) => void) => {
-    setLoading(true);
     const response = await axios.get(`/api/admin/logs/${role}?page=${page}&limit=5`);
     const newLogs = await response.data;
     setter(prevLogs => [...prevLogs, ...newLogs]);
-    setLoading(false);
   }, [page]);
 
   useEffect(() => {

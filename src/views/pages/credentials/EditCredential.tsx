@@ -54,7 +54,6 @@ interface CredentialsData {
 const DialogEditCredential = ({ credential, refreshData }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
 
   const {
     control,
@@ -76,13 +75,11 @@ const DialogEditCredential = ({ credential, refreshData }) => {
   const onSubmit = async (data: CredentialsData) => {
     axios.put(`/api/credentials/${credential?.id}`, data)
       .then(() => {
-        setLoading(false)
         toast.success('Credential Edited Successfully')
         handleClose()
       })
       .catch((error) => {
         console.error(error)
-        setLoading(false)
         toast.error('Credential Editing Failed')
       })
   }

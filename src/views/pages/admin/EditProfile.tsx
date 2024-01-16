@@ -42,7 +42,6 @@ interface FormData {
 const DialogAdminEditProfile = ({ admin, refreshData }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
 
   const {
     control,
@@ -61,7 +60,6 @@ const DialogAdminEditProfile = ({ admin, refreshData }) => {
   }
 
   const onSubmit = async (data: FormData) => {
-    setLoading(true)
     data.id = admin?.id
     try {
       const response = await fetch('/api/admin/profile/edit', {
@@ -76,11 +74,9 @@ const DialogAdminEditProfile = ({ admin, refreshData }) => {
         throw new Error('Failed to submit form')
       }
 
-      setLoading(false)
       toast.success('Profiled Edited Successfully')
       handleClose()
     } catch (error) {
-      setLoading(false)
       toast.error('Profiled Edited Failed')
       console.error(error)
     }

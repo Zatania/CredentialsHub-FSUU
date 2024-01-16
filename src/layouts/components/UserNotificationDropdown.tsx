@@ -10,7 +10,7 @@ import { styled, Theme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import MuiMenu, { MenuProps } from '@mui/material/Menu'
 import MuiMenuItem, { MenuItemProps } from '@mui/material/MenuItem'
-import Typography, { TypographyProps } from '@mui/material/Typography'
+import Typography from '@mui/material/Typography'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -21,14 +21,9 @@ import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 // ** Type Imports
 import { ThemeColor } from 'src/@core/layouts/types'
 import { Settings } from 'src/@core/context/settingsContext'
-import { CustomAvatarProps } from 'src/@core/components/mui/avatar/types'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
-import CustomAvatar from 'src/@core/components/mui/avatar'
-
-// ** Util Import
-import { getInitials } from 'src/@core/utils/get-initials'
 
 export type NotificationsType = {
   meta: string

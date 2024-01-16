@@ -144,11 +144,8 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [departments, setDepartments] = useState<Department[]>([])
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
-  const [uploading, setUploading] = useState(false)
   const [selectedImage, setSelectedImage] = useState("")
   const [selectedFile, setSelectedFile] = useState<File>()
-  const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
   // ** Hooks
   const theme = useTheme()
@@ -172,11 +169,6 @@ const Register = () => {
 
 
   const graduateCheckValue = watch('graduateCheck')
-  const graduationDate = watch('graduationDate')
-  const academicHonor = watch('academicHonor')
-  const yearLevel = watch('yearLevel')
-  const schoolYear = watch('schoolYear')
-  const semester = watch('semester')
 
   const isGraduatedYes = graduateCheckValue === 'yes'
 
@@ -204,18 +196,7 @@ const Register = () => {
     !areAllFieldsFilled() || // Check if all required fields are filled
     !isImageAttached // Check if an image is attached
 
-  useEffect(() => {
-    const isGraduateCheckFilled = graduateCheckValue === 'yes' || graduateCheckValue === 'no'
-    const isYesFieldsFilled = graduateCheckValue === 'yes' && graduationDate && academicHonor
-    const isNoFieldsFilled = graduateCheckValue === 'no' && yearLevel && schoolYear && semester
-    const isImageAttached = selectedImage !== ''
-
-    setIsFormValid(isGraduateCheckFilled && (isYesFieldsFilled || isNoFieldsFilled) && isImageAttached)
-  }, [graduateCheckValue, graduationDate, academicHonor, yearLevel, schoolYear, semester, selectedImage])
-
-
   const handleUpload = async () => {
-    setUploading(true)
     try {
       if (!selectedFile) return
 
@@ -232,7 +213,6 @@ const Register = () => {
     } catch (error) {
       console.error(error)
     }
-    setUploading(false)
   }
 
 
@@ -264,11 +244,9 @@ const Register = () => {
         throw new Error('Failed to submit form')
       }
 
-      setLoading(false)
       toast.success('Registered Successfully')
       router.push('/')
     } catch (error) {
-      setLoading(false)
       toast.error('Registration Failed')
       console.error(error)
     }

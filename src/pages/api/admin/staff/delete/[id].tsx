@@ -22,9 +22,11 @@ export default async function handler(
       await deleteStaff(Number(id));
       res.status(204).end();
     } catch (error) {
-      console.error(error);
-      const errorMessage = error.message || 'Internal Server Error';
-      res.status(500).json({ message: errorMessage });
+      if (error instanceof Error) {
+        console.error(error);
+        const errorMessage = error.message || 'Internal Server Error';
+        res.status(500).json({ message: errorMessage });
+      }
     }
   } else {
     res.setHeader('Allow', ['DELETE']);

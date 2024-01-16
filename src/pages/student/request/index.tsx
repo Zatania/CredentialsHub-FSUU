@@ -40,9 +40,7 @@ const Transition = forwardRef(function Transition(
 const RequestCredentials = () => {
   // ** States
   const [show, setShow] = useState<boolean>(true)
-  const [loading, setLoading] = useState<boolean>(false)
   const [packages, setPackages] = useState<PackageData[]>([])
-  const [allCredentials, setAllCredentials] = useState<CredentialData[]>([])
   const [selectedCredentials, setSelectedCredentials] = useState([])
   const [selectedPackage, setSelectedPackage] = useState<number | 'others'>(0)
   const [totalAmount, setTotalAmount] = useState<number>(0)
@@ -71,44 +69,40 @@ const RequestCredentials = () => {
     if (selectedPackage !== 'others' && selectedPackage !== 0) {
       axios.get(`/api/packages/${selectedPackage}`)
         .then(response => {
-          setSelectedCredentials(response.data.credentials || []);
+          setSelectedCredentials(response.data.credentials || [])
         })
-        .catch(error => console.error("Error fetching package credentials", error));
+        .catch(error => console.error("Error fetching package credentials", error))
     } else if (selectedPackage === 'others') {
-      setSelectedCredentials(individualCredentials.map(cred => ({ ...cred, quantity: 0 })));
+      setSelectedCredentials(individualCredentials.map(cred => ({ ...cred, quantity: 0 })))
     }
-  }, [selectedPackage, individualCredentials]);
+  }, [selectedPackage, individualCredentials])
 
   const handleCredentialQuantityChange = (credentialId, quantity) => {
     setSelectedCredentials(prevCredentials => prevCredentials.map(cred =>
       cred.id === credentialId ? { ...cred, quantity: parseInt(quantity, 10) || 0 } : cred
-    ));
+    ))
   }
 
   useEffect(() => {
-    let total = selectedCredentials.reduce((acc, cred) => acc + (cred.price * cred.quantity), 0);
-    setTotalAmount(total);
-  }, [selectedCredentials]);
+    const total = selectedCredentials.reduce((acc, cred) => acc + (cred.price * cred.quantity), 0)
+    setTotalAmount(total)
+  }, [selectedCredentials])
 
   const handlePackageChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedPackage(event.target.value as number | 'others');
+    setSelectedPackage(event.target.value as number | 'others')
   }
 
   // ** CHECK IF STUDENT IS VERIFED OR NOT
   // Redirect unverified users
   useEffect(() => {
-    setLoading(true)
     if (session && session.user.status !== 'Verified') {
-      setLoading(false)
       toast.error('You are not verified yet')
       router.push('/') // Redirect to a specific page for unverified users
     }
   }, [session, router])
 
   const {
-    control,
-    handleSubmit,
-    formState: { errors }
+    handleSubmit
   } = useForm<>({
     mode: 'onBlur'
   })
@@ -123,10 +117,9 @@ const RequestCredentials = () => {
 
   const onSubmit = async () => {
     try {
-      setLoading(true); // Set loading state to true
 
       // Assuming you have the user's ID in the session data
-      const userId = session?.user?.id;
+      const userId = session?.user?.id
       const packageId = selectedPackage
 
       // Prepare the data to be sent
@@ -134,30 +127,27 @@ const RequestCredentials = () => {
         userId,
         totalAmount,
         packageId
-      };
+      }
 
       if (packageId === 'others') {
         const credentials = selectedCredentials.map(cred => ({
           credentialId: cred.id,
           quantity: cred.quantity,
           price: cred.price
-        }));
-        transactionData.credentials = credentials;
+        }))
+        transactionData.credentials = credentials
       }
 
       // Send a POST request to your API endpoint
-      await axios.post('/api/transactions/new', transactionData);
+      await axios.post('/api/transactions/new', transactionData)
 
-      toast.success('Transaction submitted successfully!');
-      setLoading(false); // Set loading state to false
-      // Redirect or perform other actions upon successful submission
-      router.push('/student/transactions');
+      toast.success('Transaction submitted successfully!')
+      router.push('/student/transactions')
     } catch (error) {
-      console.error('Error submitting transaction:', error);
-      toast.error('Failed to submit transaction');
-      setLoading(false); // Set loading state to false
+      console.error('Error submitting transaction:', error)
+      toast.error('Failed to submit transaction')
     }
-  };
+  }
 
   return (
     <Dialog

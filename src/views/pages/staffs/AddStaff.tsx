@@ -26,7 +26,6 @@ import Icon from 'src/@core/components/icon'
 import { useForm, Controller } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import * as bcrypt from 'bcryptjs'
-import { useRouter } from 'next/router'
 
 interface StaffData {
   id: number
@@ -59,9 +58,6 @@ const DialogAddStaff = ({ refreshData }) => {
   const [selectedDepartments, setSelectedDepartments] = useState<number[]>([])
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
-  // ** Hooks
-  const router = useRouter()
-
   const {
     control,
     handleSubmit,
@@ -76,6 +72,7 @@ const DialogAddStaff = ({ refreshData }) => {
     setShow(false)
     reset()
     setSelectedDepartments([])
+    refreshData()
   }
 
   // Fetch departments list

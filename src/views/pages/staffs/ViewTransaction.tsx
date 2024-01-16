@@ -1,5 +1,5 @@
 // ** React Imports
-import { Ref, useState, forwardRef, ReactElement, useEffect } from 'react'
+import { Ref, useState, forwardRef, ReactElement } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -47,7 +47,9 @@ interface TransactionData {
   total_amount: number
   transaction_date: string
   status: string
+  date_done: string
   image: string
+  payment_date: string
   remarks: string
   schedule: string
   claim: string
@@ -89,7 +91,6 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
   const [show, setShow] = useState<boolean>(false)
   const [scheduleDate, setScheduleDate] = useState(null);
   const [remarks, setRemarks] = useState('');
-  const [scheduleError, setScheduleError] = useState('');
   const [remarksError, setRemarksError] = useState('');
 
   const { data: session } = useSession()
@@ -101,18 +102,6 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
     setRemarks('')
     refreshData()
   }
-
-  const validateSched = () => {
-    let isValid = true;
-    if (!scheduleDate) {
-      setScheduleError('Schedule date is required');
-      isValid = false;
-    } else {
-      setScheduleError('');
-    }
-
-    return isValid;
-  };
 
   const validateRemarks = () => {
     let isValid = true;
@@ -213,13 +202,27 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
               ) : null}
             </Box>
             <Grid container spacing={6}>
-              <Grid item sm={6} xs={12}>
+              <Grid item sm={4} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   Transaction ID:
                 </Typography>
                 <Typography variant='body1'>{transaction.id}</Typography>
               </Grid>
-              <Grid item sm={6} xs={12}>
+              <Grid item sm={4} xs={12}>
+                <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                  Request Type:
+                </Typography>
+                <Typography variant='body1'>
+                  {
+                    (transaction.packages.length > 0) ? (
+                      'Package'
+                    ) : transaction.individualCredentials.length > 0 ? (
+                      'Individual Credential/s'
+                    ) : null
+                  }
+                </Typography>
+              </Grid>
+              <Grid item sm={4} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   Transaction Date:
                 </Typography>
@@ -233,17 +236,9 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
               </Grid>
               <Grid item sm={6} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
-                  Request Type:
+                  Payment Date:
                 </Typography>
-                <Typography variant='body1'>
-                  {
-                    (transaction.packages.length > 0) ? (
-                      'Package'
-                    ) : transaction.individualCredentials.length > 0 ? (
-                      'Individual Credential/s'
-                    ) : null
-                  }
-                </Typography>
+                <Typography variant='body1'>{transaction.payment_date ? dayjs(transaction.payment_date).format('MMMM DD, YYYY') : 'Not Available'}</Typography>
               </Grid>
               <Grid item sm={6} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
