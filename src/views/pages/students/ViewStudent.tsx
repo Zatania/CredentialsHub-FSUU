@@ -36,6 +36,8 @@ interface StudentData {
   lastName: string
   department: string
   course: string
+  contactNumber: string
+  emailAddress: string
   image: string
   status: string
 }
@@ -177,6 +179,22 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                   </Typography>
                   <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
                     {student.status}
+                  </Typography>
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Contact Number:
+                  </Typography>
+                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.contactNumber}
+                  </Typography>
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Email Address:
+                  </Typography>
+                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.emailAddress}
                   </Typography>
                 </Grid>
               </Grid>
