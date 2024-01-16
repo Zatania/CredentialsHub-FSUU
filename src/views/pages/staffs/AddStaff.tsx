@@ -292,17 +292,20 @@ const DialogAddStaff = ({ refreshData }) => {
               <Grid item xs={12}>
                 <FormGroup row>
                   {departments.map(department => (
-                    <FormControlLabel
-                      key={department.id}
-                      control={
-                        <Checkbox
-                          checked={selectedDepartments.includes(department.id)}
-                          onChange={handleDepartmentChange}
-                          name={String(department.id)} // Use department.id as the name
+                    <Grid container spacing={6} key={department.id}>
+                      <Grid item xs={12} sm={12}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={selectedDepartments.includes(department.id)}
+                              onChange={handleDepartmentChange}
+                              name={String(department.id)} // Use department.id as the name
+                            />
+                          }
+                          label={department.name}
                         />
-                      }
-                      label={department.name}
-                    />
+                      </Grid>
+                    </Grid>
                   ))}
                 </FormGroup>
               </Grid>
