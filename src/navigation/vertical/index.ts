@@ -88,6 +88,13 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:note-text'
     },
     {
+      path: '/admin/staff_logs',
+      title: 'Staff Logs',
+      action: 'read',
+      subject: 'staff-logs-page',
+      icon: 'mdi:note-text'
+    },
+    {
       path: '/staff/students',
       title: 'Students',
       action: 'read',
