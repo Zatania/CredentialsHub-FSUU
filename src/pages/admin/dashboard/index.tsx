@@ -106,16 +106,16 @@ const DashboardAdmin = () => {
           const id = department.id
           const response = await axios.get(`/api/admin/transaction/count/department/${id}?type=${type}`)
           const data = response.data
-          const transactionType = type.toLowerCase();
+          const transactionType = type.toLowerCase()
 
           // Update the corresponding department's transaction counts
-          const departmentIndex = departmentCounts.findIndex(dept => dept.id === department.id);
+          const departmentIndex = departmentCounts.findIndex(dept => dept.id === department.id)
           if (departmentIndex !== -1) {
-            const departmentCount = departmentCounts[departmentIndex];
+            const departmentCount = departmentCounts[departmentIndex]
             if (transactionType === 'submitted' || transactionType === 'scheduled' || transactionType === 'claimed' || transactionType === 'rejected') {
-              departmentCount[transactionType].daily = data.dailyCount;
-              departmentCount[transactionType].monthly = data.monthlyCount;
-              departmentCount[transactionType].yearly = data.yearlyCount;
+              departmentCount[transactionType].daily = data.dailyCount
+              departmentCount[transactionType].monthly = data.monthlyCount
+              departmentCount[transactionType].yearly = data.yearlyCount
             }
           }
 
@@ -132,6 +132,9 @@ const DashboardAdmin = () => {
           departmentCounts[departmentIndex].totalMonthly = totalMonthly
           departmentCounts[departmentIndex].totalYearly = totalYearly
         }
+          departmentCounts.sort((a, b) => (b.totalDaily || 0) - (a.totalDaily || 0));
+          departmentCounts.sort((a, b) => (b.totalMonthly || 0) - (a.totalMonthly || 0));
+          departmentCounts.sort((a, b) => (b.totalYearly || 0) - (a.totalYearly || 0));
       }
     }
 
