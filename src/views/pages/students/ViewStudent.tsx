@@ -21,6 +21,7 @@ import Icon from 'src/@core/components/icon'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import axios from 'axios'
+import dayjs from 'dayjs'
 
 const Transition = forwardRef(function Transition(
   props: FadeProps & { children?: ReactElement<any, any> },
@@ -36,6 +37,11 @@ interface StudentData {
   lastName: string
   department: string
   course: string
+  graduateCheck: string
+  graduationDate: string
+  yearLevel: string
+  schoolYear: string
+  semester: string
   contactNumber: string
   emailAddress: string
   image: string
@@ -45,7 +51,6 @@ interface StudentData {
 const DialogViewStudent  = ({ student, refreshData, actionType }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
-  const [setLoading] = useState(false)
 
   const {
     handleSubmit,
@@ -57,6 +62,11 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
       lastName: student.lastName,
       department: student.department,
       course: student.course,
+      graduateCheck: student.graduateCheck,
+      graduationDate: student.graduationDate,
+      yearLevel: student.yearLevel,
+      schoolYear: student.schoolYear,
+      semester: student.semester,
       contactNumber: student.contactNumber,
       emailAddress: student.emailAddress,
       image: student.image,
@@ -71,13 +81,11 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
   }
 
   const onSubmit = async () => {
-    setLoading(true)
 
     const newStatus = actionType === 'verify' ? 'Verified' : 'Unverified';
 
     axios.put(`/api/student/${student.id}?status=${newStatus}`)
       .then(() => {
-        setLoading(false)
         if (actionType === 'verify') {
           toast.success('Student Verified Successfully')
         } else {
@@ -87,7 +95,6 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
       })
       .catch((error) => {
         console.error(error)
-        setLoading(false)
         toast.error('Verifying Student Failed')
       })
   }
@@ -131,74 +138,105 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                 {student.image ? (
                   <img src={`/uploads/${student.image}`} alt='Student Image' style={{ width: '50%', height: 'auto' }} />
                 ) : (
-                  <Typography variant='body2'>No image attached</Typography>
+                  <Typography variant='body1'>No image attached</Typography>
                 )}
               </Box>
-              <Grid container spacing={3}>
+              <Grid container spacing={3} sx={{ textAlign: 'center' }}>
                 <Grid item sm={4} xs={12}>
-                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Student Number:
                   </Typography>
-                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
                     {student.studentNumber}
                   </Typography>
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     First Name:
                   </Typography>
-                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
                     {student.firstName}
                   </Typography>
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Last Name:
                   </Typography>
-                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
                     {student.lastName}
                   </Typography>
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Department:
                   </Typography>
-                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
                     {student.department}
                   </Typography>
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Course:
                   </Typography>
-                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
                     {student.course}
                   </Typography>
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Status:
                   </Typography>
-                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
                     {student.status}
                   </Typography>
                 </Grid>
                 <Grid item sm={6} xs={12}>
-                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Contact Number:
                   </Typography>
-                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
                     {student.contactNumber}
                   </Typography>
                 </Grid>
                 <Grid item sm={6} xs={12}>
-                  <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Email Address:
                   </Typography>
-                  <Typography variant='body2' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
                     {student.emailAddress}
                   </Typography>
                 </Grid>
+                {student.graduateCheck === 'yes' ? (
+                  <Grid item sm={12} xs={12}>
+                    <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                      Graduation Date:
+                    </Typography>
+                    <Typography variant='body1'>{dayjs(student.graduationDate).format('MMMM DD, YYYY')}</Typography>
+                  </Grid>
+                ) : student.graduateCheck === 'no' ? (
+                  <Grid item sm={12} xs={12}>
+                    <Grid container spacing={6}>
+                      <Grid item sm={4} xs={12}>
+                        <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                          Year Level:
+                        </Typography>
+                        <Typography variant='body1'>{student.yearLevel}</Typography>
+                      </Grid>
+                      <Grid item sm={4} xs={12}>
+                        <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                          School Year:
+                        </Typography>
+                        <Typography variant='body1'>{student.schoolYear}</Typography>
+                      </Grid>
+                      <Grid item sm={4} xs={12}>
+                        <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                          Semester:
+                        </Typography>
+                        <Typography variant='body1'>{student.semester}</Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                ) : null}
               </Grid>
             </DialogContent>
             <DialogActions
