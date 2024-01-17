@@ -18,6 +18,8 @@ import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import FormControl from '@mui/material/FormControl'
+import Input from '@mui/material/Input'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -97,6 +99,9 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
   const [scheduleDate, setScheduleDate] = useState(null);
   const [remarks, setRemarks] = useState('');
   const [remarksError, setRemarksError] = useState('');
+  const [selectedImage, setSelectedImage] = useState("")
+  const [selectedFile, setSelectedFile] = useState<File>()
+  const [selectedDate, setSelectedDate] = useState<Date | null>()
 
   const { data: session } = useSession()
   const user = session?.user
@@ -131,7 +136,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
       toast.success('Transaction Scheduled successfully.');
       handleClose();
     } catch (error) {
-      toast.error(error.response.data.message);
+      console.log(error)
     }
   }
 
@@ -145,7 +150,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
       toast.success('Transaction Rejected successfully.');
       handleClose();
     } catch (error) {
-      toast.error(error.response.data.message);
+      console.log(error)
     }
   }
 
@@ -159,9 +164,63 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
       toast.success('Transaction Claimed successfully.');
       handleClose();
     } catch (error) {
-      toast.error(error.response.data.message);
+      console.log(error)
     }
   };
+
+  const handleImageUpload = async () => {
+    try {
+      if (!selectedFile) return
+
+      const formData = new FormData()
+      formData.append("myImage", selectedFile)
+
+      const response = await axios.post("/api/upload/image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+
+      return(response.data.imagePath)
+    } catch (error) {
+      console.log(error)
+      console.error(error)
+    }
+  }
+
+  const handleUpload = async () => {
+    let path = '';
+    try {
+      path = await handleImageUpload();
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+    }
+
+    try {
+      if (path && selectedDate) {
+        await axios.put(`/api/staff/transactions/${transaction.id}/update`, {
+          imagePath: path,
+          payment_date: selectedDate,
+          user: user
+        })
+      } else if (path && !selectedDate) {
+        await axios.put(`/api/staff/transactions/${transaction.id}/update`, {
+          imagePath: path,
+          user: user
+        })
+      } else if (!path && selectedDate) {
+        await axios.put(`/api/staff/transactions/${transaction.id}/update`, {
+          payment_date: selectedDate,
+          user: user
+        })
+      }
+
+      toast.success('Transaction Updated successfully.')
+      handleClose()
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -371,33 +430,178 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
               ) : null}
             {transaction.status === 'Submitted' ? (
               <>
-                <Box sx={{ mb: 2}}>
-                  <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
-                    Proof of Payment
-                  </Typography>
-                  {transaction.image ? (
-                    <img src={`/uploads/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
-                  ) : (
-                    <Typography variant='body1'>No image attached</Typography>
-                  )}
-                  <DatePicker
-                    sx={{ mt: 5 }}
-                    label="Schedule Date"
-                    value={scheduleDate}
-                    onChange={(newValue) => setScheduleDate(newValue)}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                  <TextField
-                    fullWidth
-                    sx={{ mt: 5 }}
-                    label="Remarks"
-                    margin="normal"
-                    value={remarks}
-                    onChange={(e) => setRemarks(e.target.value)}
-                    error={!!remarksError}
-                    helperText={remarksError}
-                  />
-                </Box>
+                {transaction.image && transaction.payment_date ? (
+                  <Grid container spacing={6}>
+                    <Grid item sm={12} xs={12}>
+                      <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                        Proof of Payment
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={12} xs={12}>
+                      {transaction.image ? (
+                        <img src={`/uploads/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
+                      ) : (
+                        <Typography variant='body1'>No image attached</Typography>
+                      )}
+                    </Grid>
+                    <Grid item sm={12} xs={12}>
+                      {transaction.payment_date ? (
+                        <Typography variant='body1'>Payment Date: {dayjs(transaction.payment_date).format('MMMM DD, YYYY')}</Typography>
+                      ) : (
+                        <Typography variant='body1'>No Payment Date</Typography>
+                      )}
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                      <Grid container spacing={6}>
+                        <Grid item sm={12} xs={12}>
+                          <DatePicker
+                            label="Schedule Date"
+                            value={scheduleDate}
+                            onChange={(newValue) => setScheduleDate(newValue)}
+                            renderInput={(params) => <TextField {...params} />}
+                          />
+                        </Grid>
+                        <Grid item sm={12} xs={12}>
+                          <TextField
+                            label="Remarks"
+                            margin="normal"
+                            value={remarks}
+                            onChange={(e) => setRemarks(e.target.value)}
+                            error={!!remarksError}
+                            helperText={remarksError}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                ) : !transaction.image && !transaction.payment_date ? (
+                  <>
+                    <Grid item sm={12} xs={12}>
+                      <Grid container spacing={6}>
+                        <Grid item sm={12} xs={12}>
+                          <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                            Upload Proof of Payment
+                          </Typography>
+                        </Grid>
+                        <Grid item sm={12} xs={12}>
+                          <FormControl>
+                            <Input
+                              type="file"
+                              id="image-upload"
+                              style={{ display: "none" }}
+                              onChange={({ target }) => {
+                                if (target.files && target.files.length > 0) {
+                                  const file = target.files[0]
+                                  setSelectedImage(URL.createObjectURL(file))
+                                  setSelectedFile(file)
+                                }
+                              }}
+                            />
+                            <Button
+                              sx={{mb:10}}
+                              variant="outlined"
+                              component="label"
+                              htmlFor="image-upload"
+                              className="w-40 aspect-video rounded border-2 border-dashed cursor-pointer"
+                            >
+                              {selectedImage ? (
+                                <img src={selectedImage} alt="" style={{ maxWidth: "100%" }} />
+                              ) : (
+                                "Select Image"
+                              )}
+                            </Button>
+                          </FormControl>
+                        </Grid>
+                        <Grid item sm={12} xs={12}>
+                          <FormControl sx={{ mb: 4 }}>
+                            <DatePicker
+                              label='Payment Date'
+                              value={selectedDate}
+                              onChange={(date) => setSelectedDate(date)}
+                            />
+                          </FormControl>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </>
+                ) : transaction.image && !transaction.payment_date ? (
+
+                  <>
+                    <Grid item sm={12} xs={12}>
+                      <Grid container spacing={6}>
+                        <Grid item sm={12} xs={12}>
+                          <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                            Proof of Payment
+                          </Typography>
+                        </Grid>
+                        <Grid item sm={12} xs={12}>
+                          {transaction.image ? (
+                            <img src={`/uploads/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
+                          ) : (
+                            <Typography variant='body1'>No image attached</Typography>
+                          )}
+                        </Grid>
+                        <Grid item sm={12} xs={12}>
+                          <FormControl sx={{ mb: 4 }}>
+                            <DatePicker
+                              label='Payment Date'
+                              value={selectedDate}
+                              onChange={(date) => setSelectedDate(date)}
+                            />
+                          </FormControl>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </>
+                ) : !transaction.image && transaction.payment_date ? (
+                  <>
+                    <Grid item sm={12} xs={12}>
+                      <Grid container spacing={6}>
+                        <Grid item sm={12} xs={12}>
+                          <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                            Upload Proof of Payment
+                          </Typography>
+                        </Grid>
+                        <Grid item sm={12} xs={12}>
+                          <FormControl>
+                            <Input
+                              type="file"
+                              id="image-upload"
+                              style={{ display: "none" }}
+                              onChange={({ target }) => {
+                                if (target.files && target.files.length > 0) {
+                                  const file = target.files[0]
+                                  setSelectedImage(URL.createObjectURL(file))
+                                  setSelectedFile(file)
+                                }
+                              }}
+                            />
+                            <Button
+                              sx={{mb:10}}
+                              variant="outlined"
+                              component="label"
+                              htmlFor="image-upload"
+                              className="w-40 aspect-video rounded border-2 border-dashed cursor-pointer"
+                            >
+                              {selectedImage ? (
+                                <img src={selectedImage} alt="" style={{ maxWidth: "100%" }} />
+                              ) : (
+                                "Select Image"
+                              )}
+                            </Button>
+                          </FormControl>
+                        </Grid>
+                        <Grid item sm={12} xs={12}>
+                          {transaction.payment_date ? (
+                            <Typography variant='body1'>Payment Date: {dayjs(transaction.payment_date).format('MMMM DD, YYYY')}</Typography>
+                          ) : (
+                            <Typography variant='body1'>No Payment Date</Typography>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </>
+                ) : null}
               </>
             ) : null }
             {transaction.status === 'Scheduled' ? (
@@ -483,9 +687,16 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
           >
             {transaction.status === 'Submitted' ? (
               <>
-                <Button variant='contained' color='primary' onClick={handleSchedule}>
-                  Schedule
-                </Button>
+                {
+                  transaction.image && transaction.payment_date ?
+                    <Button variant='contained' color='primary' onClick={handleSchedule}>
+                      Schedule
+                    </Button>
+                  :
+                    <Button variant='contained' color='primary' onClick={handleUpload}>
+                      Upload
+                    </Button>
+                }
                 <Button variant='contained' color='error' onClick={handleReject}>
                   Reject
                 </Button>
