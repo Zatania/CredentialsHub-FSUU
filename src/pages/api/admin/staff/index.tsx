@@ -78,7 +78,7 @@ export default async function handler(
 
       res.status(200).json(staffs)
     } catch (error) {
-      console.log(error)
+      res.status(500).json({ message: 'Internal Server Error', error: error.message })
     }
   } else {
     res.setHeader('Allow', ['GET'])

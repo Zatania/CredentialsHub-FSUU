@@ -2,8 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next/types'
 import db from '../../db'
 import { RowDataPacket } from 'mysql2'
 
-type TransactionMap = { [status: string]: any[] };
-
 // Function to fetch user details
 async function fetchUserDetails(userId: number) {
   const [userDetails] = (await db.query(`
@@ -14,7 +12,7 @@ async function fetchUserDetails(userId: number) {
 }
 
 async function queryTransactionsBasedOnStatus(status: string) {
-  const transactions = (await db.query(`
+  const [transactions] = (await db.query(`
     SELECT t.* FROM transactions t
     INNER JOIN users u ON t.user_id = u.id
     WHERE t.status = ?
@@ -24,7 +22,7 @@ async function queryTransactionsBasedOnStatus(status: string) {
   return transactions
 }
 
-async function formatPackageTransaction(packageTransaction: { package_id: any }) {
+async function formatPackageTransaction(packageTransaction) {
   const [packages] = (await db.query(`
     SELECT * FROM packages WHERE id = ?
   `, [packageTransaction.package_id])) as RowDataPacket[]
@@ -138,7 +136,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected'] // Define the statuses
   if (req.method === 'GET') {
     try {
-      const allTransactions: TransactionMap = {}
+      const allTransactions = {}
 
       for (const status of statuses) {
         const transactions = await queryTransactionsBasedOnStatus(status)
@@ -147,7 +145,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json(allTransactions) // Send all transactions in a single response
     } catch (error) {
-      console.log(error)
+      res.status(500).json({ message: 'Internal Server Error', error: error.message })
     }
   } else {
     res.setHeader('Allow', ['GET'])

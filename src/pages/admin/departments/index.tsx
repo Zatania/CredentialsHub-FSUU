@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { useState, useEffect, SetStateAction } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -27,6 +27,12 @@ import axios from 'axios'
 import DialogAddDepartment from 'src/views/pages/deparments/AddDepartment'
 import DialogEditDepartment from 'src/views/pages/deparments/EditDepartment'
 import toast from 'react-hot-toast'
+
+interface DepartmentsData {
+  id: number
+  name: string
+  is_deleted: boolean
+}
 
 interface DepartmentsProps {
   setDepartments: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;

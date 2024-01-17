@@ -110,17 +110,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await updateTransaction(Number(id), { credentials, totalAmount, imagePath, payment_date }, user)
       res.status(204).end()
     } catch (error) {
-      console.log(error)
+      res.status(500).json({ message: 'Internal Server Error', error: error.message })
     }
   } else if (req.method === 'DELETE') {
     try {
       const session = await getSession({ req })
-      const user = session?.user
+      const user = session.user
 
       await deleteTransaction(Number(id), user)
       res.status(204).end()
     } catch (error) {
       console.error(error)
+      const errorMessage = error.message || 'Internal Server Error'
+      res.status(500).json({ message: errorMessage })
     }
   } else {
     res.setHeader('Allow', ['PUT', 'DELETE'])

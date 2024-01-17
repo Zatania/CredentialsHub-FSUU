@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await updateTransaction(Number(id), { credentials, totalAmount, imagePath, payment_date }, user)
       res.status(204).end()
     } catch (error) {
-      console.log(error)
+      res.status(500).json({ message: 'Internal Server Error', error: error.message })
     }
   } else {
     res.setHeader('Allow', ['PUT'])

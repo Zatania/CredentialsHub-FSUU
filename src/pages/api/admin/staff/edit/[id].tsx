@@ -37,6 +37,7 @@ export default async function handler(
       res.status(204).end()
     } catch (error) {
       console.error(error)
+      res.status(500).json({ message: error.message })
     }
   } else {
     res.setHeader('Allow', ['PUT', 'DELETE'])

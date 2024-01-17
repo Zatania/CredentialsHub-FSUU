@@ -35,6 +35,7 @@ export default async function handler(
       res.status(204).end()
     } catch (error) {
       console.error(error)
+      res.status(500).json({ message: error.message })
     }
   } else if (req.method === 'DELETE') {
     try {
@@ -42,6 +43,8 @@ export default async function handler(
       res.status(204).end()
     } catch (error) {
       console.error(error)
+      const errorMessage = error.message || 'Internal Server Error'
+      res.status(500).json({ message: errorMessage })
     }
   } else {
     res.setHeader('Allow', ['PUT', 'DELETE'])
