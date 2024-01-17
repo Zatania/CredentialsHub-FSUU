@@ -1,7 +1,7 @@
 import { NextApiResponse, NextApiRequest } from 'next/types'
 import { RowDataPacket } from 'mysql2/promise'
 import * as bcrypt from 'bcryptjs'
-import db from '../db'
+import db from '../../db'
 import dayjs from 'dayjs'
 
 const comparePasswords = async (inputPassword: string, hashedPassword: string): Promise<boolean> => {

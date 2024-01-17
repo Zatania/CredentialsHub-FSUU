@@ -1,6 +1,6 @@
 import { NextApiResponse, NextApiRequest } from 'next/types'
 import { RowDataPacket } from 'mysql2/promise'
-import db from '../../db'
+import db from '../../../db'
 
 interface Transaction {
   id: number

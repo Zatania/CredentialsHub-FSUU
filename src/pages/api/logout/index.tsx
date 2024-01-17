@@ -1,5 +1,5 @@
 import { NextApiResponse, NextApiRequest } from 'next/types'
-import db from '../db'
+import db from '../../db'
 import dayjs from 'dayjs'
 
 export default async function handler(

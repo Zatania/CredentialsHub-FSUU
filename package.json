@@ -57,7 +57,7 @@
     "i18next-browser-languagedetector": "7.0.1",
     "i18next-http-backend": "2.2.0",
     "keen-slider": "6.8.5",
-    "mysql2": "^3.7.0",
+    "mysql2": "^3.6.5",
     "next": "13.3.2",
     "next-auth": "^4.24.5",
     "nprogress": "0.2.0",

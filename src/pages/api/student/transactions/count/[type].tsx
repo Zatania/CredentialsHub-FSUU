@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next/types'
-import db from '../../../db'
+import db from '../../../../db'
 import { RowDataPacket } from 'mysql2'
 
 async function getTransactionCount(id: number, type: string) {

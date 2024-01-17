@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next/types'
-import db from '../db'
+import db from '../../db'
 
 // Mock functions, replace with actual database logic
 async function updateCredential(id: number, data: any) {
