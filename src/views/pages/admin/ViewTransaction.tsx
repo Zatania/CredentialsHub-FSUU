@@ -16,7 +16,7 @@ import DialogActions from '@mui/material/DialogActions'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { DatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import FormControl from '@mui/material/FormControl'
 import Input from '@mui/material/Input'
@@ -449,7 +449,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                     <Grid item xs={12} sm={12}>
                       <Grid container spacing={6}>
                         <Grid item sm={12} xs={12}>
-                          <DatePicker
+                          <DateTimePicker
                             label="Schedule Date"
                             value={scheduleDate}
                             onChange={(newValue) => setScheduleDate(newValue)}
