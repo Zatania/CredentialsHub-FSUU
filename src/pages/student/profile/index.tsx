@@ -135,7 +135,7 @@ const ProfilePage = () => {
   }
   const about = {
     profile: [
-      { property: 'Student Number', value: user?.studentNumber, icon: 'mdi:account-card-outline' },
+      { property: 'Student Number', value: user?.studentNumber ? user.studentNumber : '', icon: 'mdi:account-card-outline' },
       { property: 'Full Name', value: fullName, icon: 'mdi:account-outline' },
       { property: 'Department', value: capitalizeFirstLetter(user?.department), icon: 'mdi:account-details-outline' },
       { property: 'Course', value: capitalizeFirstLetter(user?.course), icon: 'mdi:account-details-outline' },
