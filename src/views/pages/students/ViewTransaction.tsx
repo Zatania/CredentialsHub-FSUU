@@ -95,7 +95,6 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
   const [selectedCredentials, setSelectedCredentials] = useState<CredentialsData[]>([])
   const [editing, setEditing] = useState<boolean>(false)
   const [originalTotalAmount, setOriginalTotalAmount] = useState<number>(transaction.total_amount)
-  const [setUploading] = useState(false)
   const [selectedImage, setSelectedImage] = useState("")
   const [selectedFile, setSelectedFile] = useState<File>()
   const [selectedDate, setSelectedDate] = useState<Date | null>()
@@ -287,7 +286,6 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
     }
   }
   const handleUpload = async () => {
-    setUploading(true)
     try {
       if (!selectedFile) return
 
@@ -305,7 +303,6 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
       console.log(error)
       console.error(error)
     }
-    setUploading(false)
   }
 
   return (

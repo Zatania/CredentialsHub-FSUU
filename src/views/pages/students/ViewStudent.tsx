@@ -57,6 +57,8 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
       lastName: student.lastName,
       department: student.department,
       course: student.course,
+      contactNumber: student.contactNumber,
+      emailAddress: student.emailAddress,
       image: student.image,
       status: student.status
     }

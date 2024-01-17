@@ -10,6 +10,8 @@ interface StudentData {
   lastName: string
   department: string
   course: string
+  contactNumber: string
+  emailAddress: string
   image: string
   status: string
 }
@@ -25,7 +27,7 @@ async function fetchStaffDepartments(staffId: number) {
 async function fetchStudents(status: string, departments: number[]) {
   try {
     const results = (await db.query(`
-      SELECT u.id, u.studentNumber, u.firstName, u.lastName, d.name AS department, u.course, u.image, u.status
+      SELECT u.id, u.studentNumber, u.firstName, u.lastName, d.name AS department, u.course, u.image, u.status, u.emailAddress, u.contactNumber
       FROM users AS u
       INNER JOIN department AS d ON u.department = d.id
       WHERE u.status = ? AND d.id IN (?)
@@ -38,6 +40,8 @@ async function fetchStudents(status: string, departments: number[]) {
       lastName: row.lastName,
       department: row.department,
       course: row.course,
+      contactNumber: row.contactNumber,
+      emailAddress: row.emailAddress,
       image: row.image,
       status: row.status
     }))
