@@ -189,11 +189,11 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
   }
 
   const handleSaveClick = async () => {
-    let path = '';
+    let path = ''
     try {
-      path = await handleUpload();
+      path = await handleUpload()
     } catch (error) {
-      console.error('Failed to upload image:', error);
+      console.error('Failed to upload image:', error)
     }
 
     try {
@@ -253,11 +253,11 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
   }
 
   const handlePackageUpload = async () => {
-    let path = '';
+    let path = ''
     try {
-      path = await handleUpload();
+      path = await handleUpload()
     } catch (error) {
-      console.error('Failed to upload image:', error);
+      console.error('Failed to upload image:', error)
     }
 
     try {
