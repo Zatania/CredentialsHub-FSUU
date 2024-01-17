@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next/types'
 import db from '../../db'
-import { RowDataPacket } from 'mysql2'
 
 // Mock functions, replace with actual database logic
 async function updateCredential(id: number, data: any) {
@@ -15,19 +14,7 @@ async function updateCredential(id: number, data: any) {
 
 async function deleteCredential(id: number) {
   try {
-    // Check if the credential is in use
-    const [transactions] = await db.query(`SELECT * FROM package_contents WHERE credential_id = ?`, [id]) as RowDataPacket[]
-    if (transactions.length > 0) {
-      throw new Error('Credential is in use in a package and cannot be deleted.')
-    }
-
-    // Check if the credential is in the another_table
-    const [transactions2] = await db.query(`SELECT * FROM transaction_details WHERE credential_id = ?`, [id]) as RowDataPacket[]
-    if (transactions2.length > 0) {
-      throw new Error('Credential is in use in a transaction and cannote be deleted.')
-    }
-
-    const [rows] = await db.query(`DELETE FROM credentials WHERE id = ?`, [id])
+    const [rows] = await db.query(`UPDATE credentials SET is_deleted = TRUE WHERE id = ?`, [id])
 
     return rows
   } catch(error) {

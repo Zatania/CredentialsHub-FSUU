@@ -8,7 +8,7 @@ interface CredentialData {
   price: number
 }
 async function fetchCredentials() {
-  const results = (await db.query('SELECT * FROM credentials ORDER BY name')) as RowDataPacket
+  const results = (await db.query('SELECT * FROM credentials WHERE is_deleted = FALSE ORDER BY name')) as RowDataPacket
 
   const rows = results[0].map((row: CredentialData) => ({
     id: row.id,
