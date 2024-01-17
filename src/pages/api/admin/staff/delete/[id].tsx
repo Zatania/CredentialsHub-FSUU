@@ -3,9 +3,7 @@ import db from '../../../../db'
 
 async function deleteStaff(id: number) {
   try {
-    await db.query(`DELETE FROM staffs_departments WHERE staff_id = ?`, [id])
-    await db.query(`DELETE FROM staffs_roles WHERE staff_id = ?`, [id])
-    await db.query(`DELETE FROM staffs WHERE id = ?`, [id])
+    await db.query(`UPDATE staffs SET is_deleted = TRUE WHERE id = ?`, [id])
   } catch(error) {
     throw error
   }

@@ -26,6 +26,7 @@ async function fetchStaffs() {
     FROM staffs AS s
     LEFT JOIN staffs_departments AS sd ON s.id = sd.staff_id
     LEFT JOIN department AS d ON sd.department_id = d.id
+    WHERE s.is_deleted = FALSE
   `)) as RowDataPacket
 
   // Transforming the result to group departments under each staff
