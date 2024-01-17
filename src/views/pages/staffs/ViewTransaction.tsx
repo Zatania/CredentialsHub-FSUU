@@ -439,7 +439,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                     </Grid>
                     <Grid item sm={12} xs={12}>
                       {transaction.image ? (
-                        <img src={`/uploads/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
+                        <img src={`/api/images/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
                       ) : (
                         <Typography variant='body1'>No image attached</Typography>
                       )}
@@ -536,7 +536,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                         </Grid>
                         <Grid item sm={12} xs={12}>
                           {transaction.image ? (
-                            <img src={`/uploads/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
+                            <img src={`/api/images/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
                           ) : (
                             <Typography variant='body1'>No image attached</Typography>
                           )}
@@ -631,7 +631,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                     Proof of Payment
                   </Typography>
                   {transaction.image ? (
-                    <img src={`/uploads/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
+                    <img src={`/api/images/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
                   ) : (
                     <Typography variant='body1'>No image attached</Typography>
                   )}
@@ -657,7 +657,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                     Proof of Payment
                   </Typography>
                   {transaction.image ? (
-                    <img src={`/uploads/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
+                    <img src={`/api/images/${transaction.image}`} alt='Student Image' style={{ width: '80%', height: 'auto' }} />
                   ) : (
                     <Typography variant='body1'>No image attached</Typography>
                   )}

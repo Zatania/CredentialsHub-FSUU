@@ -15,7 +15,7 @@ const readFile = (
 ): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
   const options: formidable.Options = {}
   if (saveLocally) {
-    options.uploadDir = path.join(process.cwd(), "/public/uploads")
+    options.uploadDir = path.join(process.cwd(), "/uploads")
     options.filename = (name, ext, path) => {
       return Date.now().toString() + "_" + path.originalFilename
     }
@@ -33,9 +33,9 @@ const readFile = (
 
 const handler: NextApiHandler = async (req, res) => {
   try {
-    await fs.readdir(path.join(process.cwd() + "/public", "/uploads"))
+    await fs.readdir(path.join(process.cwd(), "/uploads"))
   } catch (error) {
-    await fs.mkdir(path.join(process.cwd() + "/public", "/uploads"))
+    await fs.mkdir(path.join(process.cwd(), "/uploads"))
   }
 
   try {
@@ -43,7 +43,7 @@ const handler: NextApiHandler = async (req, res) => {
     const myImage = file.files.myImage;
     if (myImage instanceof Array && myImage.length > 0) {
       const fullPath = myImage[0].filepath;
-      const relativePath = path.relative(path.join(process.cwd(), "public/uploads"), fullPath);
+      const relativePath = path.relative(path.join(process.cwd(), "uploads"), fullPath);
 
       res.json({ imagePath: relativePath.replace(/\\/g, '/') });
     }

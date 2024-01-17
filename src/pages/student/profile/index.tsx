@@ -101,7 +101,7 @@ const ProfilePage = () => {
     fullName: capitalizeFirstLetter(session?.user.firstName) + ' ' + capitalizeFirstLetter(session?.user.lastName),
     location: capitalizeFirstLetter(session?.user.location),
     designation: capitalizeFirstLetter(session?.user.role),
-    profileImg: `/uploads/${session?.user.image}`,
+    profileImg: `/api/images/${session?.user.image}`,
     designationIcon: 'mdi:invert-colors'
   }
 

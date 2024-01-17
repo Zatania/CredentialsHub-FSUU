@@ -136,7 +136,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
               </Box>
               <Box sx={{ mb: 2, textAlign: 'center' }}>
                 {student.image ? (
-                  <img src={`/uploads/${student.image}`} alt='Student Image' style={{ width: '50%', height: 'auto' }} />
+                  <img src={`/api/images/${student.image}`} alt='Student Image' style={{ width: '50%', height: 'auto' }} />
                 ) : (
                   <Typography variant='body1'>No image attached</Typography>
                 )}
