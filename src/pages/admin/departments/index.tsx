@@ -87,6 +87,19 @@ const Departments = () => {
       .catch(error => console.error("Error fetching data", error))
   }
 
+  const handleDeleteClick = (id: any) => {
+    axios.delete(`/api/departments/delete?id=${id}`)
+      .then(() => {
+        toast.success('Department deleted successfully')
+        fetchData()
+      })
+      .catch((error) => {
+        console.error(error)
+        const errorMessage = error.response?.data?.message || "Error deleting data";
+        toast.error(errorMessage);
+      })
+  }
+
   const departmentsColumns: GridColDef[] = [
     {
       flex: 0.3,
@@ -108,6 +121,9 @@ const Departments = () => {
         return (
           <>
             <DialogEditDepartment department={params.row} refreshData={fetchData}/>
+            <Button size='small' startIcon={<DeleteIcon />} variant='outlined' onClick={() => handleDeleteClick(params.row.id)}>
+              Delete
+            </Button>
           </>
         )
       }
