@@ -209,9 +209,9 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                 {student.graduateCheck === 'yes' ? (
                   <Grid item sm={12} xs={12}>
                     <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
-                      Graduation Date:
+                      Year Graduated:
                     </Typography>
-                    <Typography variant='body1'>{dayjs(student.graduationDate).format('MMMM DD, YYYY')}</Typography>
+                    <Typography variant='body1'>{student.graduationDate}</Typography>
                   </Grid>
                 ) : student.graduateCheck === 'no' ? (
                   <Grid item sm={12} xs={12}>

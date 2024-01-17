@@ -55,7 +55,6 @@ const formatDateValues = (userData: User) => {
 
   const dateFields = [
     'birthDate',
-    'graduationDate',
     'elementaryGraduated',
     'secondaryGraduated',
     'juniorHighGraduated',

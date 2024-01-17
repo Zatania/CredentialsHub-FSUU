@@ -337,9 +337,9 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
               {transaction.graduateCheck === 'yes' ? (
                 <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
-                    Graduation Date:
+                    Year Graduated:
                   </Typography>
-                  <Typography variant='body1'>{dayjs(transaction.graduationDate).format('MMMM DD, YYYY')}</Typography>
+                  <Typography variant='body1'>{transaction.graduationDate}</Typography>
                 </Grid>
               ) : transaction.graduateCheck === 'no' ? (
                 <Grid item sm={12} xs={12}>

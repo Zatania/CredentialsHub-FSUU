@@ -419,14 +419,25 @@ const DialogEditProfile = ({ user }) => {
                     {graduateCheckValue === 'yes' && (
                       <>
                         <Grid item sm={4} xs={12}>
-                          <FormControl fullWidth sx={{ mb: 4 }}>
-                            <Controller
-                              name='graduationDate'
-                              control={control}
-                              render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
-                            />
-                          </FormControl>
-                        </Grid>
+                            <FormControl fullWidth sx={{ mb: 4 }}>
+                              <Controller
+                                name='graduationDate'
+                                control={control}
+                                render={({ field: { value, onChange, onBlur } }) => (
+                                  <TextField
+                                    label='Year Graduated'
+                                    value={value}
+                                    onBlur={onBlur}
+                                    onChange={onChange}
+                                    error={Boolean(errors.graduationDate)}
+                                  />
+                                )}
+                              />
+                              {errors.graduationDate && (
+                                <FormHelperText sx={{ color: 'error.main' }}>{errors.graduationDate.message}</FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
                         <Grid item sm={4} xs={12}>
                           <FormControl fullWidth sx={{ mb: 4 }}>
                             <Controller

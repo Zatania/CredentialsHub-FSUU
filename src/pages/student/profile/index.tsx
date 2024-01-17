@@ -144,7 +144,7 @@ const ProfilePage = () => {
         ? [
             {
               property: 'Year Graduated',
-              value: formatDate(user?.graduationDate),
+              value: user?.graduationDate ? user.graduationDate : '',
               icon: 'mdi:account-school-outline'
             },
             {
