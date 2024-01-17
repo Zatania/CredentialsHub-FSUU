@@ -92,7 +92,7 @@ export const authOptions: NextAuthOptions = {
      * via `jwt()` callback to make them accessible in the `session()` callback
      */
     async jwt({ token, user }) {
-      if (user) {
+      if (user && Array.isArray(user)) {
         const userData = user[0]
 
         /*

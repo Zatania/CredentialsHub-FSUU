@@ -162,7 +162,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json(allTransactions) // Send all transactions in a single response
     } catch (error) {
-      res.status(500).json({ message: 'Internal Server Error', error: error.message })
+      console.log(error)
     }
   } else {
     res.setHeader('Allow', ['GET'])
