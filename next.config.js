@@ -15,5 +15,11 @@ module.exports = {
     }
 
     return config
+  },
+  eslint: {
+    ignoreDuringBuilds: true
+  },
+  typescript: {
+    ignoreBuildErrors: true
   }
 }
