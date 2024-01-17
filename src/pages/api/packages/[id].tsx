@@ -72,15 +72,7 @@ async function updatePackage(id: number, data: PackageData) {
 
 async function deletePackage(id: number) {
   try {
-    // Check if the credential is in use
-    const [transactions] = await db.query(`SELECT * FROM package_transactions WHERE package_id = ?`, [id]) as RowDataPacket[]
-    if (transactions.length > 0) {
-      throw new Error('Package is in use in a transaction and cannot be deleted.')
-    }
-
-    await db.query(`DELETE FROM package_contents WHERE package_id = ?`, [id])
-
-    await db.query(`DELETE FROM packages WHERE id = ?`, [id])
+    await db.query(`UPDATE packages SET is_deleted = TRUE WHERE id = ?`, [id])
 
     return 'success'
   } catch(error) {

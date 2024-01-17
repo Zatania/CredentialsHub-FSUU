@@ -15,7 +15,7 @@ interface CredentialData {
 }
 
 async function fetchPackages() {
-  const packages = (await db.query('SELECT * FROM packages ORDER BY name')) as RowDataPacket
+  const packages = (await db.query('SELECT * FROM packages WHERE is_deleted = FALSE ORDER BY name')) as RowDataPacket
 
   const packagesRows = packages[0].map((row: PackageData) => ({
     package_id: row.id,
