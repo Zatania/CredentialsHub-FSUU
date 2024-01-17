@@ -1,6 +1,6 @@
 import { NextApiResponse, NextApiRequest } from 'next/types'
 import dayjs from 'dayjs'
-import db from '../../../db'
+import db from '../../db'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

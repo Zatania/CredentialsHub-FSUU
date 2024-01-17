@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next/types'
 import { RowDataPacket } from 'mysql2/promise'
 import dayjs from 'dayjs'
-import db from '../../../../db'
+import db from '../../../db'
 
 interface Staff {
   id: number

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next/types'
-import db from '../../../../db'
+import db from '../../../db'
 import dayjs from 'dayjs'
 
 type Data = {
