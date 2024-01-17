@@ -26,7 +26,7 @@ const getUser = async (username: string, password: string, userType: string) => 
         'JOIN roles ON staffs_roles.role_id = roles.id ' +
         'LEFT JOIN staffs_departments ON staffs.id = staffs_departments.staff_id ' +
         'LEFT JOIN department ON staffs_departments.department_id = department.id ' +
-        'WHERE username = ? ' +
+        'WHERE username = ? AND is_deleted = FALSE' +
         'GROUP BY staffs.id, roles.name'
       params = [username]
     } else {
