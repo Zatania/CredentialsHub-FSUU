@@ -605,7 +605,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                   <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                     Schedule:
                   </Typography>
-                  <Typography variant='body1'>{dayjs(transaction.schedule).format('MMMM DD, YYYY')}</Typography>
+                  <Typography variant='body1'>{dayjs(transaction.schedule).format('MMMM DD, YYYY HH:mm:ss A')}</Typography>
                 </Grid>
                 <TextField
                   fullWidth
