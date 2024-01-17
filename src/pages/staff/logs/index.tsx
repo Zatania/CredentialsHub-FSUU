@@ -13,6 +13,9 @@ import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
+// ** Next Imports
+import { useSession } from 'next-auth/react'
+
 interface StaffLog {
   id: number
   timestamp: string
@@ -27,38 +30,26 @@ interface StaffLog {
   remarks: string
 }
 
-interface GroupedStaffLogs {
-  [key: string]: StaffLog[]
-}
-
-const StaffLogsPage = () => {
+const StaffLogs = () => {
   // ** States
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 5 })
   const [staffLogs, setStaffLogs] = useState<StaffLog[]>([])
 
+  const { data: session } = useSession()
+
+  const id = session?.user?.id
+  const staffName = session?.user?.firstName + ' ' + session?.user?.lastName
+
   // ** Get Staff Logs
   const fetchStaffLogs = useCallback(async () => {
-    const response = await axios.get('/api/admin/staff_logs')
+    const response = await axios.get(`/api/staff/logs/${id}`)
     setStaffLogs(response.data)
-  }, [])
+  }, [id])
 
   // ** ComponentDidMount
   useEffect(() => {
     fetchStaffLogs()
   }, [fetchStaffLogs])
-
-  const groupByStaff = (logs: StaffLog[]): GroupedStaffLogs => {
-
-    return logs.reduce((acc, log) => {
-      const { staff } = log
-      acc[staff] = acc[staff] || []
-      acc[staff].push(log)
-
-      return acc
-    }, {} as GroupedStaffLogs)
-  }
-
-  const groupedStaffLogs = groupByStaff(staffLogs)
 
   const staffLogsColumns: GridColDef[] = [
     {
@@ -175,37 +166,35 @@ const StaffLogsPage = () => {
 
   return (
     <Grid container spacing={6}>
-      {Object.entries(groupedStaffLogs).map(([staffName, logs]) => (
-        <Grid item sm={12} xs={12} key={staffName}>
-          <Card>
-            <CardHeader title={staffName} />
-            <DataGrid
-              autoHeight
-              columns={staffLogsColumns}
-              rows={logs}
-              pageSizeOptions={[5, 10, 50, 100]}
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                baseButton: {
-                  variant: 'outlined'
-                },
-                toolbar: {
-                  showQuickFilter: true,
-                }
-              }}
-            />
-          </Card>
-        </Grid>
-      ))}
+      <Grid item xs={12}>
+        <Card>
+          <CardHeader title={`${staffName}`} />
+          <DataGrid
+            autoHeight
+            columns={staffLogsColumns}
+            rows={staffLogs}
+            pageSizeOptions={[5, 10, 50, 100]}
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              baseButton: {
+                variant: 'outlined'
+              },
+              toolbar: {
+                showQuickFilter: true,
+              }
+            }}
+          />
+        </Card>
+      </Grid>
     </Grid>
   )
 }
 
-StaffLogsPage.acl = {
+StaffLogs.acl = {
   action: 'read',
-  subject: 'staff-logs-page'
+  subject: 'staff-logs'
 }
 
-export default StaffLogsPage
+export default StaffLogs

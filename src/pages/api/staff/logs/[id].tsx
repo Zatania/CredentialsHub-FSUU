@@ -15,7 +15,7 @@ interface StaffLogsData {
   remarks: string | null // Updated to allow null
   credentials_requested: string
 }
-async function fetchStaffLogs() {
+async function fetchStaffLogs(id: number) {
   const results = (await db.query(`
     SELECT
       t.id AS id,
@@ -52,6 +52,7 @@ async function fetchStaffLogs() {
     LEFT JOIN package_transactions pt ON t.id = pt.transaction_id
     LEFT JOIN package_contents pc ON pt.package_id = pc.package_id
     LEFT JOIN credentials cp ON pc.credential_id = cp.id
+    WHERE th.staff_id = ?
     GROUP BY
       t.id,
       t.transaction_date,
@@ -63,7 +64,7 @@ async function fetchStaffLogs() {
       t.payment_date,
       t.claim, t.reject,
       t.claimed_remarks, t.rejected_remarks
-  `)) as RowDataPacket
+  `, [id])) as RowDataPacket
 
   const rows = results[0].map((row: StaffLogsData) => ({
     id: row.id,
@@ -88,8 +89,9 @@ export default async function handler(
 ) {
   if (req.method === 'GET') {
     try {
-      const credentials = await fetchStaffLogs()
-      res.status(200).json(credentials)
+      const { id } = req.query
+      const logs = await fetchStaffLogs(Number(id))
+      res.status(200).json(logs)
     } catch (error) {
       console.log(error)
     }

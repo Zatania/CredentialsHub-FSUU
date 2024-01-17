@@ -108,6 +108,13 @@ const navigation = (): VerticalNavItemsType => {
       subject: 'transactions-page',
       icon: 'mdi:text-box'
     },
+    {
+      path: '/staff/logs',
+      title: 'Logs',
+      action: 'read',
+      subject: 'staff-logs',
+      icon: 'mdi:note-text'
+    },
   ]
 }
 
