@@ -102,8 +102,7 @@ const schema = yup.object().shape({
     .required('Confirm Password is required.'),
   studentNumber: yup
     .string()
-    .matches(/^[0-9\- ]+$/, 'Must contain only numbers, dashes, or spaces.')
-    .required('Student Number is required.'),
+    .matches(/^[0-9\- ]+$/, 'Must contain only numbers, dashes, or spaces.'),
   firstName: yup.string().required('First Name is required.'),
   lastName: yup.string().required('Last Name is required.'),
   department: yup.string().required('Department is required.'),
@@ -346,7 +345,7 @@ const Register = () => {
                         control={control}
                         render={({ field: { value, onChange, onBlur } }) => (
                           <TextField
-                            label='Student Number'
+                            label='Student Number (Optional)'
                             value={value}
                             onBlur={onBlur}
                             onChange={onChange}
