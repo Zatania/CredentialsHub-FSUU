@@ -34,12 +34,14 @@ const insertUser = async (userData: User) => {
     department,
     course,
     major,
+    contactNumber,
+    emailAddress,
     imagePath,
   } = userData
 
   try {
     const [rows] = (await db.query(
-      'INSERT INTO users (username, password, studentNumber, firstName, middleName, lastName, department, course, major, image, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO users (username, password, studentNumber, firstName, middleName, lastName, department, course, major, contactNumber, emailAddress, image, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         username,
         password,
@@ -50,6 +52,8 @@ const insertUser = async (userData: User) => {
         department,
         course,
         major,
+        contactNumber,
+        emailAddress,
         imagePath,
         'Unverified'
       ]
