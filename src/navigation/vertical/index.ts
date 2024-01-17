@@ -67,6 +67,13 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:text-box-multiple'
     },
     {
+      path: '/admin/departments',
+      title: 'Departments',
+      action: 'read',
+      subject: 'departments-page',
+      icon: 'mdi:text-box-multiple'
+    },
+    {
       path: '/admin/staffs',
       title: 'Staffs',
       action: 'read',
