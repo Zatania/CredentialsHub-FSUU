@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next/types'
-import db from '../../db'
+import db from '../db'
 import { getSession } from 'next-auth/react'
 import dayjs from 'dayjs'
 

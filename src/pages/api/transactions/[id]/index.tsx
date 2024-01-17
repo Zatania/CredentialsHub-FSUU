@@ -1,5 +1,5 @@
 import { NextApiResponse, NextApiRequest } from 'next/types'
-import db from '../../../db'
+import db from '../../db'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const {

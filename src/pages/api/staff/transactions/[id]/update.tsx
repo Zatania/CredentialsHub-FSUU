@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next/types'
-import db from '../../../../db'
+import db from '../../../db'
 import dayjs from 'dayjs'
 
 async function updateTransaction(id: number, data: any, user: any) {
