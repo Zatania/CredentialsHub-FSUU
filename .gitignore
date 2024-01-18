@@ -34,7 +34,7 @@ yarn-error.log*
 *.tsbuildinfo
 
 # Ignore everything in the public/uploads directory
-public/uploads/*
+uploads/*
 
 # But not the directory itself
-!public/uploads/.gitkeep
+!uploads/.gitkeep

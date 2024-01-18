@@ -53,7 +53,7 @@ const insertUser = async (userData: User) => {
 
   try {
     const [rows] = (await db.query(
-      'INSERT INTO users (username, password, studentNumber, firstName, middleName, lastName, department, course, major, graduateCheck, graduationDate, academicHonor, yearLevel, schoolYear, semester contactNumber, emailAddress, image, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO users (username, password, studentNumber, firstName, middleName, lastName, department, course, major, graduateCheck, graduationDate, academicHonor, yearLevel, schoolYear, semester, contactNumber, emailAddress, image, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         username,
         password,

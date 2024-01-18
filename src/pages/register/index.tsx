@@ -230,13 +230,41 @@ const Register = () => {
 
     data.password = hashedPassword
     data.imagePath = path
+
+    let formDataToSend = { ...data };
+
+    if (data.graduateCheck === 'yes') {
+      // Keep only fields relevant for graduated students
+      formDataToSend = {
+        ...formDataToSend,
+        graduationDate: data.graduationDate,
+        academicHonor: data.academicHonor,
+
+        // Remove fields not relevant for graduated students
+        yearLevel: '',
+        schoolYear: '',
+        semester: '',
+      };
+    } else {
+      // Keep only fields relevant for non-graduated students
+      formDataToSend = {
+        ...formDataToSend,
+        yearLevel: data.yearLevel,
+        schoolYear: data.schoolYear,
+        semester: data.semester,
+
+        // Remove fields not relevant for non-graduated students
+        graduationDate: '',
+        academicHonor: '',
+      };
+    }
     try {
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(formDataToSend)
       })
 
       if (!response.ok) {
