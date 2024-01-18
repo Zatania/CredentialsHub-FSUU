@@ -13,6 +13,12 @@ interface User {
   department: number
   course: string
   major: string
+  graduateCheck: string
+  graduationDate: string
+  academicHonor: string
+  yearLevel: string
+  schoolYear: string
+  semester: string
   contactNumber: string
   emailAddress: string
   imagePath: string
@@ -34,6 +40,12 @@ const insertUser = async (userData: User) => {
     department,
     course,
     major,
+    graduateCheck,
+    graduationDate,
+    academicHonor,
+    yearLevel,
+    schoolYear,
+    semester,
     contactNumber,
     emailAddress,
     imagePath,
@@ -41,7 +53,7 @@ const insertUser = async (userData: User) => {
 
   try {
     const [rows] = (await db.query(
-      'INSERT INTO users (username, password, studentNumber, firstName, middleName, lastName, department, course, major, contactNumber, emailAddress, image, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO users (username, password, studentNumber, firstName, middleName, lastName, department, course, major, graduateCheck, graduationDate, academicHonor, yearLevel, schoolYear, semester contactNumber, emailAddress, image, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         username,
         password,
@@ -52,6 +64,12 @@ const insertUser = async (userData: User) => {
         department,
         course,
         major,
+        graduateCheck,
+        graduationDate,
+        academicHonor,
+        yearLevel,
+        schoolYear,
+        semester,
         contactNumber,
         emailAddress,
         imagePath,
