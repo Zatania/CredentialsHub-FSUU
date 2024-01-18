@@ -74,7 +74,7 @@ const navigation = (): HorizontalNavItemsType => [
   },
   {
     path: '/admin/staffs',
-    title: 'Staffs',
+    title: 'Staff',
     action: 'read',
     subject: 'staffs-list-page',
     icon: 'mdi:account-multiple'
