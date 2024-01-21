@@ -298,16 +298,94 @@ const DashboardAdmin = () => {
         <Grid item xs={12} md={6}>
           <Card>
             <CardHeader
+              title='Daily Departments Overview'
+              titleTypographyProps={{
+                sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+              }}
+            />
+            <CardContent>
+              <Grid container sx={{ my: [0, 4, 1.625] }}>
+                <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
+                <ReactApexcharts
+                  type='donut'
+                  height={220}
+                  series={departmentTransactionCounts.map(dept => dept.totalDaily)}
+                  options={departmentsTransactionsOptions}
+                />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
+                  {departmentTransactionCounts.map(dept => (
+                    <Grid container key={dept.id}>
+                      <Grid item xs={12} sx={{ mb: 4 }}>
+                        <Box
+                          sx={{
+                            mb: 1.5,
+                            display: 'flex',
+                            alignItems: 'center',
+                            '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
+                          }}
+                        >
+                          <Icon icon='mdi:circle' />
+                          <Typography variant='body2'>{dept.name}</Typography>
+                        </Box>
+                        <Typography sx={{ fontWeight: 600 }}>{String(dept.totalDaily)}</Typography>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
+              title='Monthly Departments Overview'
+              titleTypographyProps={{
+                sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+              }}
+            />
+            <CardContent>
+              <Grid container sx={{ my: [0, 4, 1.625] }}>
+                <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
+                <ReactApexcharts
+                  type='donut'
+                  height={220}
+                  series={departmentTransactionCounts.map(dept => dept.totalMonthly)}
+                  options={departmentsTransactionsOptions}
+                />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
+                  {departmentTransactionCounts.map(dept => (
+                    <Grid container key={dept.id}>
+                      <Grid item xs={12} sx={{ mb: 4 }}>
+                        <Box
+                          sx={{
+                            mb: 1.5,
+                            display: 'flex',
+                            alignItems: 'center',
+                            '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
+                          }}
+                        >
+                          <Icon icon='mdi:circle' />
+                          <Typography variant='body2'>{dept.name}</Typography>
+                        </Box>
+                        <Typography sx={{ fontWeight: 600 }}>{String(dept.totalMonthly)}</Typography>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
               title='Daily Transactions Overview'
               titleTypographyProps={{
                 sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
               }}
-              action={
-                <OptionsMenu
-                  options={['Today', 'This Month', 'This Year']}
-                  iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
-                />
-              }
             />
             <CardContent>
               <Grid container sx={{ my: [0, 4, 1.625] }}>
@@ -392,12 +470,6 @@ const DashboardAdmin = () => {
               titleTypographyProps={{
                 sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
               }}
-              action={
-                <OptionsMenu
-                  options={['Today', 'This Month', 'This Year']}
-                  iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
-                />
-              }
             />
             <CardContent>
               <Grid container sx={{ my: [0, 4, 1.625] }}>
@@ -482,12 +554,6 @@ const DashboardAdmin = () => {
               titleTypographyProps={{
                 sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
               }}
-              action={
-                <OptionsMenu
-                  options={['Today', 'This Month', 'This Year']}
-                  iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
-                />
-              }
             />
             <CardContent>
               <Grid container sx={{ my: [0, 4, 1.625] }}>
@@ -530,12 +596,6 @@ const DashboardAdmin = () => {
               titleTypographyProps={{
                 sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
               }}
-              action={
-                <OptionsMenu
-                  options={['Today', 'This Month', 'This Year']}
-                  iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
-                />
-              }
             />
             <CardContent>
               <Grid container sx={{ my: [0, 4, 1.625] }}>

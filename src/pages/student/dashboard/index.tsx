@@ -127,7 +127,7 @@ const DashboardStudent = () => {
           />
         </Grid>
         <Grid item xs={12} md={12}>
-          <ActivityTimeline logs={logs} load={loadMoreLogs}/>
+          <ActivityTimeline title={'User Logs'} logs={logs} load={loadMoreLogs}/>
         </Grid>
       </Grid>
     </ApexChartWrapper>
