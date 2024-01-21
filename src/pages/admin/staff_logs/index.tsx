@@ -22,7 +22,9 @@ interface StaffLog {
   course: string
   schoolYear: string
   payment_date: string
-  action_date: string
+  schedule_date: string
+  date_released: string
+  task_done: string
   credentials_requested: string
   remarks: string
 }
@@ -65,7 +67,7 @@ const StaffLogsPage = () => {
       flex: 0.2,
       minWidth: 250,
       field: 'timestamp',
-      headerName: 'Time Stamp',
+      headerName: 'Transaction Date',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.timestamp ? dayjs(params.row.timestamp).format('MMMM DD, YYYY hh:mm A') : ''}
@@ -129,6 +131,17 @@ const StaffLogsPage = () => {
     },
     {
       flex: 0.3,
+      minWidth: 1000,
+      field: 'credentials_requested',
+      headerName: 'Credentials Requested',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.credentials_requested}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.3,
       minWidth: 250,
       field: 'payment_date',
       headerName: 'Payment Date',
@@ -141,22 +154,33 @@ const StaffLogsPage = () => {
     {
       flex: 0.3,
       minWidth: 250,
-      field: 'action_date',
-      headerName: 'Date Done',
+      field: 'schedule_date',
+      headerName: 'Schedule Date',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.action_date ? dayjs(params.row.action_date).format('MMMM DD, YYYY hh:mm A') : 'Ongoing Process'}
+          {params.row.schedule_date ? dayjs(params.row.schedule_date).format('MMMM DD, YYYY hh:mm A') : ''}
         </Typography>
       )
     },
     {
       flex: 0.3,
-      minWidth: 1000,
-      field: 'credentials_requested',
-      headerName: 'Credentials Requested',
+      minWidth: 250,
+      field: 'task_done',
+      headerName: 'Task Done',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.credentials_requested}
+          {params.row.task_done ? dayjs(params.row.task_done).format('MMMM DD, YYYY hh:mm A') : 'Ongoing Process'}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.3,
+      minWidth: 250,
+      field: 'date_released',
+      headerName: 'Task Released/Rejected',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.date_released ? dayjs(params.row.date_released).format('MMMM DD, YYYY hh:mm A') : 'Ongoing Process'}
         </Typography>
       )
     },

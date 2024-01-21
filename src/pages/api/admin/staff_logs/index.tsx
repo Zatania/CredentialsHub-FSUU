@@ -11,8 +11,11 @@ interface StaffLogsData {
   course: string
   schoolYear: string
   payment_date: string
-  action_date: string | null // Replaces status with action_date for claim or reject
-  remarks: string | null // Updated to allow null
+  schedule_date: string | null
+  date_released: string | null
+  status: string | null
+  task_done: string | null
+  remarks: string | null
   credentials_requested: string
 }
 async function fetchStaffLogs() {
@@ -30,9 +33,21 @@ async function fetchStaffLogs() {
       END AS schoolYear,
       t.payment_date AS payment_date,
       CASE
+          WHEN t.schedule IS NOT NULL THEN t.schedule
+      END AS schedule_date,
+      CASE
           WHEN t.claim IS NOT NULL THEN t.claim
           WHEN t.reject IS NOT NULL THEN t.reject
-      END AS action_date,
+          ELSE NULL
+      END AS date_released,
+      CASE
+          WHEN t.claim IS NOT NULL THEN 'Claimed'
+          WHEN t.reject IS NOT NULL THEN 'Rejected'
+          ELSE NULL
+      END AS status,
+      CASE
+          WHEN t.task_done IS NOT NULL THEN t.task_done
+      END AS task_done,
       COALESCE(
         GROUP_CONCAT(DISTINCT CASE WHEN td.quantity > 0 THEN CONCAT(c.name, ' (', td.quantity, ')') END ORDER BY c.name),
         GROUP_CONCAT(DISTINCT CONCAT(cp.name, ' (', pc.quantity, ')') ORDER BY cp.name)
@@ -74,7 +89,10 @@ async function fetchStaffLogs() {
     course: row.course,
     schoolYear: row.schoolYear,
     payment_date: row.payment_date,
-    action_date: row.action_date,
+    schedule_date: row.schedule_date,
+    date_released: row.date_released,
+    status: row.status,
+    task_done: row.task_done,
     credentials_requested: row.credentials_requested,
     remarks: row.remarks
   }))
