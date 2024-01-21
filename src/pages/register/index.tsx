@@ -298,7 +298,7 @@ const Register = () => {
       if(formDataToSend.graduationDate && formDataToSend.graduationDate.trim() !== '' && formDataToSend.graduationDate <= '2011') {
         setViewPromptVisible(true)
       } else {
-        setViewPromptVisible(false)
+        closeDialog()
       }
     } catch (error) {
       toast.error('Registration Failed')
