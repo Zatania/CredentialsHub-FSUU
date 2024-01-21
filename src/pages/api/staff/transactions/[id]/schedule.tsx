@@ -26,7 +26,7 @@ export default async function handler(
       const { scheduleDate, remarks, user } = req.body as RequestBody
 
       // Update the transaction in the database
-      await db.query('UPDATE transactions SET schedule = ?, schedule_done =?, remarks = ?, status = ? WHERE id = ?', [dayjs(scheduleDate).format('YYYY-MM-DD HH:mm:ss'), dayjs().format('YYYY-MM-DD HH:mm:ss'), remarks, 'Scheduled', id])
+      await db.query('UPDATE transactions SET schedule = ?, remarks = ?, status = ? WHERE id = ?', [dayjs(scheduleDate).format('YYYY-MM-DD HH:mm:ss'), remarks, 'Scheduled', id])
 
       // Add to transaction_history
       await db.query('INSERT INTO transaction_history (transaction_id, staff_id) VALUES (?, ?)', [id, user.id])
