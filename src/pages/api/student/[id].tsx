@@ -3,15 +3,15 @@ import db from '../db'
 import { getSession } from 'next-auth/react'
 import dayjs from 'dayjs'
 
-async function verifyOrUnverify(id: number, status: string, session: any) {
+async function verifyOrUnverify(id: number, status: string, remarks: string, session: any) {
   try {
     if(session?.user.role === 'admin') {
       const admin = session?.user
       await db.query(`
         UPDATE users
-        SET status = ?
+        SET status = ?, remarks = ?
         WHERE id = ?
-      `, [status, id])
+      `, [status, remarks, id])
 
       const message = `${admin.firstName} ${admin.lastName} has ${status} a student.`
       const activity = `${status} Student`
@@ -22,9 +22,9 @@ async function verifyOrUnverify(id: number, status: string, session: any) {
 
       await db.query(`
         UPDATE users
-        SET status = ?
+        SET status = ?, remarks = ?
         WHERE id = ?
-      `, [status, id])
+      `, [status, remarks, id])
 
       const message = `${staff.firstName} ${staff.lastName} has ${status} a student.`
       const activity = `${status} Student`
@@ -33,6 +33,19 @@ async function verifyOrUnverify(id: number, status: string, session: any) {
     }
   } catch(error) {
     console.error("Error in verifyOrUnverify:", error);
+    throw error;
+  }
+}
+
+async function sendRemarks (id: number, remarks: string) {
+  try {
+    await db.query(`
+      UPDATE users
+      SET remarks = ?
+      WHERE id = ?
+    `, [remarks, id])
+  } catch(error) {
+    console.error("Error in sendRemarks:", error);
     throw error;
   }
 }
@@ -46,12 +59,19 @@ export default async function handler(
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  const { id, status } = req.query
+  const { id, status, remarks } = req.query
 
   if (req.method === 'PUT') {
     try {
-      await verifyOrUnverify(Number(id), String(status), session)
-      res.status(200).end()
+      if (status && remarks) {
+        await verifyOrUnverify(Number(id), String(status), String(remarks), session)
+
+        res.status(200).end()
+      } else if (!status && remarks) {
+        await sendRemarks(Number(id), String(remarks))
+
+        res.status(200).end()
+      }
     } catch (error) {
       res.status(500).json({ message: 'Internal Server Error' })
     }

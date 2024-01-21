@@ -13,6 +13,7 @@ import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import EditIcon from '@mui/icons-material/Edit'
+import TextField from '@mui/material/TextField'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -21,7 +22,6 @@ import Icon from 'src/@core/components/icon'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import axios from 'axios'
-import dayjs from 'dayjs'
 
 const Transition = forwardRef(function Transition(
   props: FadeProps & { children?: ReactElement<any, any> },
@@ -51,6 +51,8 @@ interface StudentData {
 const DialogViewStudent  = ({ student, refreshData, actionType }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
+  const [remarks, setRemarks] = useState<string>('')
+  const [remarksError, setRemarksError] = useState('')
 
   const {
     handleSubmit,
@@ -78,10 +80,23 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
     setShow(false)
     reset()  // Reset the form fields to their default values
     refreshData()
+    setRemarks('')
+  }
+
+  const validateRemarks = () => {
+    let isValid = true
+    if (!remarks.trim()) {
+      setRemarksError('Remarks are required')
+      isValid = false
+    } else {
+      setRemarksError('')
+    }
+
+    return isValid
   }
 
   const onSubmit = async () => {
-
+    if (!validateRemarks()) return
     const newStatus = actionType === 'verify' ? 'Verified' : 'Unverified';
 
     axios.put(`/api/student/${student.id}?status=${newStatus}`)
@@ -96,6 +111,19 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
       .catch((error) => {
         console.error(error)
         toast.error('Verifying Student Failed')
+      })
+  }
+
+  const handlSendRemarks = async () => {
+    if (!validateRemarks()) return
+    axios.put(`/api/student/${student.id}?remarks=${remarks}`)
+      .then(() => {
+        toast.success('Remarks Sent Successfully')
+        handleClose()
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('Sending Remarks Failed')
       })
   }
 
@@ -237,6 +265,27 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     </Grid>
                   </Grid>
                 ) : null}
+                <Grid item sm={6} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Remarks:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.remarks}
+                  </Typography>
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <Typography variant='body1' sx={{ mb: 1 }}>
+                    Remarks:
+                  </Typography>
+                  <TextField
+                    multiline
+                    rows={2}
+                    variant='outlined'
+                    value={remarks}
+                    error={!!remarksError}
+                    onChange={(e) => setRemarks(e.target.value)}
+                  />
+                </Grid>
               </Grid>
             </DialogContent>
             <DialogActions
@@ -247,9 +296,14 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
               }}
             >
               {student.status === 'Unverified' ? (
-                <Button variant='contained' sx={{ mr: 1 }} type='submit'>
-                  Verify
-                </Button>
+                <>
+                  <Button variant='contained' sx={{ mr: 1 }} type='submit'>
+                    Verify
+                  </Button>
+                  <Button variant='contained' color='warning' sx={{ mr: 1 }} onClick={handlSendRemarks}>
+                    Send Remarks
+                  </Button>
+                </>
               ) : student.status === 'Verified' ?(
                 <Button variant='contained' sx={{ mr: 1 }} type='submit'>
                   Unverify
