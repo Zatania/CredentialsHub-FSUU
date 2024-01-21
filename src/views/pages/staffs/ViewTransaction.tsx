@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField';
+import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import Fade, { FadeProps } from '@mui/material/Fade'
@@ -16,8 +16,8 @@ import DialogActions from '@mui/material/DialogActions'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
-import { DatePicker, MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker, MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import FormControl from '@mui/material/FormControl'
 import Input from '@mui/material/Input'
 
@@ -59,6 +59,7 @@ interface TransactionData {
   payment_date: string
   remarks: string
   schedule: string
+  done: string
   claim: string
   claimed_remarks: string
   reject: string
@@ -96,9 +97,9 @@ interface DialogViewTransactionProps {
 
 const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransactionProps) => {
   const [show, setShow] = useState<boolean>(false)
-  const [scheduleDate, setScheduleDate] = useState(null);
-  const [remarks, setRemarks] = useState('');
-  const [remarksError, setRemarksError] = useState('');
+  const [scheduleDate, setScheduleDate] = useState(null)
+  const [remarks, setRemarks] = useState('')
+  const [remarksError, setRemarksError] = useState('')
   const [selectedImage, setSelectedImage] = useState("")
   const [selectedFile, setSelectedFile] = useState<File>()
   const [selectedDate, setSelectedDate] = useState<Date | null>()
@@ -114,59 +115,71 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
   }
 
   const validateRemarks = () => {
-    let isValid = true;
+    let isValid = true
     if (!remarks.trim()) {
-      setRemarksError('Remarks are required');
-      isValid = false;
+      setRemarksError('Remarks are required')
+      isValid = false
     } else {
-      setRemarksError('');
+      setRemarksError('')
     }
 
-    return isValid;
-  };
+    return isValid
+  }
   const handleSchedule = async () => {
-    if (!validateRemarks()) return;
+    if (!validateRemarks()) return
 
     try {
       await axios.put(`/api/staff/transactions/${transaction.id}/schedule`, {
         scheduleDate: scheduleDate,
         remarks: remarks,
         user: user
-      });
-      toast.success('Transaction Scheduled successfully.');
-      handleClose();
+      })
+      toast.success('Transaction Scheduled successfully.')
+      handleClose()
     } catch (error) {
       console.log(error)
     }
   }
 
   const handleReject = async () => {
-    if (!validateRemarks()) return;
+    if (!validateRemarks()) return
     try {
       await axios.put(`/api/staff/transactions/${transaction.id}/reject`, {
         rejected_remarks: remarks,
         user: user
-      });
-      toast.success('Transaction Rejected successfully.');
-      handleClose();
+      })
+      toast.success('Transaction Rejected successfully.')
+      handleClose()
     } catch (error) {
       console.log(error)
     }
   }
 
   const handleClaim = async () => {
-    if (!validateRemarks()) return;
+    if (!validateRemarks()) return
     try {
       await axios.put(`/api/staff/transactions/${transaction.id}/claim`, {
         claimed_remarks: remarks,
         user: user
-      });
-      toast.success('Transaction Claimed successfully.');
-      handleClose();
+      })
+      toast.success('Transaction Claimed successfully.')
+      handleClose()
     } catch (error) {
       console.log(error)
     }
-  };
+  }
+
+  const handleDone = async () => {
+    try {
+      await axios.put(`/api/staff/transactions/${transaction.id}/done`, {
+        user: user
+      })
+      toast.success('Credentials Compiled and Ready for Released.')
+      handleClose()
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleImageUpload = async () => {
     try {
@@ -189,11 +202,11 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
   }
 
   const handleUpload = async () => {
-    let path = '';
+    let path = ''
     try {
-      path = await handleImageUpload();
+      path = await handleImageUpload()
     } catch (error) {
-      console.error('Failed to upload image:', error);
+      console.error('Failed to upload image:', error)
     }
 
     try {
@@ -704,9 +717,20 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
             ) : null}
             {transaction.status === 'Scheduled' ? (
               <>
-                <Button variant='contained' color='primary' onClick={() => handleClaim()}>
-                  Claim
-                </Button>
+                {transaction.done ? (
+                  <Button variant='contained' color='success' onClick={() => handleClaim()}>
+                    Claim
+                  </Button>
+                ) : (
+                  <>
+                    <Button variant='contained' color='success' onClick={() => handleClaim()}>
+                      Claim
+                    </Button>
+                    <Button variant='contained' color='info' onClick={() => handleDone()}>
+                      Done
+                    </Button>
+                  </>
+                )}
               </>
             ) : null}
             <Button variant='outlined' color='secondary' onClick={() => handleClose()}>
