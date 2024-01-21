@@ -12,6 +12,7 @@ declare module 'next-auth/jwt' {
     studentNumber: string
     status: string
     image: string
+    remarks: string
   }
 }
 
@@ -27,6 +28,7 @@ declare module 'next-auth' {
       studentNumber: string
       status: string
       image: string
+      remarks: string
     } & DefaultSession['user']
   }
 
@@ -42,5 +44,6 @@ declare module 'next-auth' {
     employeeNumber: string
     status: string
     image: string
+    remarks: string
   }
 }

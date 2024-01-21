@@ -1,11 +1,11 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 // ** Next Import
 import { useSession } from 'next-auth/react'
 
 // ** MUI Imports
-import { Grid, Card, CardContent, Box, Typography, styled } from '@mui/material'
+import { Grid, Card, CardContent, Box, Typography, styled, Input, Button } from '@mui/material'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -15,6 +15,10 @@ import dayjs from 'dayjs'
 
 // ** Views Imports
 import DialogEditProfile from 'src/views/pages/profile/EditProfile'
+
+// ** Third Party Imports
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 interface ProfileTabCommonType {
   icon: string
@@ -63,6 +67,8 @@ interface Student {
   employedAt: string
   position: string
   image: string
+  status: string
+  remarks: string
 }
 
 const ProfilePicture = styled('img')(({ theme }) => ({
@@ -78,6 +84,7 @@ const ProfilePicture = styled('img')(({ theme }) => ({
 const ProfilePage = () => {
   const { data: session } = useSession()
   const [user, setUser] = useState<Student | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File>()
 
   const userID = session?.user.id
 
@@ -105,21 +112,21 @@ const ProfilePage = () => {
     designationIcon: 'mdi:invert-colors'
   }
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const res = await fetch('/api/profile/student/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userID)
-      })
-      const data = await res.json()
-      setUser(data)
-    }
-
-    fetchUser()
+  const fetchUser = useCallback(async () => {
+    const res = await fetch('/api/profile/student/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userID)
+    })
+    const data = await res.json()
+    setUser(data)
   }, [userID])
+
+  useEffect(() => {
+    fetchUser()
+  }, [fetchUser])
 
   let fullName
 
@@ -135,20 +142,20 @@ const ProfilePage = () => {
   }
   const about = {
     profile: [
-      { property: 'Student Number', value: user?.studentNumber ? user.studentNumber : '', icon: 'mdi:account-card-outline' },
-      { property: 'Full Name', value: fullName, icon: 'mdi:account-outline' },
-      { property: 'Department', value: capitalizeFirstLetter(user?.department), icon: 'mdi:account-details-outline' },
-      { property: 'Course', value: capitalizeFirstLetter(user?.course), icon: 'mdi:account-details-outline' },
-      { property: 'Major', value: capitalizeFirstLetter(user?.major), icon: 'mdi:account-details-outline' },
+      { property: 'Student Number: ', value: user?.studentNumber ? user.studentNumber : '', icon: 'mdi:account-card-outline' },
+      { property: 'Full Name: ', value: fullName, icon: 'mdi:account-outline' },
+      { property: 'Department: ', value: capitalizeFirstLetter(user?.department), icon: 'mdi:account-details-outline' },
+      { property: 'Course: ', value: capitalizeFirstLetter(user?.course), icon: 'mdi:account-details-outline' },
+      { property: 'Major: ', value: capitalizeFirstLetter(user?.major), icon: 'mdi:account-details-outline' },
       ...(user?.graduateCheck === 'yes'
         ? [
             {
-              property: 'Year Graduated',
+              property: 'Year Graduated: ',
               value: user?.graduationDate ? user.graduationDate : '',
               icon: 'mdi:account-school-outline'
             },
             {
-              property: 'Academic Honor',
+              property: 'Academic Honor: ',
               value: capitalizeFirstLetter(user?.academicHonor),
               icon: 'mdi:account-school-outline'
             }
@@ -157,95 +164,100 @@ const ProfilePage = () => {
       ...(user?.graduateCheck === 'no'
         ? [
             {
-              property: 'Year Level',
+              property: 'Year Level: ',
               value: capitalizeFirstLetter(user?.yearLevel),
               icon: 'mdi:account-school-outline'
             },
             {
-              property: 'School Year',
+              property: 'School Year: ',
               value: capitalizeFirstLetter(user?.schoolYear),
               icon: 'mdi:account-school-outline'
             },
             {
-              property: 'Semester',
+              property: 'Semester: ',
               value: capitalizeFirstLetter(user?.semester),
               icon: 'mdi:account-school-outline'
             }
           ]
         : []),
-      { property: 'Home Address', value: capitalizeFirstLetter(user?.homeAddress), icon: 'mdi:home-outline' },
+      { property: 'Home Address: ', value: capitalizeFirstLetter(user?.homeAddress), icon: 'mdi:home-outline' },
       {
-        property: 'Contact Number',
+        property: 'Contact Number: ',
         value: capitalizeFirstLetter(user?.contactNumber),
         icon: 'mdi:card-account-phone-outline'
       },
-      { property: 'Email Address', value: capitalizeFirstLetter(user?.emailAddress), icon: 'mdi:email-outline' },
+      { property: 'Email Address: ', value: capitalizeFirstLetter(user?.emailAddress), icon: 'mdi:email-outline' },
       {
-        property: 'Birth Date',
+        property: 'Birth Date: ',
         value: formatDate(user?.birthDate),
         icon: 'mdi:cake-variant-outline'
       },
-      { property: 'Birth Place', value: capitalizeFirstLetter(user?.birthPlace), icon: 'mdi:cake-variant-outline' },
-      { property: 'Religion', value: capitalizeFirstLetter(user?.religion), icon: 'mdi:book-open-outline' },
-      { property: 'Citizenship', value: capitalizeFirstLetter(user?.citizenship), icon: 'mdi:account-group-outline' },
-      { property: 'Sex', value: capitalizeFirstLetter(user?.sex), icon: 'mdi:human-male-female' },
-      { property: 'Father Name', value: capitalizeFirstLetter(user?.fatherName), icon: 'mdi:face-man' },
-      { property: 'Mother Name', value: capitalizeFirstLetter(user?.motherName), icon: 'mdi:face-woman' },
-      { property: 'Guardian Name', value: capitalizeFirstLetter(user?.guardianName), icon: 'mdi:account-child' },
+      { property: 'Birth Place: ', value: capitalizeFirstLetter(user?.birthPlace), icon: 'mdi:cake-variant-outline' },
+      { property: 'Religion: ', value: capitalizeFirstLetter(user?.religion), icon: 'mdi:book-open-outline' },
+      { property: 'Citizenship: ', value: capitalizeFirstLetter(user?.citizenship), icon: 'mdi:account-group-outline' },
+      { property: 'Sex: ', value: capitalizeFirstLetter(user?.sex), icon: 'mdi:human-male-female' },
+      { property: 'Father Name: ', value: capitalizeFirstLetter(user?.fatherName), icon: 'mdi:face-man' },
+      { property: 'Mother Name: ', value: capitalizeFirstLetter(user?.motherName), icon: 'mdi:face-woman' },
+      { property: 'Guardian Name: ', value: capitalizeFirstLetter(user?.guardianName), icon: 'mdi:account-child' },
     ],
     education: [
 
       {
-        property: 'Elementary School',
+        property: 'Elementary School: ',
         value: capitalizeFirstLetter(user?.elementary),
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Year Graduated',
+        property: 'Year Graduated: ',
         value: formatDate(user?.elementaryGraduated),
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Secondary School',
+        property: 'Secondary School: ',
         value: capitalizeFirstLetter(user?.secondary),
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Year Graduated',
+        property: 'Year Graduated: ',
         value: formatDate(user?.secondaryGraduated),
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Junior High School',
+        property: 'Junior High School: ',
         value: capitalizeFirstLetter(user?.juniorHigh),
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Year Graduated',
+        property: 'Year Graduated: ',
         value: formatDate(user?.juniorHighGraduated),
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Senior High School',
+        property: 'Senior High School: ',
         value: capitalizeFirstLetter(user?.seniorHigh),
         icon: 'mdi:account-school-outline'
       },
       {
-        property: 'Year Graduated',
+        property: 'Year Graduated: ',
         value: formatDate(user?.seniorHighGraduated),
         icon: 'mdi:account-school-outline'
       },
-      { property: 'Tertiary School', value: capitalizeFirstLetter(user?.tertiary), icon: 'mdi:account-school-outline' },
+      { property: 'Tertiary School: ', value: capitalizeFirstLetter(user?.tertiary), icon: 'mdi:account-school-outline' },
       {
-        property: 'Year Graduated',
+        property: 'Year Graduated: ',
         value: formatDate(user?.tertiaryGraduated),
         icon: 'mdi:account-school-outline'
       }
     ],
-    others: [
-      { property: 'Employed At', value: capitalizeFirstLetter(user?.employedAt), icon: 'mdi:briefcase-outline' },
-      { property: 'Position', value: capitalizeFirstLetter(user?.position), icon: 'mdi:briefcase-outline' }
-    ]
+    others:
+      user?.status === 'Unverified' ? [
+        { property: 'Employed At: ', value: capitalizeFirstLetter(user?.employedAt), icon: 'mdi:briefcase-outline' },
+        { property: 'Position: ', value: capitalizeFirstLetter(user?.position), icon: 'mdi:briefcase-outline' },
+        { property: 'Verification Remarks: ', value: user?.remarks, icon: 'mdi:briefcase-outline' },
+      ] : [
+        { property: 'Employed At: ', value: capitalizeFirstLetter(user?.employedAt), icon: 'mdi:briefcase-outline' },
+        { property: 'Position: ', value: capitalizeFirstLetter(user?.position), icon: 'mdi:briefcase-outline' },
+      ]
   }
 
   const designationIcon = data?.designationIcon || 'mdi:briefcase-outline'
@@ -292,7 +304,7 @@ const ProfilePage = () => {
               justifyContent: { xs: 'center', md: 'flex-start' }
             }}
           >
-            <ProfilePicture src={data.profileImg} alt='profile-picture' />
+            <ProfilePicture src={data.profileImg} alt='Profile Picture'/>
             <Box
               sx={{
                 width: '100%',

@@ -108,6 +108,7 @@ export const authOptions: NextAuthOptions = {
         token.studentNumber = userData.studentNumber || userData.employeeNumber
         token.status = userData.status
         token.image = userData.image
+        token.remarks = userData.remarks
       }
 
       return token
@@ -124,6 +125,7 @@ export const authOptions: NextAuthOptions = {
         session.user.studentNumber = token.studentNumber
         session.user.status = token.status
         session.user.image = token.image
+        session.user.remarks = token.remarks
       }
 
       return session
