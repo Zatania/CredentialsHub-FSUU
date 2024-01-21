@@ -36,10 +36,10 @@ interface StatusObj {
 
 const statusObj: StatusObj = {
   Submitted: { title: 'Submitted', color: 'primary' },
+  Scheduled: { title: 'Scheduled', color: 'info' },
+  Done: { title: 'Done', color: 'info' },
   Claimed: { title: 'Claimed', color: 'success' },
   Rejected: { title: 'Rejected', color: 'error' },
-  Resigned: { title: 'Resigned', color: 'warning' },
-  Scheduled: { title: 'Scheduled', color: 'info' }
 }
 
 const Transactions = () => {
@@ -75,8 +75,8 @@ const Transactions = () => {
     {
       flex: 0.3,
       minWidth: 110,
-      field: 'requestType', // Change the field name to 'requestType'
-      headerName: 'Request Type', // Change the header name to 'Request Type'
+      field: 'requestType',
+      headerName: 'Request Type',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -158,8 +158,8 @@ const Transactions = () => {
     {
       flex: 0.3,
       minWidth: 110,
-      field: 'requestType', // Change the field name to 'requestType'
-      headerName: 'Request Type', // Change the header name to 'Request Type'
+      field: 'requestType',
+      headerName: 'Request Type',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -241,8 +241,8 @@ const Transactions = () => {
     {
       flex: 0.3,
       minWidth: 110,
-      field: 'requestType', // Change the field name to 'requestType'
-      headerName: 'Request Type', // Change the header name to 'Request Type'
+      field: 'requestType',
+      headerName: 'Request Type',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -324,8 +324,8 @@ const Transactions = () => {
     {
       flex: 0.3,
       minWidth: 110,
-      field: 'requestType', // Change the field name to 'requestType'
-      headerName: 'Request Type', // Change the header name to 'Request Type'
+      field: 'requestType',
+      headerName: 'Request Type',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
