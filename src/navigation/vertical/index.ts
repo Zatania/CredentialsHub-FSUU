@@ -115,6 +115,13 @@ const navigation = (): VerticalNavItemsType => {
       subject: 'staff-logs',
       icon: 'mdi:note-text'
     },
+    {
+      path: '/admin/prompt',
+      title: 'Edit Prompt',
+      action: 'read',
+      subject: 'prompt-page',
+      icon: 'mdi:note-text'
+    },
   ]
 }
 

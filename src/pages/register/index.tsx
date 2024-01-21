@@ -28,7 +28,6 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
-
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -49,6 +48,9 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import toast from 'react-hot-toast'
 import axios from "axios"
+
+// ** Views
+import ViewPrompt from 'src/views/pages/register/ViewPrompt'
 
 // ** Styled Components
 const RegisterIllustrationWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -145,6 +147,8 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false)
   const [selectedImage, setSelectedImage] = useState("")
   const [selectedFile, setSelectedFile] = useState<File>()
+  const [viewPromptVisible, setViewPromptVisible] = useState(false)
+  const [prompt, setPrompt] = useState({})
 
   // ** Hooks
   const theme = useTheme()
@@ -166,6 +170,21 @@ const Register = () => {
     resolver: yupResolver(schema)
   })
 
+  // Get Prompt
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/register/prompt')
+        const data = await response.json()
+        setPrompt(data[0])
+      } catch (error) {
+        console.error('Error fetching data: ', error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const graduateCheckValue = watch('graduateCheck')
 
@@ -214,7 +233,10 @@ const Register = () => {
     }
   }
 
-
+  const closeDialog = () => {
+    setViewPromptVisible(false)
+    router.push('/')
+  }
 
   const onSubmit = async (data: FormData) => {
     let path = ''
@@ -272,7 +294,12 @@ const Register = () => {
       }
 
       toast.success('Registered Successfully')
-      router.push('/')
+
+      if(formDataToSend.graduationDate && formDataToSend.graduationDate.trim() !== '' && formDataToSend.graduationDate <= '2011') {
+        setViewPromptVisible(true)
+      } else {
+        setViewPromptVisible(false)
+      }
     } catch (error) {
       toast.error('Registration Failed')
       console.error(error)
@@ -296,6 +323,7 @@ const Register = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <ViewPrompt prompt={prompt} isVisible={viewPromptVisible} closeDialog={closeDialog}/>
       <Box className='content-right'>
         {!hidden ? (
           <Box sx={{ flex: 1, display: 'flex', position: 'relative', alignItems: 'center', justifyContent: 'center' }}>

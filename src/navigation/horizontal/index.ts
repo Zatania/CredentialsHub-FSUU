@@ -114,6 +114,13 @@ const navigation = (): HorizontalNavItemsType => [
     subject: 'staff-logs',
     icon: 'mdi:note-text'
   },
+  {
+    path: '/admin/prompt',
+    title: 'Edit Prompt',
+    action: 'read',
+    subject: 'prompt-page',
+    icon: 'mdi:note-text'
+  },
 ]
 
 export default navigation
