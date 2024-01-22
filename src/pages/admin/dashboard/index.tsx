@@ -33,6 +33,11 @@ interface Department {
   id: number
 }
 
+interface Credential {
+  name: string
+  id: number
+}
+
 interface TransactionCount {
   daily: number
   monthly: number
@@ -65,6 +70,10 @@ const DashboardAdmin = () => {
   const [claimedMonthly, setClaimedMonthly] = useState()
   const [rejectedMonthly, setRejectedMonthly] = useState()
   const totalMonthly = useRef(0)
+  const [credentials, setCredentials] = useState<Credential[]>([])
+  const [credentialsDailyCount, setCredentialsDailyCount] = useState([])
+  const [credentialsMonthlyCount, setCredentialsMonthlyCount] = useState([])
+
 
   // ** Hooks
   const theme = useTheme()
@@ -79,9 +88,20 @@ const DashboardAdmin = () => {
     }
   }, [])
 
+  const fetchCredentials = useCallback(async () => {
+    try {
+      const response = await axios.get('/api/credentials')
+      const data = await response.data
+      setCredentials(data)
+    } catch (error) {
+      console.error('Error fetching data: ', error)
+    }
+  }, [])
+
   useEffect(() => {
     fetchDepartments()
-  }, [fetchDepartments])
+    fetchCredentials()
+  }, [fetchDepartments, fetchCredentials])
 
   const fetchDepartmentCounts = useCallback(async () => {
     const types = ['Submitted', 'Scheduled', 'Claimed', 'Rejected']
@@ -202,6 +222,86 @@ const DashboardAdmin = () => {
     }
   }
 
+  const fetchCredentialsCounts = useCallback(async () => {
+    try {
+      const response = await axios.get('/api/admin/transaction/count/credential')
+      const data = await response.data
+
+      const dailyCounts = data.dailyCount.map(item => ({
+        ...item,
+        total_quantity: parseInt(item.total_quantity, 10) // Convert string to number
+      }))
+
+      const monthlyCounts = data.monthlyCount.map(item => ({
+        ...item,
+        total_quantity: parseInt(item.total_quantity, 10) // Convert string to number
+      }))
+
+
+      setCredentialsDailyCount(dailyCounts)
+      setCredentialsMonthlyCount(monthlyCounts)
+    } catch (error) {
+      console.error('Error fetching data: ', error)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchCredentialsCounts()
+  }, [fetchCredentialsCounts])
+
+  const credentialsCountOptions: ApexOptions = {
+    chart: {
+      sparkline: { enabled: true }
+    },
+    colors: [
+      theme.palette.primary.main,
+      hexToRGBA(theme.palette.primary.main, 0.7),
+      hexToRGBA(theme.palette.primary.main, 0.5),
+      theme.palette.customColors.trackBg
+    ],
+    stroke: { width: 0 },
+    legend: { show: false },
+    dataLabels: { enabled: false },
+    labels: credentials.map(credential => credential.name),
+    states: {
+      hover: {
+        filter: { type: 'none' }
+      },
+      active: {
+        filter: { type: 'none' }
+      }
+    },
+    plotOptions: {
+      pie: {
+        customScale: 1,
+        donut: {
+          size: '80%',
+          labels: {
+            show: true,
+            name: {
+              offsetY: 25,
+              fontSize: '0.875rem',
+              color: theme.palette.text.secondary
+            },
+            value: {
+              offsetY: -15,
+              fontWeight: 500,
+              formatter: value => `${value}`,
+              color: theme.palette.text.primary
+            },
+            total: {
+              show: true,
+              fontSize: '0.875rem',
+              label: 'Credentials',
+              color: theme.palette.text.secondary,
+              formatter: value => `${value.globals.seriesTotals.reduce((total: number, num: number) => total + num)}`
+            }
+          }
+        }
+      }
+    }
+  }
+
   const fetchTransactionCounts = useCallback(async () => {
     const types = ['Submitted', 'Scheduled', 'Claimed', 'Rejected']
 
@@ -295,6 +395,90 @@ const DashboardAdmin = () => {
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
+              title='Daily Credentials Overview'
+              titleTypographyProps={{
+                sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+              }}
+            />
+            <CardContent>
+              <Grid container sx={{ my: [0, 4, 1.625] }}>
+                <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
+                <ReactApexcharts
+                  type='donut'
+                  height={220}
+                  series={credentialsDailyCount.map(cred => cred.total_quantity)}
+                  options={credentialsCountOptions}
+                />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
+                  {credentialsDailyCount.map(cred => (
+                    <Grid container key={cred.id}>
+                      <Grid item xs={12} sx={{ mb: 4 }}>
+                        <Box
+                          sx={{
+                            mb: 1.5,
+                            display: 'flex',
+                            alignItems: 'center',
+                            '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
+                          }}
+                        >
+                          <Icon icon='mdi:circle' />
+                          <Typography variant='body2'>{cred.name}</Typography>
+                        </Box>
+                        <Typography sx={{ fontWeight: 600 }}>{String(cred.total_quantity)}</Typography>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
+              title='Monthly Credentials Overview'
+              titleTypographyProps={{
+                sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+              }}
+            />
+            <CardContent>
+              <Grid container sx={{ my: [0, 4, 1.625] }}>
+                <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
+                <ReactApexcharts
+                  type='donut'
+                  height={220}
+                  series={credentialsMonthlyCount.map(cred => cred.total_quantity)}
+                  options={credentialsCountOptions}
+                />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
+                  {credentialsMonthlyCount.map(cred => (
+                    <Grid container key={cred.id}>
+                      <Grid item xs={12} sx={{ mb: 4 }}>
+                        <Box
+                          sx={{
+                            mb: 1.5,
+                            display: 'flex',
+                            alignItems: 'center',
+                            '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
+                          }}
+                        >
+                          <Icon icon='mdi:circle' />
+                          <Typography variant='body2'>{cred.name}</Typography>
+                        </Box>
+                        <Typography sx={{ fontWeight: 600 }}>{String(cred.total_quantity)}</Typography>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
         <Grid item xs={12} md={6}>
           <Card>
             <CardHeader
