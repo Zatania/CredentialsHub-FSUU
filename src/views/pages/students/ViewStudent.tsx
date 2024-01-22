@@ -22,6 +22,7 @@ import Icon from 'src/@core/components/icon'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
 
 const Transition = forwardRef(function Transition(
   props: FadeProps & { children?: ReactElement<any, any> },
@@ -53,6 +54,8 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
   const [show, setShow] = useState<boolean>(false)
   const [remarks, setRemarks] = useState<string>('')
   const [remarksError, setRemarksError] = useState('')
+
+  const { data:session } = useSession()
 
   const {
     handleSubmit,
@@ -99,7 +102,10 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
     if (!validateRemarks()) return
     const newStatus = actionType === 'verify' ? 'Verified' : 'Unverified';
 
-    axios.put(`/api/student/${student.id}?status=${newStatus}`)
+    axios.put(`/api/student/${student.id}?status=${newStatus}`, {
+      remarks: remarks,
+      session: session
+    })
       .then(() => {
         if (actionType === 'verify') {
           toast.success('Student Verified Successfully')
@@ -283,6 +289,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     variant='outlined'
                     value={remarks}
                     error={!!remarksError}
+                    helperText={remarksError}
                     onChange={(e) => setRemarks(e.target.value)}
                   />
                 </Grid>
