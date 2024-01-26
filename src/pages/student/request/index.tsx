@@ -18,6 +18,7 @@ import DialogActions from '@mui/material/DialogActions'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
+import InputAdornment from '@mui/material/InputAdornment'
 
 // ** Third Party Imports
 import { useForm } from 'react-hook-form'
@@ -83,6 +84,10 @@ const RequestCredentials = () => {
     ))
   }
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+  }
+
   useEffect(() => {
     const total = selectedCredentials.reduce((acc, cred) => acc + (cred.price * cred.quantity), 0)
     setTotalAmount(total)
@@ -106,6 +111,17 @@ const RequestCredentials = () => {
   } = useForm<>({
     mode: 'onBlur'
   })
+
+  // Change up and down
+  const handleIncrement = (credentialId) => {
+    // Logic to increment the quantity
+    handleCredentialQuantityChange(credentialId, (selectedCredentials.find(c => c.id === credentialId)?.quantity || 0) + 1);
+  }
+
+  const handleDecrement = (credentialId) => {
+      // Logic to decrement the quantity
+      handleCredentialQuantityChange(credentialId, (selectedCredentials.find(c => c.id === credentialId)?.quantity || 0) - 1);
+  }
 
   const handleClose = () => {
     // Set show to false
@@ -204,7 +220,7 @@ const RequestCredentials = () => {
                 <Grid item xs={12} sm={12} key={cred.id}>
                   <Grid container spacing={6}>
                     <Grid item xs={12} sm={6}>
-                      <Typography>{cred.name} (Php {cred.price})</Typography>
+                      <Typography>{cred.name} (Php {formatNumberWithCommas(cred.price)})</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Typography>Quantity: {cred.quantity}</Typography>
@@ -215,25 +231,38 @@ const RequestCredentials = () => {
               {selectedPackage === 'others' && individualCredentials.map(cred => (
                 <Grid item sm={12} xs={12} key={cred.id} sx={{mb:5}}>
                   <Grid container spacing={6}>
-                    <Grid item xs={12} sm={6}>
-                      <Typography>{cred.name} (Php {cred.price})</Typography>
+                    <Grid item xs={12} sm={9}>
+                      <Typography>{cred.name} (Php {formatNumberWithCommas(cred.price)})</Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={3}>
                       <TextField
                         label="Quantity"
-                        type="number"
+                        type="text"
                         InputLabelProps={{ shrink: true }}
                         variant="outlined"
                         value={selectedCredentials.find(c => c.id === cred.id)?.quantity || 0}
                         onChange={(e) => handleCredentialQuantityChange(cred.id, e.target.value)}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={() => handleDecrement(cred.id)} size="small">
+                                -
+                              </IconButton>
+                              <IconButton onClick={() => handleIncrement(cred.id)} size="small">
+                                +
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
                       />
+
                     </Grid>
                   </Grid>
                 </Grid>
               ))}
               <Grid item xs={12}>
                 <Typography variant="h6" sx={{ mt: 2 }}>
-                  Total Amount: Php {totalAmount}
+                  Total Amount: Php {formatNumberWithCommas(totalAmount)}
                 </Typography>
               </Grid>
             </Grid>
