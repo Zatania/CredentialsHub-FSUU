@@ -197,7 +197,7 @@ const RequestCredentials = () => {
             </Typography>
             <Typography variant='body2'>Choose from packages or individual credentials.</Typography>
           </Box>
-            <Grid container spacing={6} sx={{ textAlign: 'center' }}>
+            <Grid container spacing={6} sx={{ textAlign: 'left' }}>
               <Grid item xs={12} sm={12}>
                 <FormControl fullWidth>
                   <Select
@@ -219,10 +219,10 @@ const RequestCredentials = () => {
               {selectedPackage !== 'others' && selectedCredentials.map(cred => (
                 <Grid item xs={12} sm={12} key={cred.id}>
                   <Grid container spacing={6}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={10}>
                       <Typography>{cred.name} (Php {formatNumberWithCommas(cred.price)})</Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={2}>
                       <Typography>Quantity: {cred.quantity}</Typography>
                     </Grid>
                   </Grid>
