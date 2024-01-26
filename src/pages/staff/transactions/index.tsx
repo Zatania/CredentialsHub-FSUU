@@ -59,6 +59,10 @@ const Transactions = () => {
     fetchAllTransactions()
   }, [])
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+  }
+
   const fetchAllTransactions = () => {
     axios.get('/api/staff/transactions')
       .then(response => {
@@ -94,7 +98,7 @@ const Transactions = () => {
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.total_amount}
+          {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
       )
     },
@@ -177,7 +181,7 @@ const Transactions = () => {
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.total_amount}
+          {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
       )
     },
@@ -260,7 +264,7 @@ const Transactions = () => {
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.total_amount}
+          {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
       )
     },
@@ -343,7 +347,7 @@ const Transactions = () => {
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.total_amount}
+          {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
       )
     },

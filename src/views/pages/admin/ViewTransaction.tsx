@@ -106,6 +106,10 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
   const { data: session } = useSession()
   const user = session?.user
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+  }
+
   const handleClose = () => {
     setShow(false)
     setScheduleDate(null)
@@ -283,7 +287,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   Total Amount:
                 </Typography>
-                <Typography variant='body1'>{transaction.total_amount}</Typography>
+                <Typography variant='body1'>{formatNumberWithCommas(transaction.total_amount)}</Typography>
               </Grid>
               <Grid item sm={6} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
@@ -396,7 +400,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                               {credential.quantity}
                             </Typography>
                           }>
-                            <ListItemText primary={credential.name + '( Php ' + credential.price + ' )'} />
+                            <ListItemText primary={credential.name + '( Php ' + formatNumberWithCommas(credential.price) + ' )'} />
                           </ListItem>
                         ))}
                       </List>
@@ -416,7 +420,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                               {credential.quantity}
                             </Typography>
                           }>
-                            <ListItemText primary={credential.name + '( Php ' + credential.price + ' )'} />
+                            <ListItemText primary={credential.name + '( Php ' + formatNumberWithCommas(credential.price) + ' )'} />
                           </ListItem>
                         ))}
                       </List>

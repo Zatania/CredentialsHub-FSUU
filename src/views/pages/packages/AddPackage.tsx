@@ -104,6 +104,10 @@ const DialogAddPackage = ({ refreshData }) => {
     refreshData()
   };
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+  }
+
   const onSubmit = async (data: PackagesData) => {
     const packageData = {
       ...data,
@@ -239,7 +243,7 @@ const DialogAddPackage = ({ refreshData }) => {
                             }
                             disablePadding
                           >
-                            <ListItemText primary={`${credential.name} (${credential.price})`} />
+                            <ListItemText primary={`${credential.name} (${formatNumberWithCommas(credential.price)})`} />
                           </ListItem>
                         )
                       })}

@@ -101,6 +101,11 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
 
   const { data: session } = useSession()
   const user = session?.user
+
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+  }
+
   useEffect(() => {
     // Initialize selectedCredentials based on the credentials with quantity > 0
     const initialSelectedCredentials = transaction.individualCredentials.filter((credential) => credential.quantity > 0)
@@ -365,7 +370,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   Total Amount:
                 </Typography>
-                <Typography variant='body1'>{editing ? originalTotalAmount : transaction.total_amount}</Typography>
+                <Typography variant='body1'>{editing ? formatNumberWithCommas(originalTotalAmount) : formatNumberWithCommas(transaction.total_amount)}</Typography>
               </Grid>
               <Grid item sm={6} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
@@ -412,7 +417,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                               {credential.quantity}
                             </Typography>
                           }>
-                            <ListItemText primary={credential.name + '( Php ' + credential.price + ' )'} />
+                            <ListItemText primary={credential.name + '( Php ' + formatNumberWithCommas(credential.price) + ' )'} />
                           </ListItem>
                         ))}
                       </List>
@@ -462,7 +467,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                             }
                             disablePadding
                           >
-                            <ListItemText primary={`${credential.name} (${credential.price})`} />
+                            <ListItemText primary={`${credential.name} (${formatNumberWithCommas(credential.price)})`} />
                           </ListItem>
                         )
                       })}

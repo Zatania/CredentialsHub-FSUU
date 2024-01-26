@@ -127,6 +127,10 @@ const DialogEditPackage  = ({ packageId, refreshData }) => {
     refreshData()
   }
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+  }
+
   const onSubmit = async (data: PackageData) => {
     const updatedPackageData = {
       name: data.name,
@@ -235,7 +239,7 @@ const DialogEditPackage  = ({ packageId, refreshData }) => {
                             checked={!!selectedCredentials[credential.id]}
                             onChange={() => handleCredentialToggle(credential)}
                           />
-                          <ListItemText primary={`${credential.name} (Php ${credential.price})`} />
+                          <ListItemText primary={`${credential.name} (Php ${formatNumberWithCommas(credential.price)})`} />
                           {selectedCredentials[credential.id] && (
                             <Input
                               type="number"

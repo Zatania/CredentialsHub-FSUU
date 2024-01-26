@@ -124,6 +124,10 @@ const Credentials = () => {
     fetchPackages()
   }, [])
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+  }
+
   // Call Function For Fetching Credentials List
   const fetchData = () => {
     axios.get('/api/credentials')
@@ -183,7 +187,7 @@ const Credentials = () => {
       headerName: 'price',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.price}
+          {formatNumberWithCommas(params.row.price)}
         </Typography>
       )
     },

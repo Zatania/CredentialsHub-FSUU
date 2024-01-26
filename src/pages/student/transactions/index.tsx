@@ -74,6 +74,10 @@ const StudentTransactions = () => {
       .catch(error => console.error("Error fetching data", error));
   }
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+  }
+
   const submittedColumns: GridColDef[] = [
     {
       flex: 0.3,
@@ -97,7 +101,7 @@ const StudentTransactions = () => {
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.total_amount}
+          {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
       )
     },
@@ -180,7 +184,7 @@ const StudentTransactions = () => {
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.total_amount}
+          {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
       )
     },
@@ -263,7 +267,7 @@ const StudentTransactions = () => {
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.total_amount}
+          {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
       )
     },
@@ -346,7 +350,7 @@ const StudentTransactions = () => {
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.total_amount}
+          {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
       )
     },
