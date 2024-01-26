@@ -90,7 +90,7 @@ const DashboardStudent = () => {
             title='Submitted Transactions'
             subtitle=''
             icon={<Icon icon='mdi:briefcase-variant-outline' />}
-            optionsMenuProps={{ options: ['Refresh'] }}
+            optionsMenuProps={{ options: [''] }}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -101,7 +101,7 @@ const DashboardStudent = () => {
             title='Scheduled Transactions'
             subtitle=''
             icon={<Icon icon='mdi:briefcase-variant-outline' />}
-            optionsMenuProps={{ options: ['Refresh'] }}
+            optionsMenuProps={{ options: [''] }}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -112,7 +112,7 @@ const DashboardStudent = () => {
             title='Claimed Transactions'
             subtitle=''
             icon={<Icon icon='mdi:briefcase-variant-outline' />}
-            optionsMenuProps={{ options: ['Refresh'] }}
+            optionsMenuProps={{ options: [''] }}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -123,7 +123,7 @@ const DashboardStudent = () => {
             title='Rejected Transactions'
             subtitle=''
             icon={<Icon icon='mdi:briefcase-variant-outline' />}
-            optionsMenuProps={{ options: ['Refresh'] }}
+            optionsMenuProps={{ options: [''] }}
           />
         </Grid>
         <Grid item xs={12} md={12}>
