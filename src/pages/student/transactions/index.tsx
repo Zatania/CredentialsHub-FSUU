@@ -36,9 +36,9 @@ interface StatusObj {
 
 const statusObj: StatusObj = {
   Submitted: { title: 'Submitted', color: 'primary' },
+  Ready: { title: 'Ready', color: 'secondary' },
   Claimed: { title: 'Claimed', color: 'success' },
   Rejected: { title: 'Rejected', color: 'error' },
-  Resigned: { title: 'Resigned', color: 'warning' },
   Scheduled: { title: 'Scheduled', color: 'info' }
 }
 
@@ -46,10 +46,12 @@ const StudentTransactions = () => {
   // ** States
   const [submittedPagination, setSubmittedPagination] = useState({ page: 0, pageSize: 10 })
   const [scheduledPagination, setScheduledPagination] = useState({ page: 0, pageSize: 10 })
+  const [readyPagination, setReadyPagination] = useState({ page: 0, pageSize: 10 })
   const [claimedPagination, setClaimedPagination] = useState({ page: 0, pageSize: 10 })
   const [rejectedPagination, setRejectedPagination] = useState({ page: 0, pageSize: 10 })
   const [submittedRows, setSubmittedsRows] = useState<GridRowsProp>([])
   const [scheduledRows, setScheduledRows] = useState<GridRowsProp>([])
+  const [readyRows, setReadyRows] = useState<GridRowsProp>([])
   const [claimedRows, setClaimedRows] = useState<GridRowsProp>([])
   const [rejectedRows, setRejectedRows] = useState<GridRowsProp>([])
 
@@ -59,23 +61,24 @@ const StudentTransactions = () => {
 
   // Fetch All Transactions
   useEffect(() => {
-    fetchAllTransactions();
-  }, []);
+    fetchAllTransactions()
+  }, [])
 
   const fetchAllTransactions = () => {
     axios.get('/api/student/transactions')
       .then(response => {
-        const data = response.data;
-        setSubmittedsRows(data.Submitted || []);
-        setScheduledRows(data.Scheduled || []);
-        setClaimedRows(data.Claimed || []);
-        setRejectedRows(data.Rejected || []);
+        const data = response.data
+        setSubmittedsRows(data.Submitted || [])
+        setScheduledRows(data.Scheduled || [])
+        setReadyRows(data.Ready || [])
+        setClaimedRows(data.Claimed || [])
+        setRejectedRows(data.Rejected || [])
       })
-      .catch(error => console.error("Error fetching data", error));
+      .catch(error => console.error("Error fetching data", error))
   }
 
   function formatNumberWithCommas(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ')
   }
 
   const submittedColumns: GridColDef[] = [
@@ -162,6 +165,90 @@ const StudentTransactions = () => {
   ]
 
   const scheduledColumns: GridColDef[] = [
+    {
+      flex: 0.3,
+      minWidth: 110,
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {
+            params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+            ''
+          }
+        </Typography>
+      )
+    },
+    {
+      flex: 0.2,
+      minWidth: 110,
+      field: 'totalAmount',
+      headerName: 'Total Amount',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {formatNumberWithCommas(params.row.total_amount)}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.3,
+      minWidth: 110,
+      field: 'transactionDate',
+      headerName: 'Transaction Date',
+      valueGetter: params => new Date(params.value),
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.3,
+      minWidth: 110,
+      field: 'paymentDate',
+      headerName: 'Payment Date',
+      valueGetter: params => new Date(params.value),
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row?.payment_date ? dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A') : ''}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.2,
+      minWidth: 140,
+      field: 'status',
+      headerName: 'Status',
+      renderCell: (params: GridRenderCellParams) => {
+        const status = statusObj[params.row.status]
+
+        return (
+          <CustomChip
+            size='small'
+            skin='light'
+            color={status.color}
+            label={status.title}
+            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+          />
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 140,
+      field: 'action',
+      headerName: 'Actions',
+      renderCell: (params: GridRenderCellParams) => {
+        return (
+          <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+        )
+      }
+    }
+  ]
+
+
+  const readyColumns: GridColDef[] = [
     {
       flex: 0.3,
       minWidth: 110,
@@ -445,6 +532,28 @@ const StudentTransactions = () => {
             paginationModel={scheduledPagination}
             slots={{ toolbar: GridToolbar }}
             onPaginationModelChange={setScheduledPagination}
+            slotProps={{
+              baseButton: {
+                variant: 'outlined'
+              },
+              toolbar: {
+                showQuickFilter: true,
+              }
+            }}
+          />
+        </Card>
+      </Grid>
+      <Grid item sm={12} xs={12}>
+        <Card>
+          <CardHeader title='Ready To Claim Transactions' />
+          <DataGrid
+            autoHeight
+            columns={readyColumns}
+            rows={readyRows}
+            pageSizeOptions={[5, 10, 50, 100]}
+            paginationModel={readyPagination}
+            slots={{ toolbar: GridToolbar }}
+            onPaginationModelChange={setReadyPagination}
             slotProps={{
               baseButton: {
                 variant: 'outlined'

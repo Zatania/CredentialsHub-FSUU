@@ -3,7 +3,7 @@ import db from '../../../db'
 import { RowDataPacket } from 'mysql2'
 
 async function getTransactionCount(id: number, type: string) {
-  const validTypes = ['submitted', 'scheduled', 'claimed', 'rejected']
+  const validTypes = ['submitted', 'scheduled', 'claimed', 'rejected', 'ready']
   if (!validTypes.includes(type)) {
     throw new Error('Invalid Type')
   }
@@ -35,6 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           logs = await getTransactionCount(Number(userId), String(type))
           break
         case 'rejected':
+          logs = await getTransactionCount(Number(userId), String(type))
+          break
+        case 'ready':
           logs = await getTransactionCount(Number(userId), String(type))
           break
         default:

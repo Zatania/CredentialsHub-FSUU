@@ -26,7 +26,7 @@ export default async function handler(
       const { user } = req.body as RequestBody
 
       // Update the transaction in the database
-      await db.query('UPDATE transactions SET task_done = ? WHERE id = ?', [dayjs().format('YYYY-MM-DD HH:mm:ss'), id])
+      await db.query('UPDATE transactions SET task_done = ?, status = ? WHERE id = ?', [dayjs().format('YYYY-MM-DD HH:mm:ss'), 'Ready', id])
 
 
       const message = `${user.firstName} ${user.lastName} has compiled all the credentials for the scheduled transaction.`

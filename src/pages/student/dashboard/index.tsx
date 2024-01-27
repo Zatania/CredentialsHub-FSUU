@@ -30,6 +30,7 @@ const DashboardStudent = () => {
   const [scheduledCount, setScheduledCount] = useState({ })
   const [claimedCount, setClaimedCount] = useState({ })
   const [rejectedCount, setRejectedCount] = useState({ })
+  const [readyCount, setReadyCount] = useState({ })
   const { data: session } = useSession()
 
   const fetchLogs = useCallback(async (page: number) => {
@@ -42,7 +43,7 @@ const DashboardStudent = () => {
 
   const fetchCounts = useCallback(async () => {
     const userId = session?.user?.id
-    const types = ['submitted', 'scheduled', 'claimed', 'rejected']
+    const types = ['submitted', 'scheduled', 'claimed', 'rejected', 'ready']
 
     for (const type of types) {
       const response = await axios.get(`/api/student/transactions/count/${type}?userId=${userId}`)
@@ -56,13 +57,16 @@ const DashboardStudent = () => {
           setScheduledCount(response.data)
           break
         case 'claimed':
-          setClaimedCount(response.data);
-          break;
+          setClaimedCount(response.data)
+          break
         case 'rejected':
-          setRejectedCount(response.data);
-          break;
+          setRejectedCount(response.data)
+          break
+        case 'ready':
+          setReadyCount(response.data)
+          break
         default:
-          break;
+          break
       }
     }
   }, [session])
@@ -82,7 +86,7 @@ const DashboardStudent = () => {
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={2.4}>
           <CardStatisticsVerticalComponent
             stats={String(submittedCount)}
             trend={undefined}
@@ -93,7 +97,7 @@ const DashboardStudent = () => {
             optionsMenuProps={{ options: [''] }}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={2.4}>
           <CardStatisticsVerticalComponent
             stats={String(scheduledCount)}
             trend={undefined}
@@ -104,7 +108,18 @@ const DashboardStudent = () => {
             optionsMenuProps={{ options: [''] }}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={2.4}>
+          <CardStatisticsVerticalComponent
+            stats={String(readyCount)}
+            trend={undefined}
+            trendNumber=''
+            title='Ready to Claim Transactions'
+            subtitle=''
+            icon={<Icon icon='mdi:briefcase-variant-outline' />}
+            optionsMenuProps={{ options: [''] }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={2.4}>
           <CardStatisticsVerticalComponent
             stats={String(claimedCount)}
             trend={undefined}
@@ -115,7 +130,7 @@ const DashboardStudent = () => {
             optionsMenuProps={{ options: [''] }}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={2.4}>
           <CardStatisticsVerticalComponent
             stats={String(rejectedCount)}
             trend={undefined}

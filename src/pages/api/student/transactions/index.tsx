@@ -87,6 +87,7 @@ async function formatData(transactions) {
       image: transaction.attachment,
       payment_date: transaction.payment_date,
       schedule: transaction.schedule,
+      done: transaction.task_done,
       remarks: transaction.remarks,
       claim: transaction.claim,
       claimed_remarks: transaction.claimed_remarks,
@@ -105,7 +106,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const id = session.user.id
-  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected']; // Define the statuses
+  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected', 'Ready']; // Define the statuses
 
   if (req.method === 'GET') {
     try {
