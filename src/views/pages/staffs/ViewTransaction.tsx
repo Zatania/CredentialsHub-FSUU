@@ -723,12 +723,12 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
               <>
                 {transaction.done ? (
                   <Button variant='contained' color='success' onClick={() => handleClaim()}>
-                    Claim
+                    Claimed
                   </Button>
                 ) : (
                   <>
                     <Button variant='contained' color='success' onClick={() => handleClaim()}>
-                      Claim
+                      Claimed
                     </Button>
                     <Button variant='contained' color='info' onClick={() => handleDone()}>
                       Done

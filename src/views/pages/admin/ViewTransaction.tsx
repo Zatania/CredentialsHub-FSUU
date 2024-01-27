@@ -704,7 +704,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
             {transaction.status === 'Scheduled' ? (
               <>
                 <Button variant='contained' color='primary' onClick={() => handleClaim()}>
-                  Claim
+                  Claimed
                 </Button>
               </>
             ) : null}
