@@ -128,7 +128,7 @@ const DialogEditPackage  = ({ packageId, refreshData }) => {
   }
 
   function formatNumberWithCommas(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
   const onSubmit = async (data: PackageData) => {

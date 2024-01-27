@@ -108,7 +108,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
   const user = session?.user
 
   function formatNumberWithCommas(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ', ');
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
   const handleClose = () => {
