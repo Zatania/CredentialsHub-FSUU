@@ -66,6 +66,13 @@ const navigation = (): HorizontalNavItemsType => [
     icon: 'mdi:note-text'
   },
   {
+    path: '/admin/student_assistant_logs',
+    title: 'SA Logs',
+    action: 'read',
+    subject: 'sa-logs-page',
+    icon: 'mdi:note-text'
+  },
+  {
     path: '/admin/prompt',
     title: 'Edit Prompt',
     action: 'read',
