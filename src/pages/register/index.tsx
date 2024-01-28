@@ -321,6 +321,18 @@ const Register = () => {
     fetchData()
   }, [])
 
+  // Function to generate school year options
+  const getSchoolYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    let years = [];
+    for (let year = 2018; year <= currentYear; year++) {
+      years.push(`${year}-${year + 1}`);
+    }
+
+    return years;
+  }
+
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <ViewPrompt prompt={prompt} isVisible={viewPromptVisible} closeDialog={closeDialog}/>
@@ -777,18 +789,25 @@ const Register = () => {
                         </Grid>
                         <Grid item sm={3} xs={12}>
                           <FormControl fullWidth sx={{ mb: 4 }}>
+                            <InputLabel id="schoolYear-label">School Year</InputLabel>
                             <Controller
                               name='schoolYear'
                               control={control}
                               rules={{ required: false }}
                               render={({ field: { value, onChange, onBlur } }) => (
-                                <TextField
-                                  label='School Year'
+                                <Select
+                                  labelId="schoolYear-label"
                                   value={value}
                                   onBlur={onBlur}
                                   onChange={onChange}
-                                  error={Boolean(errors.schoolYear)}
-                                />
+                                  label='School Year'
+                                  error={!!errors.schoolYear}
+                                >
+                                  <MenuItem value=''>School Year</MenuItem>
+                                  {getSchoolYearOptions().map((year, index) => (
+                                    <MenuItem key={index} value={year}>{year}</MenuItem>
+                                  ))}
+                                </Select>
                               )}
                             />
                             {errors.schoolYear && (
