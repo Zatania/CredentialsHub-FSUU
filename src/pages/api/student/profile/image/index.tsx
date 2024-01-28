@@ -22,7 +22,6 @@ const updateUser = async (data: UserImage) => {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const data = req.body;
-  console.log('sent data', data)
   try {
     await updateUser(data)
 

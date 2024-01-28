@@ -63,7 +63,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { role, page, limit } = req.query
   let logs = []
 
-  console.log(req.query)
   if (req.method === 'GET') {
     try {
       switch (role) {

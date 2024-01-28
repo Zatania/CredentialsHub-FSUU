@@ -114,8 +114,6 @@ const StaffsList = () => {
     fetchStaffs()
   }, [])
 
-  console.log(staffsRows)
-
   const handleDeleteClick = (id: any) => {
     axios.delete(`/api/admin/staff/delete/${id}`)
       .then(() => {
