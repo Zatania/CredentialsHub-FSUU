@@ -17,6 +17,7 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 // ** Custome Components Import
 import OptionsMenu from 'src/@core/components/option-menu'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import CredentialsChart from 'src/views/charts/CredentialsChart'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -27,7 +28,6 @@ import { ApexOptions } from 'apexcharts'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-
 interface Department {
   name: string
   id: number
@@ -395,6 +395,9 @@ const DashboardAdmin = () => {
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
+        <Grid item xs={12} md={12}>
+            <CredentialsChart />
+        </Grid>
         <Grid item xs={12} md={6}>
           <Card>
             <CardHeader

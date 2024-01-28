@@ -30,7 +30,8 @@ async function getCredentialsCount(startDate: string, endDate: string) {
         WHERE t.transaction_date >= ? AND t.transaction_date <= ?
         GROUP BY pc.credential_id
       ) as pc ON c.id = pc.credential_id
-      GROUP BY c.id, c.name;
+      GROUP BY c.id, c.name
+      ORDER BY c.name ASC;
     `
     const params = [startDate, endDate, startDate, endDate]
 
