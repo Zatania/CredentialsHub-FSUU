@@ -540,6 +540,16 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                         </Grid>
                       </Grid>
                     </Grid>
+                    <Grid item sm={12} xs={12}>
+                      <TextField
+                        label="Remarks (For rejection purpose only)"
+                        margin="normal"
+                        value={remarks}
+                        onChange={(e) => setRemarks(e.target.value)}
+                        error={!!remarksError}
+                        helperText={remarksError}
+                      />
+                    </Grid>
                   </>
                 ) : transaction.image && !transaction.payment_date ? (
 
@@ -568,6 +578,16 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                           </FormControl>
                         </Grid>
                       </Grid>
+                    </Grid>
+                    <Grid item sm={12} xs={12}>
+                      <TextField
+                        label="Remarks (For rejection purpose only)"
+                        margin="normal"
+                        value={remarks}
+                        onChange={(e) => setRemarks(e.target.value)}
+                        error={!!remarksError}
+                        helperText={remarksError}
+                      />
                     </Grid>
                   </>
                 ) : !transaction.image && transaction.payment_date ? (
@@ -616,6 +636,16 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                           )}
                         </Grid>
                       </Grid>
+                    </Grid>
+                    <Grid item sm={12} xs={12}>
+                      <TextField
+                        label="Remarks (For rejection purpose only)"
+                        margin="normal"
+                        value={remarks}
+                        onChange={(e) => setRemarks(e.target.value)}
+                        error={!!remarksError}
+                        helperText={remarksError}
+                      />
                     </Grid>
                   </>
                 ) : null}
