@@ -28,7 +28,7 @@ const LogsPage = () => {
     fetchRoleLogs('student', setStudentLogs)
     fetchRoleLogs('staff', setStaffLogs)
     fetchRoleLogs('admin', setAdminLogs)
-    fetchRoleLogs('sa', setSALogs)
+    fetchRoleLogs('student_assistant', setSALogs)
   }, [fetchRoleLogs])
 
   const loadMoreLogs = () => {
