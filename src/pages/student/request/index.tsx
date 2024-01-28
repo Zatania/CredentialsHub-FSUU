@@ -78,11 +78,37 @@ const RequestCredentials = () => {
     }
   }, [selectedPackage, individualCredentials])
 
-  const handleCredentialQuantityChange = (credentialId, quantity) => {
-    setSelectedCredentials(prevCredentials => prevCredentials.map(cred =>
-      cred.id === credentialId ? { ...cred, quantity: parseInt(quantity, 10) || 0 } : cred
-    ))
+  const findCredentialIdByName = (name) => {
+    const credential = individualCredentials.find(c => c.name === name);
+
+    return credential ? credential.id : null;
   }
+
+  console.log(individualCredentials)
+
+  const TRANSCRIPT_ID = findCredentialIdByName('Transcript of Records');
+  const DIPLOMA_ID = findCredentialIdByName('Diploma');
+  const DOCUMENTARY_STAMP_ID = findCredentialIdByName('Documentary Stamp');
+
+  const handleCredentialQuantityChange = (credentialId, quantity) => {
+    setSelectedCredentials(prevCredentials => {
+        // Update the quantity for the selected credential
+        const updatedCredentials = prevCredentials.map(cred =>
+            cred.id === credentialId ? { ...cred, quantity: parseInt(quantity, 10) || 0 } : cred
+        );
+
+        // Calculate the total quantity for Transcript and Diploma
+        const transcriptQuantity = updatedCredentials.find(c => c.id === TRANSCRIPT_ID)?.quantity || 0;
+        const diplomaQuantity = updatedCredentials.find(c => c.id === DIPLOMA_ID)?.quantity || 0;
+        const totalQuantity = transcriptQuantity + diplomaQuantity;
+
+        // Update the quantity of Documentary Stamp
+        return updatedCredentials.map(cred =>
+            cred.id === DOCUMENTARY_STAMP_ID ? { ...cred, quantity: totalQuantity } : cred
+        );
+    });
+}
+
 
   function formatNumberWithCommas(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
