@@ -59,7 +59,7 @@ interface TransactionData {
   payment_date: string
   remarks: string
   schedule: string
-  done: string
+  task_done: string
   claim: string
   claimed_remarks: string
   reject: string
@@ -629,6 +629,21 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                   </Typography>
                   <Typography variant='body1'>{dayjs(transaction.schedule).format('MMMM DD, YYYY HH:mm:ss A')}</Typography>
                 </Grid>
+              </>
+            ) : null}
+            {transaction.status === 'Ready' ? (
+              <>
+                <Grid item sm={12} xs={12}>
+                  <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                    Schedule:
+                  </Typography>
+                  <Typography variant='body1'>{dayjs(transaction.schedule).format('MMMM DD, YYYY HH:mm:ss A')}</Typography>
+                </Grid><Grid item sm={12} xs={12}>
+                  <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                    Date Done:
+                  </Typography>
+                  <Typography variant='body1'>{dayjs(transaction.task_done).format('MMMM DD, YYYY HH:mm:ss A')}</Typography>
+                </Grid>
                 <TextField
                   fullWidth
                   sx={{ mt: 5 }}
@@ -721,20 +736,16 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
             ) : null}
             {transaction.status === 'Scheduled' ? (
               <>
-                {transaction.done ? (
-                  <Button variant='contained' color='success' onClick={() => handleClaim()}>
-                    Claimed
-                  </Button>
-                ) : (
-                  <>
-                    <Button variant='contained' color='success' onClick={() => handleClaim()}>
-                      Claimed
-                    </Button>
-                    <Button variant='contained' color='info' onClick={() => handleDone()}>
-                      Done
-                    </Button>
-                  </>
-                )}
+                <Button variant='contained' color='info' onClick={() => handleDone()}>
+                  Done
+                </Button>
+              </>
+            ) : null}
+            {transaction.status === 'Ready' ? (
+              <>
+                <Button variant='contained' color='info' onClick={() => handleClaim()}>
+                  Claimed
+                </Button>
               </>
             ) : null}
             <Button variant='outlined' color='secondary' onClick={() => handleClose()}>

@@ -37,16 +37,21 @@ interface StatusObj {
 const statusObj: StatusObj = {
   Submitted: { title: 'Submitted', color: 'primary' },
   Scheduled: { title: 'Scheduled', color: 'info' },
-  Done: { title: 'Done', color: 'info' },
+  Ready: { title: 'Ready', color: 'secondary' },
   Claimed: { title: 'Claimed', color: 'success' },
   Rejected: { title: 'Rejected', color: 'error' },
 }
 
 const Transactions = () => {
   // ** States
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 5 })
+  const [submittedPaginationModel, setSubmittedPaginationModel] = useState({ page: 0, pageSize: 5 })
+  const [scheduledPaginationModel, setScheduledPaginationModel] = useState({ page: 0, pageSize: 5 })
+  const [readyPaginationModel, setReadyPaginationModel] = useState({ page: 0, pageSize: 5 })
+  const [claimedPaginationModel, setClaimedPaginationModel] = useState({ page: 0, pageSize: 5 })
+  const [rejectedPaginationModel, setRejectedPaginationModel] = useState({ page: 0, pageSize: 5 })
   const [submittedRows, setSubmittedsRows] = useState<GridRowsProp>([])
   const [scheduledRows, setScheduledRows] = useState<GridRowsProp>([])
+  const [readyRows, setReadyRows] = useState<GridRowsProp>([])
   const [claimedRows, setClaimedRows] = useState<GridRowsProp>([])
   const [rejectedRows, setRejectedRows] = useState<GridRowsProp>([])
 
@@ -69,6 +74,7 @@ const Transactions = () => {
         const data = response.data
         setSubmittedsRows(data.Submitted || [])
         setScheduledRows(data.Scheduled || [])
+        setReadyRows(data.Ready || [])
         setClaimedRows(data.Claimed || [])
         setRejectedRows(data.Rejected || [])
       })
@@ -159,6 +165,89 @@ const Transactions = () => {
   ]
 
   const scheduledColumns: GridColDef[] = [
+    {
+      flex: 0.3,
+      minWidth: 110,
+      field: 'requestType',
+      headerName: 'Request Type',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {
+            params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+            ''
+          }
+        </Typography>
+      )
+    },
+    {
+      flex: 0.2,
+      minWidth: 110,
+      field: 'totalAmount',
+      headerName: 'Total Amount',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {formatNumberWithCommas(params.row.total_amount)}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.3,
+      minWidth: 110,
+      field: 'transactionDate',
+      headerName: 'Transaction Date',
+      valueGetter: params => new Date(params.value),
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.3,
+      minWidth: 110,
+      field: 'paymentDate',
+      headerName: 'Payment Date',
+      valueGetter: params => new Date(params.value),
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row?.payment_date ? dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A') : ''}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.2,
+      minWidth: 140,
+      field: 'status',
+      headerName: 'Status',
+      renderCell: (params: GridRenderCellParams) => {
+        const status = statusObj[params.row.status]
+
+        return (
+          <CustomChip
+            size='small'
+            skin='light'
+            color={status.color}
+            label={status.title}
+            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+          />
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 140,
+      field: 'action',
+      headerName: 'Actions',
+      renderCell: (params: GridRenderCellParams) => {
+        return (
+          <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+        )
+      }
+    }
+  ]
+
+  const readyColumns: GridColDef[] = [
     {
       flex: 0.3,
       minWidth: 110,
@@ -417,9 +506,9 @@ const Transactions = () => {
             columns={submittedColumns}
             rows={submittedRows}
             pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            paginationModel={submittedPaginationModel}
             slots={{ toolbar: GridToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setSubmittedPaginationModel}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
@@ -439,9 +528,31 @@ const Transactions = () => {
             columns={scheduledColumns}
             rows={scheduledRows}
             pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            paginationModel={scheduledPaginationModel}
             slots={{ toolbar: GridToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setScheduledPaginationModel}
+            slotProps={{
+              baseButton: {
+                variant: 'outlined'
+              },
+              toolbar: {
+                showQuickFilter: true,
+              }
+            }}
+          />
+        </Card>
+      </Grid>
+      <Grid item sm={12} xs={12}>
+        <Card>
+          <CardHeader title='Ready to Claim Transactions' />
+          <DataGrid
+            autoHeight
+            columns={readyColumns}
+            rows={readyRows}
+            pageSizeOptions={[5, 10, 50, 100]}
+            paginationModel={readyPaginationModel}
+            slots={{ toolbar: GridToolbar }}
+            onPaginationModelChange={setReadyPaginationModel}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
@@ -461,9 +572,9 @@ const Transactions = () => {
             columns={claimedColumns}
             rows={claimedRows}
             pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            paginationModel={claimedPaginationModel}
             slots={{ toolbar: GridToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setClaimedPaginationModel}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
@@ -483,9 +594,9 @@ const Transactions = () => {
             columns={rejectedColumns}
             rows={rejectedRows}
             pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            paginationModel={rejectedPaginationModel}
             slots={{ toolbar: GridToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setRejectedPaginationModel}
             slotProps={{
               baseButton: {
                 variant: 'outlined'

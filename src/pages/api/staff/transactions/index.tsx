@@ -130,7 +130,7 @@ async function formatData(transactions: any[]) {
       image: transaction.attachment,
       payment_date: transaction.payment_date,
       schedule: transaction.schedule,
-      done: transaction.task_done,
+      task_done: transaction.task_done,
       remarks: transaction.remarks,
       claim: transaction.claim,
       claimed_remarks: transaction.claimed_remarks,
@@ -143,7 +143,7 @@ async function formatData(transactions: any[]) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected'] // Define the statuses
+  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected', 'Ready'] // Define the statuses
   const session = await getSession({ req })
   if (!session || !session.user) {
     return res.status(401).json({ message: 'Unauthorized' })
