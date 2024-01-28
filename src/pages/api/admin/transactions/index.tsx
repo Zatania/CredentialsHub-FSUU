@@ -122,6 +122,7 @@ async function formatData(transactions: any[]) {
       payment_date: transaction.payment_date,
       schedule: transaction.schedule,
       remarks: transaction.remarks,
+      task_done: transaction.task_done,
       claim: transaction.claim,
       claimed_remarks: transaction.claimed_remarks,
       reject: transaction.reject,
@@ -133,7 +134,7 @@ async function formatData(transactions: any[]) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected'] // Define the statuses
+  const statuses = ['Submitted', 'Scheduled', 'Claimed', 'Rejected', 'Ready'] // Define the statuses
   if (req.method === 'GET') {
     try {
       const allTransactions = {}
