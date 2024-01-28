@@ -11,20 +11,6 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:home-outline'
     },
     {
-      title: 'Dashboard',
-      path: '/student/dashboard',
-      action: 'read',
-      subject: 'student-page',
-      icon: 'mdi:home-outline'
-    },
-    {
-      title: 'Dashboard',
-      path: '/staff/dashboard',
-      action: 'read',
-      subject: 'staff-page',
-      icon: 'mdi:home-outline'
-    },
-    {
       path: '/admin/students',
       title: 'Students',
       action: 'read',
@@ -37,27 +23,6 @@ const navigation = (): VerticalNavItemsType => {
       action: 'read',
       subject: 'admin-transactions-page',
       icon: 'mdi:text-box'
-    },
-    {
-      path: '/student/request',
-      title: 'Request Credentials',
-      action: 'read',
-      subject: 'request-page',
-      icon: 'mdi:text-box-plus'
-    },
-    {
-      path: '/student/transactions',
-      title: 'Transactions',
-      action: 'read',
-      subject: 'student-transactions-page',
-      icon: 'mdi:text-box'
-    },
-    {
-      path: '/pdf/FSUU_CLEARANCE_FORM.pdf',
-      title: 'Get Clearance Form',
-      action: 'read',
-      subject: 'clearance-form',
-      icon: 'mdi:file-pdf-box'
     },
     {
       path: '/admin/credentials',
@@ -81,6 +46,13 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:account-multiple'
     },
     {
+      path: '/admin/student_assistants',
+      title: 'Student Assistant',
+      action: 'read',
+      subject: 'sa-list-page',
+      icon: 'mdi:account-multiple'
+    },
+    {
       path: '/admin/logs',
       title: 'Logs',
       action: 'read',
@@ -93,6 +65,48 @@ const navigation = (): VerticalNavItemsType => {
       action: 'read',
       subject: 'staff-logs-page',
       icon: 'mdi:note-text'
+    },
+    {
+      path: '/admin/prompt',
+      title: 'Edit Prompt',
+      action: 'read',
+      subject: 'prompt-page',
+      icon: 'mdi:note-text'
+    },
+    {
+      title: 'Dashboard',
+      path: '/student/dashboard',
+      action: 'read',
+      subject: 'student-page',
+      icon: 'mdi:home-outline'
+    },
+    {
+      title: 'Dashboard',
+      path: '/staff/dashboard',
+      action: 'read',
+      subject: 'staff-page',
+      icon: 'mdi:home-outline'
+    },
+    {
+      path: '/student/request',
+      title: 'Request Credentials',
+      action: 'read',
+      subject: 'request-page',
+      icon: 'mdi:text-box-plus'
+    },
+    {
+      path: '/student/transactions',
+      title: 'Transactions',
+      action: 'read',
+      subject: 'student-transactions-page',
+      icon: 'mdi:text-box'
+    },
+    {
+      path: '/pdf/FSUU_CLEARANCE_FORM.pdf',
+      title: 'Get Clearance Form',
+      action: 'read',
+      subject: 'clearance-form',
+      icon: 'mdi:file-pdf-box'
     },
     {
       path: '/staff/students',
@@ -116,11 +130,18 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:note-text'
     },
     {
-      path: '/admin/prompt',
-      title: 'Edit Prompt',
+      path: '/student_assistant/dashboard',
+      title: 'Dashboard',
       action: 'read',
-      subject: 'prompt-page',
-      icon: 'mdi:note-text'
+      subject: 'sa-page',
+      icon: 'mdi:home-outline'
+    },
+    {
+      path: '/student_assistant/transactions',
+      title: 'Transactions',
+      action: 'read',
+      subject: 'sa-transactions-page',
+      icon: 'mdi:text-box'
     },
   ]
 }

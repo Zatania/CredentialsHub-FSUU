@@ -42,6 +42,7 @@ declare module 'next-auth' {
     homeAddress: string
     studentNumber: string
     employeeNumber: string
+    sa_number: string
     status: string
     image: string
     remarks: string

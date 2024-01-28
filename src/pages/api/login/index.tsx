@@ -29,6 +29,16 @@ const getUser = async (username: string, password: string, userType: string) => 
         'WHERE username = ? AND staffs.is_deleted = FALSE ' +
         'GROUP BY staffs.id, roles.name'
       params = [username]
+    } else if (userType === 'Student Assistant') {
+      query =
+        'SELECT student_assistants.*, roles.name AS role_name, GROUP_CONCAT(department.name) AS departments FROM student_assistants ' +
+        'JOIN student_assistants_roles ON student_assistants.id = student_assistants_roles.sa_id ' +
+        'JOIN roles ON student_assistants_roles.role_id = roles.id ' +
+        'LEFT JOIN student_assistants_departments ON student_assistants.id = student_assistants_departments.sa_id ' +
+        'LEFT JOIN department ON student_assistants_departments.department_id = department.id ' +
+        'WHERE username = ? AND student_assistants.is_deleted = FALSE ' +
+        'GROUP BY student_assistants.id, roles.name'
+      params = [username]
     } else {
       query =
         'SELECT admins.*, roles.name AS role_name FROM admins ' +
@@ -60,7 +70,9 @@ const getUser = async (username: string, password: string, userType: string) => 
       await db.query('INSERT INTO user_logs (user_id, activity, activity_type, date) VALUES (?, ?, ?, ?)', [user[0].id, message, type, dayjs().format('YYYY-MM-DD HH:mm:ss')])
     } else if (userType === 'Staff') {
       await db.query('INSERT INTO staff_logs (staff_id, activity, activity_type, date) VALUES (?, ?, ?, ?)', [user[0].id, message, type, dayjs().format('YYYY-MM-DD HH:mm:ss')])
-    } else {
+    } else if (userType === 'Student Assistant') {
+      await db.query('INSERT INTO student_assistants_logs (sa_id, activity, activity_type, date) VALUES (?, ?, ?, ?)', [user[0].id, message, type, dayjs().format('YYYY-MM-DD HH:mm:ss')])
+    }else {
       await db.query('INSERT INTO admins_logs (admin_id, activity, activity_type, date) VALUES (?, ?, ?, ?)', [user[0].id, message, type, dayjs().format('YYYY-MM-DD HH:mm:ss')])
     }
 

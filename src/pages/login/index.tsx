@@ -276,6 +276,7 @@ const LoginPage = () => {
                     >
                       <MenuItem value='Student'>Student/Alumni</MenuItem>
                       <MenuItem value='Staff'>Staff</MenuItem>
+                      <MenuItem value='Student Assistant'>Student Assistant</MenuItem>
                     </Select>
                   )}
                 />

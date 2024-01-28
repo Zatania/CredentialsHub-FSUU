@@ -105,6 +105,8 @@ const UserDropdown = (props: Props) => {
       router.push('/staff/profile')
     } else if (session?.user.role === 'admin') {
       router.push('/admin/profile')
+    } else {
+      router.push('/')
     }
 
     handleDropdownClose()
@@ -170,6 +172,16 @@ const UserDropdown = (props: Props) => {
                 </Typography>
                 <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
                   Employee Number: {session?.user.studentNumber}
+                </Typography>
+              </Box>
+            )}
+            {session?.user.role === 'student_assistant' && (
+              <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
+                <Typography sx={{ fontWeight: 600 }}>
+                  {session?.user.firstName + ' ' + session?.user.lastName}
+                </Typography>
+                <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
+                  Student Assistant Number: {session?.user.studentNumber}
                 </Typography>
               </Box>
             )}

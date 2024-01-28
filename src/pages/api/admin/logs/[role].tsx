@@ -45,10 +45,25 @@ async function getStaffLogs() {
   return rows
 }
 
+async function getSALogs() {
+  const [logs] = (await db.query(`SELECT * FROM student_assistants_logs ORDER BY date DESC`)) as RowDataPacket[]
+
+  const rows = logs.map((row: any) => ({
+    id: row.id,
+    userId: row.sa_id,
+    activity: row.activity,
+    activity_type: row.activity_type,
+    date: dayjs(row.created_at).format('MMMM DD, YYYY hh:mm A')
+  }))
+
+  return rows
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { role, page, limit } = req.query
   let logs = []
 
+  console.log(req.query)
   if (req.method === 'GET') {
     try {
       switch (role) {
@@ -60,6 +75,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           break
         case 'staff':
           logs = await getStaffLogs()
+          break
+        case 'student_assistant':
+          logs = await getSALogs()
           break
         default:
           return res.status(400).json({ message: 'Invalid role' })
