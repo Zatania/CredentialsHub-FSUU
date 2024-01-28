@@ -15,15 +15,15 @@ interface SAData {
 }
 
 const insertSA = async (data: SAData, departments: number[]) => {
-  const { id, username, password, sa_number, firstName, middleName, lastName, address, role } = data
+  const { username, password, sa_number, firstName, middleName, lastName, address, role } = data
 
   try {
     const [rows] = (await db.query(
       `
-        INSERT INTO student_assistants (id, username, password, sa_number, firstName, middleName, lastName, address, role)
+        INSERT INTO student_assistants (username, password, sa_number, firstName, middleName, lastName, address, role)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `,
-      [id, username, password, sa_number, firstName, middleName, lastName, address, role]
+      [username, password, sa_number, firstName, middleName, lastName, address, role]
     )) as RowDataPacket[]
 
     const sa_id = rows.insertId
