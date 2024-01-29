@@ -4,8 +4,8 @@ import db from '../../../db'
 async function updateSA(id: number, SAData: any) {
   try {
     // Update student assistant's basic information
-    const updateQuery = 'UPDATE student_assistants SET username = ?, firstName = ?, middleName = ?, lastName = ?, address = ?, role = ? WHERE id = ?'
-    await db.query(updateQuery, [SAData.username, SAData.firstName, SAData.middleName, SAData.lastName, SAData.address, SAData.role, id])
+    const updateQuery = 'UPDATE student_assistants SET sa_number = ?, username = ?, firstName = ?, middleName = ?, lastName = ?, address = ?, role = ? WHERE id = ?'
+    await db.query(updateQuery, [SAData.sa_number, SAData.username, SAData.firstName, SAData.middleName, SAData.lastName, SAData.address, SAData.role, id])
 
     // Update student assistant's departments
     // First, clear existing departments associations for the student assistant's

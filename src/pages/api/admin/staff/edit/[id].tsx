@@ -4,8 +4,8 @@ import db from '../../../db'
 async function updateStaff(id: number, staffData: any) {
   try {
     // Update staff basic information
-    const updateQuery = 'UPDATE staffs SET username = ?, firstName = ?, middleName = ?, lastName = ?, address = ? WHERE id = ?'
-    await db.query(updateQuery, [staffData.username, staffData.firstName, staffData.middleName, staffData.lastName, staffData.address, id])
+    const updateQuery = 'UPDATE staffs SET employeeNumber = ?, username = ?, firstName = ?, middleName = ?, lastName = ?, address = ? WHERE id = ?'
+    await db.query(updateQuery, [staffData.employeeNumber, staffData.username, staffData.firstName, staffData.middleName, staffData.lastName, staffData.address, id])
 
     // Update staff departments
     // First, clear existing departments associations for the staff
