@@ -16,7 +16,7 @@ import DialogActions from '@mui/material/DialogActions'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
-import { DatePicker, MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { DatePicker, MobileDatePicker, MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import FormControl from '@mui/material/FormControl'
 import Input from '@mui/material/Input'
@@ -531,7 +531,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                         </Grid>
                         <Grid item sm={12} xs={12}>
                           <FormControl sx={{ mb: 4 }}>
-                            <DatePicker
+                            <MobileDatePicker
                               label='Payment Date'
                               value={selectedDate}
                               onChange={(date) => setSelectedDate(date)}
@@ -570,7 +570,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                         </Grid>
                         <Grid item sm={12} xs={12}>
                           <FormControl sx={{ mb: 4 }}>
-                            <DatePicker
+                            <MobileDatePicker
                               label='Payment Date'
                               value={selectedDate}
                               onChange={(date) => setSelectedDate(date)}
