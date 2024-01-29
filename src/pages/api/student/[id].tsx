@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next/types'
 import db from '../db'
-import { getSession } from 'next-auth/react'
 import dayjs from 'dayjs'
 
 async function verifyOrUnverify(id: number, status: string, remarks: string, session: any) {
@@ -59,13 +58,11 @@ export default async function handler(
 
   if (req.method === 'PUT') {
     try {
-      if (status && remarks) {
+      if (status) {
         await verifyOrUnverify(Number(id), String(status), String(remarks), session)
-
         res.status(200).end()
-      } else if (!status && remarks) {
+      } else {
         await sendRemarks(Number(id), String(remarks))
-
         res.status(200).end()
       }
     } catch (error) {

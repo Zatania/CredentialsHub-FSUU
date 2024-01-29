@@ -120,9 +120,11 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
       })
   }
 
-  const handlSendRemarks = async () => {
+  const handleSendRemarks = async () => {
     if (!validateRemarks()) return
-    axios.put(`/api/student/${student.id}?remarks=${remarks}`)
+    axios.put(`/api/student/${student.id}`, {
+      remarks: remarks
+    })
       .then(() => {
         toast.success('Remarks Sent Successfully')
         handleClose()
@@ -307,7 +309,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                   <Button variant='contained' sx={{ mr: 1 }} type='submit'>
                     Verify
                   </Button>
-                  <Button variant='contained' color='warning' sx={{ mr: 1 }} onClick={handlSendRemarks}>
+                  <Button variant='contained' color='warning' sx={{ mr: 1 }} onClick={handleSendRemarks}>
                     Send Remarks
                   </Button>
                 </>
