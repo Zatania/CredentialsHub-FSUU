@@ -27,6 +27,7 @@ export default async function handler(
       // Update the transaction in the database
       await db.query('UPDATE transactions SET reject = ?, rejected_remarks = ?, status = ? WHERE id = ?', [dayjs().format('YYYY-MM-DD HH:mm:ss'), rejected_remarks, 'Rejected', id])
 
+      await db.query('INSERT INTO transaction_history (transaction_id, staff_id) VALUES (?, ?)', [id, user.id])
 
       const message = `${user.firstName} ${user.lastName} successfully rejected the transaction.`
       const activity = `Rejected Transaction`

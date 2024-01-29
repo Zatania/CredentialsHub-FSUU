@@ -28,12 +28,13 @@ export default async function handler(
       // Update the transaction in the database
       await db.query('UPDATE transactions SET claim = ?, claimed_remarks = ?, status = ? WHERE id = ?', [dayjs().format('YYYY-MM-DD HH:mm:ss'), claimed_remarks, 'Claimed', id])
 
+      await db.query('UPDATE transaction_history SET sa_id = ? WHERE transaction_id = ?', [user.id, id])
 
       const message = `${user.firstName} ${user.lastName} successfully given the scheduled transaction.`
       const activity = `Claimed Transaction`
 
       // Insert into staff_logs
-      await db.query(`INSERT INTO student_assistants_logs (sa_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, activity, dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      await db.query(`INSERT INTO student_assistants_logs (sa_activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, activity, dayjs().format('YYYY-MM-DD HH:mm:ss')])
 
       // Send a success response
       res.status(200).json({ message: 'Transaction claimed successfully' })

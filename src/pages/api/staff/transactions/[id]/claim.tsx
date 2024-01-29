@@ -28,6 +28,7 @@ export default async function handler(
       // Update the transaction in the database
       await db.query('UPDATE transactions SET claim = ?, claimed_remarks = ?, status = ? WHERE id = ?', [dayjs().format('YYYY-MM-DD HH:mm:ss'), claimed_remarks, 'Claimed', id])
 
+      await db.query('UPDATE transaction_history SET staff_id = ? WHERE transaction_id = ?', [user.id, id])
 
       const message = `${user.firstName} ${user.lastName} successfully given the scheduled transaction.`
       const activity = `Claimed Transaction`
