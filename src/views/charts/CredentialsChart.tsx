@@ -140,7 +140,7 @@ const CredentialsChart = () => {
   console.log("Data Keys:", dataKeys);
 
   const colorPalette = [
-    "#8dd0ff", "#8acbff", "#86c7ff", "#82c2ff", "#7fbeff", "#7bb9ff", "#77b5ff", "#73b1ff", "#6eacff", "#6aa8ff", "#65a3ff", "#609fff", "#5b9bff", "#5596ff", "#4f92ff", "#488eff", "#418aff", "#3885ff", "#2e81ff", "#207dff"
+    "#3f6a75","#71e348","#b945e0","#c6e043","#5e43d2","#65ad39","#dc38b6","#71dc7e","#3f1f89","#e4c33f","#5a7de4","#d67f29","#4e4fa6","#cbdc88","#893199","#69deac","#e23e78","#7fe4dc","#e14530","#50aead","#d266c5","#568739","#a175df","#a19a3a","#321f56","#ccd9b8","#773371","#4e926b","#a53668","#40592a","#d087c6","#253623","#dabcd8","#3c1827","#7ebfe1","#a63d2b","#8499d4","#876526","#4c6294","#dd9962","#252d42","#e1ac9c","#662222","#7e9993","#dd737d","#5c472e","#ab8098","#9e916d","#714a62","#995949"
   ];
 
   // Function to get color from the palette
