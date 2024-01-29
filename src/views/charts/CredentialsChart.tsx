@@ -17,7 +17,7 @@ import Icon from 'src/@core/components/icon'
 import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, TooltipProps
 } from 'recharts';
 import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios';
@@ -33,9 +33,6 @@ const CustomTooltip = (data: TooltipProps<any, any>) => {
   const { active, payload } = data;
 
   if (active && payload) {
-    // Calculate the dynamic height. Adjust the '30' based on your item height
-    const tooltipHeight = payload.length * 30;
-
     return (
       <div className='recharts-custom-tooltip'>
         <Typography>{data.label}</Typography>
@@ -44,7 +41,7 @@ const CustomTooltip = (data: TooltipProps<any, any>) => {
           data.payload &&
           data.payload.map((i: any) => {
             return (
-              <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { color: i.fill, mr: 2.5 } }} key={i.dataKey}>
+              <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { color: i.stroke, mr: 2.5 } }} key={i.dataKey}>
                 <Icon icon='mdi:circle' fontSize='0.6rem' />
                 <Typography variant='body2'>{`${i.dataKey} : ${i.payload[i.dataKey]}`}</Typography>
               </Box>
@@ -171,7 +168,7 @@ const CredentialsChart = () => {
       <CardContent>
         <Box sx={{ height: 500 }}>
           <ResponsiveContainer>
-            <AreaChart height={500} data={data} margin={{
+            <LineChart height={500} data={data} margin={{
               top: 10,
               right: 30,
               left: 0,
@@ -182,16 +179,16 @@ const CredentialsChart = () => {
               <YAxis/>
               <Tooltip content={CustomTooltip} />
               {dataKeys.map((key, index) => (
-                <Area
+                <Line
+                  connectNulls
                   key={key}
                   type="monotone"
                   dataKey={key}
-                  stackId={key}
-                  stroke='0'
-                  fill={getColorFromPalette(index)}
+                  activeDot={{ r: 8 }}
+                  stroke={getColorFromPalette(index)}
                 />
               ))}
-            </AreaChart>
+            </LineChart>
           </ResponsiveContainer>
         </Box>
       </CardContent>
