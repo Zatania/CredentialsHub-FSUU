@@ -30,9 +30,12 @@ interface PickerProps {
 }
 
 const CustomTooltip = (data: TooltipProps<any, any>) => {
-  const { active, payload } = data
+  const { active, payload } = data;
 
   if (active && payload) {
+    // Calculate the dynamic height. Adjust the '30' based on your item height
+    const tooltipHeight = payload.length * 30;
+
     return (
       <div className='recharts-custom-tooltip'>
         <Typography>{data.label}</Typography>
@@ -51,7 +54,7 @@ const CustomTooltip = (data: TooltipProps<any, any>) => {
     )
   }
 
-  return null
+  return null;
 }
 
 const CredentialsChart = () => {
@@ -120,7 +123,21 @@ const CredentialsChart = () => {
   }, [startDate, endDate]);
 
   // Extract keys (metrics) from the data
-  const dataKeys = data.length > 0 ? Object.keys(data[0]).filter(key => key !== 'date') : [];
+  const extractDataKeys = (data) => {
+    const allKeys = new Set();
+    data.forEach(item => {
+      Object.keys(item).forEach(key => {
+        if (key !== 'date') {
+          allKeys.add(key);
+        }
+      });
+    });
+
+    return Array.from(allKeys);
+  }
+
+  const dataKeys = extractDataKeys(data);
+  console.log("Data Keys:", dataKeys);
 
   const getRandomColor = () => {
     const letters = '0123456789ABCDEF';
@@ -153,9 +170,9 @@ const CredentialsChart = () => {
         }
       />
       <CardContent>
-        <Box sx={{ height: 350 }}>
+        <Box sx={{ height: 500 }}>
           <ResponsiveContainer>
-            <AreaChart height={350} data={data} margin={{
+            <AreaChart height={500} data={data} margin={{
               top: 10,
               right: 30,
               left: 0,
