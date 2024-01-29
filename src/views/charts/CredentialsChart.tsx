@@ -139,14 +139,13 @@ const CredentialsChart = () => {
   const dataKeys = extractDataKeys(data);
   console.log("Data Keys:", dataKeys);
 
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
+  const colorPalette = [
+    "#8dd0ff", "#8acbff", "#86c7ff", "#82c2ff", "#7fbeff", "#7bb9ff", "#77b5ff", "#73b1ff", "#6eacff", "#6aa8ff", "#65a3ff", "#609fff", "#5b9bff", "#5596ff", "#4f92ff", "#488eff", "#418aff", "#3885ff", "#2e81ff", "#207dff"
+  ];
 
-    return color;
+  // Function to get color from the palette
+  const getColorFromPalette = (index) => {
+    return colorPalette[index % colorPalette.length];
   }
 
   return (
@@ -182,14 +181,14 @@ const CredentialsChart = () => {
               <XAxis dataKey="date" />
               <YAxis/>
               <Tooltip content={CustomTooltip} />
-              {dataKeys.map((key) => (
+              {dataKeys.map((key, index) => (
                 <Area
                   key={key}
                   type="monotone"
                   dataKey={key}
                   stackId={key}
                   stroke='0'
-                  fill={getRandomColor()}
+                  fill={getColorFromPalette(index)}
                 />
               ))}
             </AreaChart>
