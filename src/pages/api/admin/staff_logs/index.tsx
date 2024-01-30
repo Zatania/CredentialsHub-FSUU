@@ -6,6 +6,7 @@ interface StaffLogsData {
   id: number
   timestamp: string
   staff: string
+  staff_id: number
   student: string
   department: string
   course: string
@@ -23,6 +24,7 @@ async function fetchStaffLogs() {
     SELECT
       t.id AS id,
       t.transaction_date AS timestamp,
+      s.id AS staff_id,
       CONCAT(s.firstName, ' ', s.lastName) AS staff,
       CONCAT(u.firstName, ' ', u.lastName) AS student,
       d.name AS department,
@@ -70,6 +72,7 @@ async function fetchStaffLogs() {
     GROUP BY
       t.id,
       t.transaction_date,
+      s.id,
       s.firstName, s.lastName,
       u.firstName, u.lastName,
       d.name,
@@ -83,6 +86,7 @@ async function fetchStaffLogs() {
   const rows = results[0].map((row: StaffLogsData) => ({
     id: row.id,
     timestamp: row.timestamp,
+    staff_id: row.staff_id,
     staff: row.staff,
     student: row.student,
     department: row.department,
