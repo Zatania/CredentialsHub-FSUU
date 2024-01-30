@@ -42,7 +42,7 @@ async function fetchStaffCredentialsData(id: number): Promise<any[]> {
     const data = queryResult as RowDataPacket[];
 
     // Organize the data by dates
-    const departmentData = {}; // Initialize an object to store department-wise data
+    const dateData = {}; // Initialize an object to store date-wise data
 
     data[0].forEach((row) => {
       const date = dayjs(row.transaction_date).format('MM/DD/YYYY');
@@ -50,37 +50,36 @@ async function fetchStaffCredentialsData(id: number): Promise<any[]> {
       const name = row.name;
       const quantity = parseFloat(row.total_quantity);
 
-      if (!departmentData[department]) {
-        departmentData[department] = {};
+      if (!dateData[date]) {
+        dateData[date] = {};
       }
 
-      if (!departmentData[department][date]) {
-        departmentData[department][date] = [];
+      if (!dateData[date][department]) {
+        dateData[date][department] = [];
       }
 
-      // Check if the credential exists in the department and date array
-      const credentialIndex = departmentData[department][date].findIndex(
+      const credentialIndex = dateData[date][department].findIndex(
         (cred) => cred.name === name
       );
 
       if (credentialIndex === -1) {
-        // If the credential doesn't exist, add it to the array
-        departmentData[department][date].push({ name, quantity });
+        dateData[date][department].push({ name, quantity });
       } else {
-        // If the credential already exists, update its quantity
-        departmentData[department][date][credentialIndex].quantity += quantity;
+        dateData[date][department][credentialIndex].quantity += quantity;
       }
     });
 
-    // Convert the departmentData object into the desired format
-    const results = Object.entries(departmentData).flatMap(([department, dates]) => {
-      return Object.entries(dates).map(([date, credentials]) => {
-        return {
-          department,
-          date,
-          credentials,
-        };
-      });
+    // Convert the dateData object into the desired format
+    const results = Object.entries(dateData).map(([date, departments]) => {
+      return {
+        date,
+        departments: Object.entries(departments).map(([department, credentials]) => {
+          return {
+            department,
+            credentials,
+          };
+        }),
+      };
     });
 
     return results;
