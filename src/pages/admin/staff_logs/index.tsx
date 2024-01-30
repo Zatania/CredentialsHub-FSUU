@@ -1,5 +1,5 @@
 // ** React Imports
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState, useEffect, Fragment } from 'react'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
@@ -13,10 +13,15 @@ import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
+// ** Charts
+import StaffCredentialsChart from 'src/views/charts/StaffCredentialsChart'
+import { CardContent } from '@mui/material'
+
 interface StaffLog {
   id: number
   timestamp: string
   staff: string
+  staff_id: string
   student: string
   department: string
   course: string
@@ -200,28 +205,33 @@ const StaffLogsPage = () => {
   return (
     <Grid container spacing={6}>
       {Object.entries(groupedStaffLogs).map(([staffName, logs]) => (
-        <Grid item sm={12} xs={12} key={staffName}>
-          <Card>
-            <CardHeader title={staffName} />
-            <DataGrid
-              autoHeight
-              columns={staffLogsColumns}
-              rows={logs}
-              pageSizeOptions={[5, 10, 50, 100]}
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                baseButton: {
-                  variant: 'outlined'
-                },
-                toolbar: {
-                  showQuickFilter: true,
-                }
-              }}
-            />
-          </Card>
-        </Grid>
+        <Fragment key={staffName}>
+          <Grid item sm={12} xs={12}>
+            <Card>
+              <CardHeader title={staffName} />
+              <CardContent>
+                <DataGrid
+                  autoHeight
+                  columns={staffLogsColumns}
+                  rows={logs}
+                  pageSizeOptions={[5, 10, 50, 100]}
+                  paginationModel={paginationModel}
+                  onPaginationModelChange={setPaginationModel}
+                  slots={{ toolbar: GridToolbar }}
+                  slotProps={{
+                    baseButton: {
+                      variant: 'outlined'
+                    },
+                    toolbar: {
+                      showQuickFilter: true,
+                    }
+                  }}
+                />
+              </CardContent>
+              <StaffCredentialsChart staff_id={logs[0].staff_id} />
+            </Card>
+          </Grid>
+        </Fragment>
       ))}
     </Grid>
   )
