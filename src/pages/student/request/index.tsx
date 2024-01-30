@@ -84,8 +84,6 @@ const RequestCredentials = () => {
     return credential ? credential.id : null;
   }
 
-  console.log(individualCredentials)
-
   const TRANSCRIPT_ID = findCredentialIdByName('Transcript of Records');
   const DIPLOMA_ID = findCredentialIdByName('Diploma');
   const DOCUMENTARY_STAMP_ID = findCredentialIdByName('Documentary Stamp');

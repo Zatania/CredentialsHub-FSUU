@@ -134,7 +134,6 @@ const CredentialsChart = () => {
   }
 
   const dataKeys = extractDataKeys(data);
-  console.log("Data Keys:", dataKeys);
 
   const colorPalette = [
     "#3f6a75","#71e348","#b945e0","#c6e043","#5e43d2","#65ad39","#dc38b6","#71dc7e","#3f1f89","#e4c33f","#5a7de4","#d67f29","#4e4fa6","#cbdc88","#893199","#69deac","#e23e78","#7fe4dc","#e14530","#50aead","#d266c5","#568739","#a175df","#a19a3a","#321f56","#ccd9b8","#773371","#4e926b","#a53668","#40592a","#d087c6","#253623","#dabcd8","#3c1827","#7ebfe1","#a63d2b","#8499d4","#876526","#4c6294","#dd9962","#252d42","#e1ac9c","#662222","#7e9993","#dd737d","#5c472e","#ab8098","#9e916d","#714a62","#995949"
@@ -178,7 +177,8 @@ const CredentialsChart = () => {
               <XAxis dataKey="date" />
               <YAxis/>
               <Tooltip content={CustomTooltip} />
-              {dataKeys.map((key, index) => (
+              <Legend />
+              {dataKeys.map((key: string | number, index: number) => (
                 <Line
                   connectNulls
                   key={key}
