@@ -15,6 +15,7 @@ import dayjs from 'dayjs'
 
 // ** Charts
 import StaffCredentialsChart from 'src/views/charts/StaffCredentialsChart'
+import StaffCredentialsTable from 'src/views/tables/StaffCredentialsTable'
 import { CardContent } from '@mui/material'
 
 interface StaffLog {
@@ -40,8 +41,15 @@ interface GroupedStaffLogs {
 
 const StaffLogsPage = () => {
   // ** States
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 5 })
+  const [staffLogsPaginationModels, setStaffLogsPaginationModels] = useState({});
   const [staffLogs, setStaffLogs] = useState<StaffLog[]>([])
+
+  const handlePaginationModelChange = (staffName, model) => {
+    setStaffLogsPaginationModels(prevModels => ({
+      ...prevModels,
+      [staffName]: model
+    }));
+  };
 
   // ** Get Staff Logs
   const fetchStaffLogs = useCallback(async () => {
@@ -215,8 +223,8 @@ const StaffLogsPage = () => {
                   columns={staffLogsColumns}
                   rows={logs}
                   pageSizeOptions={[5, 10, 50, 100]}
-                  paginationModel={paginationModel}
-                  onPaginationModelChange={setPaginationModel}
+                  paginationModel={staffLogsPaginationModels[staffName] || { page: 0, pageSize: 5 }}
+                  onPaginationModelChange={(model) => handlePaginationModelChange(staffName, model)}
                   slots={{ toolbar: GridToolbar }}
                   slotProps={{
                     baseButton: {
@@ -228,6 +236,7 @@ const StaffLogsPage = () => {
                   }}
                 />
               </CardContent>
+              <StaffCredentialsTable staff_id={logs[0].staff_id} />
               <StaffCredentialsChart staff_id={logs[0].staff_id} />
             </Card>
           </Grid>
