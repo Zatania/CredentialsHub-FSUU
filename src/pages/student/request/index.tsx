@@ -23,6 +23,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 // ** Third Party Imports
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import dayjs, { Dayjs } from 'dayjs'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -38,6 +39,47 @@ const Transition = forwardRef(function Transition(
   return <Fade ref={ref} {...props} />
 })
 
+interface UserData {
+  id: number
+  username: string
+  studentNumber: string
+  firstName: string
+  middleName: string
+  lastName: string
+  department: string
+  course: string
+  major: string
+  graduateCheck: string
+  graduationDate: string
+  academicHonor: string
+  yearLevel: string
+  schoolYear: string
+  semester: string
+  homeAddress: string
+  contactNumber: string
+  emailAddress: string
+  birthDate: string
+  birthPlace: string
+  religion: string
+  citizenship: string
+  sex: string
+  fatherName: string
+  motherName: string
+  guardianName: string
+  elementary: string
+  elementaryGraduated: string
+  secondary: string
+  secondaryGraduated: string
+  juniorHigh: string
+  juniorHighGraduated: string
+  seniorHigh: string
+  seniorHighGraduated: string
+  tertiary: string
+  tertiaryGraduated: string
+  employedAt: string
+  position: string
+}
+
 const RequestCredentials = () => {
   // ** States
   const [show, setShow] = useState<boolean>(true)
@@ -46,11 +88,58 @@ const RequestCredentials = () => {
   const [selectedPackage, setSelectedPackage] = useState<number | 'others'>(0)
   const [totalAmount, setTotalAmount] = useState<number>(0)
   const [individualCredentials, setIndividualCredentials] = useState([])
-
+  const [user, setUser] = useState<UserData | null>(null)
 
   // ** Hooks
   const router = useRouter()
   const { data: session } = useSession()
+  const userID = session?.user?.id
+
+  // Fetch user data
+  useEffect(() => {
+    if (userID) {
+      axios.get(`/api/print/user/${userID}`)
+        .then(response => {
+          // Set the user data to the state
+          setUser(response.data[0])
+        })
+        .catch(error => console.error('Error fetching user data:', error))
+    }
+  }, [userID])
+
+  useEffect(() => {
+    if (user) {
+      if (
+        !user.studentNumber ||
+        !user.firstName ||
+        !user.middleName ||
+        !user.lastName ||
+        !user.department ||
+        !user.course ||
+        !user.major ||
+        (user.graduateCheck === "yes" && (!user.graduationDate || user.graduationDate === 'Invalid Date' || !user.academicHonor)) ||
+        (user.graduateCheck === "no" && (!user.yearLevel || !user.semester || !user.schoolYear)) ||
+        !user.homeAddress ||
+        !user.contactNumber ||
+        !user.emailAddress ||
+        !user.birthDate ||
+        !user.birthPlace ||
+        !user.religion ||
+        !user.citizenship ||
+        !user.sex ||
+        !user.elementary ||
+        (!user.elementaryGraduated || user.elementaryGraduated === 'Invalid Date') ||
+        (user.secondary && user.secondaryGraduated === 'Invalid Date') ||
+        (user.juniorHigh && user.juniorHighGraduated === 'Invalid Date') ||
+        (user.seniorHigh && user.seniorHighGraduated === 'Invalid Date') ||
+        (user.tertiary && user.tertiaryGraduated === 'Invalid Date')
+      ) {
+        toast.error('Your information is incomplete. Please complete your profile first.');
+        router.push('/student/profile');
+      }
+    }
+  }, [user, router]);
+
 
   // Fetch all credentials on mount (or based on some condition)
   useEffect(() => {
