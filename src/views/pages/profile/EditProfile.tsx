@@ -29,6 +29,8 @@ import Icon from 'src/@core/components/icon'
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import dayjs, { Dayjs } from 'dayjs'
+import { useRouter } from 'next/router'
 
 //** For Date/Time Picker
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -42,7 +44,8 @@ const Transition = forwardRef(function Transition(
   return <Fade ref={ref} {...props} />
 })
 
-interface FormData {
+interface Student {
+  id: number
   user_id: number
   username: string
   password: string
@@ -51,7 +54,7 @@ interface FormData {
   firstName: string
   middleName: string
   lastName: string
-  department: number
+  department: number | ''
   course: string
   major: string
   graduateCheck: string
@@ -63,7 +66,7 @@ interface FormData {
   homeAddress: string
   contactNumber: string
   emailAddress: string
-  birthDate: string
+  birthDate: Dayjs
   birthPlace: string
   religion: string
   citizenship: string
@@ -72,15 +75,15 @@ interface FormData {
   motherName: string
   guardianName: string
   elementary: string
-  elementaryGraduated: string
+  elementaryGraduated: Dayjs
   secondary: string
-  secondaryGraduated: string
+  secondaryGraduated: Dayjs
   juniorHigh: string
-  juniorHighGraduated: string
+  juniorHighGraduated: Dayjs
   seniorHigh: string
-  seniorHighGraduated: string
+  seniorHighGraduated: Dayjs
   tertiary: string
-  tertiaryGraduated: string
+  tertiaryGraduated: Dayjs
   employedAt: string
   position: string
 }
@@ -90,7 +93,7 @@ interface Department {
   id: number
 }
 
-const DialogEditProfile = ({ user }) => {
+const DialogEditProfile = ({ user }: { user: Student }) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
   const [departments, setDepartments] = useState<Department[]>([])
@@ -103,19 +106,21 @@ const DialogEditProfile = ({ user }) => {
     watch,
     reset,
     formState: { errors }
-  } = useForm<FormData>({
+  } = useForm<Student>({
     mode: 'onBlur',
   })
 
   // ** EDIT PROFILE ** //
   const graduateCheckValue = watch('graduateCheck')
 
+  const router = useRouter()
+
   const handleClose = () => {
     setShow(false);
     reset();  // Reset the form fields to their default values
   };
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: Student) => {
     data.user_id = user?.id
     data.username = user?.username
     try {
@@ -132,7 +137,7 @@ const DialogEditProfile = ({ user }) => {
       }
 
       toast.success('Profiled Edited Successfully')
-      handleClose()
+      router.reload();
     } catch (error) {
       toast.error('Profiled Edited Failed')
     }
@@ -158,43 +163,9 @@ const DialogEditProfile = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
-    setValue('studentNumber', user?.studentNumber)
-    setValue('firstName', user?.firstName)
-    setValue('middleName', user?.middleName)
-    setValue('lastName', user?.lastName)
-    setValue('department', userDepartmentId)
-    setValue('course', user?.course)
-    setValue('major', user?.major)
-    setValue('graduateCheck', user?.graduateCheck)
-    setValue('graduationDate', user?.graduationDate)
-    setValue('academicHonor', user?.academicHonor)
-    setValue('yearLevel', user?.yearLevel)
-    setValue('schoolYear', user?.schoolYear)
-    setValue('semester', user?.semester)
-    setValue('homeAddress', user?.homeAddress)
-    setValue('contactNumber', user?.contactNumber)
-    setValue('emailAddress', user?.emailAddress)
-    setValue('birthDate', user?.birthDate)
-    setValue('birthPlace', user?.birthPlace)
-    setValue('religion', user?.religion)
-    setValue('citizenship', user?.citizenship)
-    setValue('sex', user?.sex)
-    setValue('fatherName', user?.fatherName)
-    setValue('motherName', user?.motherName)
-    setValue('guardianName', user?.guardianName)
-    setValue('elementary', user?.elementary)
-    setValue('elementaryGraduated', user?.elementaryGraduated)
-    setValue('secondary', user?.secondary)
-    setValue('secondaryGraduated', user?.secondaryGraduated)
-    setValue('juniorHigh', user?.juniorHigh)
-    setValue('juniorHighGraduated', user?.juniorHighGraduated)
-    setValue('seniorHigh', user?.seniorHigh)
-    setValue('seniorHighGraduated', user?.seniorHighGraduated)
-    setValue('tertiary', user?.tertiary)
-    setValue('tertiaryGraduated', user?.tertiaryGraduated)
-    setValue('employedAt', user?.employedAt)
-    setValue('position', user?.position)
-  }, [setValue, userDepartmentId, user])
+    setValue('department', userDepartmentId || '')
+    setValue('graduateCheck', user?.graduateCheck || '')
+  }, [setValue, userDepartmentId, user?.graduateCheck])
 
 
   return (
@@ -265,6 +236,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='firstName'
                           control={control}
+                          defaultValue={user?.firstName || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='First Name'
@@ -285,6 +257,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='middleName'
                           control={control}
+                          defaultValue={user?.middleName || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Middle Name'
@@ -305,6 +278,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='lastName'
                           control={control}
+                          defaultValue={user?.lastName || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Last Name'
@@ -347,6 +321,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='course'
                           control={control}
+                          defaultValue={user?.course || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Course'
@@ -367,6 +342,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='major'
                           control={control}
+                          defaultValue={user?.major || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Major / Specialization'
@@ -398,11 +374,11 @@ const DialogEditProfile = ({ user }) => {
                                 onBlur={onBlur}
                                 onChange={e => {
                                   onChange(e)
-                                  setValue('graduationDate', '') // Reset graduationDate when changing graduateCheck
-                                  setValue('academicHonor', '') // Reset academicHonor when changing graduateCheck
-                                  setValue('yearLevel', '1st Year') // Reset yearLevel when changing graduateCheck
-                                  setValue('schoolYear', '') // Reset schoolYear when changing graduateCheck
-                                  setValue('semester', '1st') // Reset semester when changing graduateCheck
+                                  setValue('graduationDate', user?.graduationDate) // Reset graduationDate when changing graduateCheck
+                                  setValue('academicHonor', user?.academicHonor) // Reset academicHonor when changing graduateCheck
+                                  setValue('yearLevel', user?.yearLevel) // Reset yearLevel when changing graduateCheck
+                                  setValue('schoolYear', user?.schoolYear) // Reset schoolYear when changing graduateCheck
+                                  setValue('semester', user?.semester) // Reset semester when changing graduateCheck
                                 }}
                               >
                                 <FormControlLabel value='yes' control={<Radio />} label='Yes' />
@@ -423,6 +399,7 @@ const DialogEditProfile = ({ user }) => {
                               <Controller
                                 name='graduationDate'
                                 control={control}
+                                defaultValue={user?.graduationDate || ''}
                                 render={({ field: { value, onChange, onBlur } }) => (
                                   <TextField
                                     label='Year Graduated'
@@ -443,6 +420,7 @@ const DialogEditProfile = ({ user }) => {
                             <Controller
                               name='academicHonor'
                               control={control}
+                              defaultValue={user?.academicHonor || ''}
                               rules={{ required: false }}
                               render={({ field: { value, onChange, onBlur } }) => (
                                 <TextField
@@ -469,6 +447,7 @@ const DialogEditProfile = ({ user }) => {
                             <Controller
                               name='yearLevel'
                               control={control}
+                              defaultValue={user?.yearLevel || ''}
                               rules={{ required: true }}
                               render={({ field: { value, onChange, onBlur } }) => (
                                 <Select
@@ -496,6 +475,7 @@ const DialogEditProfile = ({ user }) => {
                             <Controller
                               name='schoolYear'
                               control={control}
+                              defaultValue={user?.schoolYear || ''}
                               rules={{ required: false }}
                               render={({ field: { value, onChange, onBlur } }) => (
                                 <TextField
@@ -518,6 +498,7 @@ const DialogEditProfile = ({ user }) => {
                             <Controller
                               name='semester'
                               control={control}
+                              defaultValue={user?.semester || ''}
                               rules={{ required: false }}
                               render={({ field: { value, onChange, onBlur } }) => (
                                 <Select
@@ -545,6 +526,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='homeAddress'
                           control={control}
+                          defaultValue={user?.homeAddress || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Home Address'
@@ -565,6 +547,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='contactNumber'
                           control={control}
+                          defaultValue={user?.contactNumber || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Contact Number'
@@ -585,6 +568,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='emailAddress'
                           control={control}
+                          defaultValue={user?.emailAddress || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Email Address'
@@ -605,6 +589,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='birthDate'
                           control={control}
+                          defaultValue={dayjs(user?.birthDate)}
                           render={({ field }) => <DatePicker label='Birth Date' {...field} />}
                         />
                       </FormControl>
@@ -614,6 +599,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='birthPlace'
                           control={control}
+                          defaultValue={user?.birthPlace || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Birth Place'
@@ -634,6 +620,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='religion'
                           control={control}
+                          defaultValue={user?.religion || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Religion'
@@ -654,6 +641,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='citizenship'
                           control={control}
+                          defaultValue={user?.citizenship || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Citizenship'
@@ -675,6 +663,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='sex'
                           control={control}
+                          defaultValue={user?.sex || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <Select value={value} onBlur={onBlur} onChange={onChange} label='Sex' error={!!errors.sex}>
                               <MenuItem value='Male'>Male</MenuItem>
@@ -690,6 +679,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='fatherName'
                           control={control}
+                          defaultValue={user?.fatherName || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Name of Father'
@@ -710,6 +700,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='motherName'
                           control={control}
+                          defaultValue={user?.motherName || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Name of Mother'
@@ -730,6 +721,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='guardianName'
                           control={control}
+                          defaultValue={user?.guardianName || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Name of Guardian / Spouse'
@@ -755,6 +747,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='elementary'
                           control={control}
+                          defaultValue={user?.elementary || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Elementary School'
@@ -775,6 +768,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='elementaryGraduated'
                           control={control}
+                          defaultValue={dayjs(user?.elementaryGraduated)}
                           render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
@@ -784,6 +778,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='secondary'
                           control={control}
+                          defaultValue={user?.secondary || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Secondary School'
@@ -804,6 +799,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='secondaryGraduated'
                           control={control}
+                          defaultValue={dayjs(user?.secondaryGraduated)}
                           render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
@@ -813,6 +809,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='juniorHigh'
                           control={control}
+                          defaultValue={user?.juniorHigh || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Junior High School'
@@ -833,6 +830,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='juniorHighGraduated'
                           control={control}
+                          defaultValue={dayjs(user?.juniorHighGraduated)}
                           render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
@@ -842,6 +840,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='seniorHigh'
                           control={control}
+                          defaultValue={user?.seniorHigh || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Senior High School'
@@ -862,6 +861,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='seniorHighGraduated'
                           control={control}
+                          defaultValue={dayjs(user?.seniorHighGraduated)}
                           render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
@@ -876,6 +876,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='tertiary'
                           control={control}
+                          defaultValue={user?.tertiary || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Tertiary School'
@@ -896,6 +897,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='tertiaryGraduated'
                           control={control}
+                          defaultValue={dayjs(user?.tertiaryGraduated)}
                           render={({ field }) => <DatePicker label='Year Graduated' {...field} />}
                         />
                       </FormControl>
@@ -910,6 +912,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='employedAt'
                           control={control}
+                          defaultValue={user?.employedAt || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Employed At'
@@ -930,6 +933,7 @@ const DialogEditProfile = ({ user }) => {
                         <Controller
                           name='position'
                           control={control}
+                          defaultValue={user?.position || ''}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
                               label='Position'

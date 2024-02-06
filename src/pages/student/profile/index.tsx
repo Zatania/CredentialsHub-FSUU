@@ -83,7 +83,7 @@ const ProfilePicture = styled('img')(({ theme }) => ({
 
 const ProfilePage = () => {
   const { data: session } = useSession()
-  const [user, setUser] = useState<Student | null>(null)
+  const [user, setUser] = useState<Student>()
   const [selectedFile, setSelectedFile] = useState<File>()
 
   const userID = session?.user.id
