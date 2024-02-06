@@ -127,7 +127,6 @@ const StaffCredentialsTable = (props) => {
       })
   }, [startDate, endDate, staff_id]);
 
-  console.log(data)
   const staffCredentialsColumns: GridColDef[] = [
     {
       flex: 0.2,
