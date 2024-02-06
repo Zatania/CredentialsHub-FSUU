@@ -340,7 +340,7 @@ const ProfilePage = () => {
                   </Box>
                 </Box>
               </Box>
-              <DialogEditProfile user={user} />
+              <DialogEditProfile user={user} refresh={fetchUser}/>
             </Box>
           </CardContent>
         </Card>

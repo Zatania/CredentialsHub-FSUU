@@ -30,7 +30,6 @@ import Icon from 'src/@core/components/icon'
 import { useForm, Controller } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import dayjs, { Dayjs } from 'dayjs'
-import { useRouter } from 'next/router'
 
 //** For Date/Time Picker
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -93,7 +92,12 @@ interface Department {
   id: number
 }
 
-const DialogEditProfile = ({ user }: { user: Student }) => {
+interface ProfileProps {
+  user: Student,
+  refresh: () => void
+}
+
+const DialogEditProfile = ({ user, refresh }: ProfileProps) => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
   const [departments, setDepartments] = useState<Department[]>([])
@@ -113,11 +117,10 @@ const DialogEditProfile = ({ user }: { user: Student }) => {
   // ** EDIT PROFILE ** //
   const graduateCheckValue = watch('graduateCheck')
 
-  const router = useRouter()
-
   const handleClose = () => {
     setShow(false);
     reset();  // Reset the form fields to their default values
+    refresh();
   };
 
   const onSubmit = async (data: Student) => {
@@ -137,7 +140,7 @@ const DialogEditProfile = ({ user }: { user: Student }) => {
       }
 
       toast.success('Profiled Edited Successfully')
-      router.reload();
+      handleClose()
     } catch (error) {
       toast.error('Profiled Edited Failed')
     }
