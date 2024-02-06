@@ -236,8 +236,9 @@ const StaffLogsPage = () => {
                   }}
                 />
               </CardContent>
+              <CardHeader title='Overview' />
               <StaffCredentialsTable staff_id={logs[0].staff_id} />
-              <StaffCredentialsChart staff_id={logs[0].staff_id} />
+              {/* <StaffCredentialsChart staff_id={logs[0].staff_id} /> */}
             </Card>
           </Grid>
         </Fragment>
