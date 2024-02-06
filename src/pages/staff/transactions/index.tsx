@@ -36,6 +36,7 @@ import { PDFDocument } from 'pdf-lib'
 
 interface Transaction {
   id: number
+  schedule: string
   transaction_date: string
   total_amount: string
   credentials: Credential[]
@@ -183,6 +184,8 @@ const Transactions = () => {
       const totalAmount = form.getTextField('Total Amount')
       const purpose = form.getTextField('Purpose')
       const assistedBy = form.getTextField('Assisted by')
+      const claimDate = form.getTextField('Claimed')
+      const claimTime = form.getTextField('Time')
 
       // Fill textfields from form data
       transactionData.forEach((transaction: Transaction) => {
@@ -318,6 +321,13 @@ const Transactions = () => {
       });
 
       assistedBy.setText(session?.user?.firstName + ' ' + session?.user?.lastName)
+
+      transactionData.forEach((transaction: Transaction) => {
+        if(transaction.schedule) {
+          claimDate.setText(dayjs(transaction.schedule).format('MMMM DD, YYYY'))
+          claimTime.setText(dayjs(transaction.schedule).format('hh:mm A'))
+        }
+      })
 
       // save pdf
       const pdfBytes = await pdfDoc.save()
