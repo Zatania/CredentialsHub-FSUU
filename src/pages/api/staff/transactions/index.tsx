@@ -25,7 +25,7 @@ async function queryTransactionsBasedOnStatus(status: string, departments: numbe
     SELECT t.* FROM transactions t
     INNER JOIN users u ON t.user_id = u.id
     WHERE t.status = ? AND u.department IN (?)
-    ORDER BY t.transaction_date DESC
+    ORDER BY t.transaction_date ASC
   `, [status, departments])) as RowDataPacket[]
 
   return transactions

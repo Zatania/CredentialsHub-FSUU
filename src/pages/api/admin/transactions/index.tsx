@@ -16,7 +16,7 @@ async function queryTransactionsBasedOnStatus(status: string) {
     SELECT t.* FROM transactions t
     INNER JOIN users u ON t.user_id = u.id
     WHERE t.status = ?
-    ORDER BY t.transaction_date DESC
+    ORDER BY t.transaction_date ASC
   `, [status])) as RowDataPacket[]
 
   return transactions
