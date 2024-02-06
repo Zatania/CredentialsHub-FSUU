@@ -417,7 +417,7 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                               {credential.quantity}
                             </Typography>
                           }>
-                            <ListItemText primary={credential.name + '( Php ' + formatNumberWithCommas(credential.price) + ' )'} />
+                            <ListItemText primary={credential.name + '( ₱ ' + formatNumberWithCommas(credential.price) + ' )'} />
                           </ListItem>
                         ))}
                       </List>

@@ -400,7 +400,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                               {credential.quantity}
                             </Typography>
                           }>
-                            <ListItemText primary={credential.name + '( Php ' + formatNumberWithCommas(credential.price) + ' )'} />
+                            <ListItemText primary={credential.name + '( ₱ ' + formatNumberWithCommas(credential.price) + ' )'} />
                           </ListItem>
                         ))}
                       </List>
@@ -420,7 +420,7 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                               {credential.quantity}
                             </Typography>
                           }>
-                            <ListItemText primary={credential.name + '( Php ' + formatNumberWithCommas(credential.price) + ' )'} />
+                            <ListItemText primary={credential.name + '( ₱ ' + formatNumberWithCommas(credential.price) + ' )'} />
                           </ListItem>
                         ))}
                       </List>

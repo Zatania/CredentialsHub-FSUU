@@ -239,7 +239,7 @@ const DialogEditPackage  = ({ packageId, refreshData }) => {
                             checked={!!selectedCredentials[credential.id]}
                             onChange={() => handleCredentialToggle(credential)}
                           />
-                          <ListItemText primary={`${credential.name} (Php ${formatNumberWithCommas(credential.price)})`} />
+                          <ListItemText primary={`${credential.name} (₱ ${formatNumberWithCommas(credential.price)})`} />
                           {selectedCredentials[credential.id] && (
                             <Input
                               type="number"
