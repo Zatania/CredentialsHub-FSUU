@@ -18,15 +18,14 @@ import {
  } from '@mui/x-data-grid'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 
 // ** Third Party Props
 import axios from 'axios'
-import toast from 'react-hot-toast'
 
 // ** Views Imports
 import DialogAddStaff from 'src/views/pages/staffs/AddStaff'
 import DialogEditStaff from 'src/views/pages/staffs/EditStaff'
+import DeleteStaff from 'src/views/popups/staffs/DeleteStaff'
 
 interface StaffData {
   id: number
@@ -113,19 +112,6 @@ const StaffsList = () => {
   useEffect(() => {
     fetchStaffs()
   }, [])
-
-  const handleDeleteClick = (id: any) => {
-    axios.delete(`/api/admin/staff/delete/${id}`)
-      .then(() => {
-        toast.success('Staff deleted successfully');
-        fetchStaffs(); // Assuming this function refreshes the list of staffs
-      })
-      .catch((error) => {
-        console.error(error);
-        const errorMessage = error.response?.data?.message || "Error deleting data";
-        toast.error(errorMessage);
-      });
-  }
 
   const staffsColumn: GridColDef[] = [
     {
@@ -225,9 +211,7 @@ const StaffsList = () => {
         return (
           <>
             <DialogEditStaff staff={params.row} refreshData={fetchStaffs}/>
-            <Button size='small' startIcon={<DeleteIcon />} variant='outlined' onClick={() => handleDeleteClick(params.row.id)}>
-              Delete
-            </Button>
+            <DeleteStaff staff={params.row} refreshData={fetchStaffs}/>
           </>
         )
       }

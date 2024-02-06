@@ -22,11 +22,11 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 
 // ** Third Party Props
 import axios from 'axios'
-import toast from 'react-hot-toast'
 
 // ** Views Imports
 import DialogAddSA from 'src/views/pages/student_assistants/AddSA'
 import DialogEditSA from 'src/views/pages/student_assistants/EditSA'
+import DeleteSA from 'src/views/popups/SA/DeleteSA'
 
 interface SAData {
   id: number
@@ -107,19 +107,6 @@ const SAList = () => {
     fetchSA()
   }, [])
 
-  const handleDeleteClick = (id: any) => {
-    axios.delete(`/api/admin/student_assistant/delete/${id}`)
-      .then(() => {
-        toast.success('Student Assistant deleted successfully');
-        fetchSA(); // Assuming this function refreshes the list of Student Assisntants
-      })
-      .catch((error) => {
-        console.error(error);
-        const errorMessage = error.response?.data?.message || "Error deleting data";
-        toast.error(errorMessage);
-      });
-  }
-
   const saColumns: GridColDef[] = [
     {
       flex: 0.1,
@@ -196,9 +183,7 @@ const SAList = () => {
         return (
           <>
             <DialogEditSA sa={params.row} refreshData={fetchSA}/>
-            <Button size='small' startIcon={<DeleteIcon />} variant='outlined' onClick={() => handleDeleteClick(params.row.id)}>
-              Delete
-            </Button>
+            <DeleteSA sa={params.row} refreshData={fetchSA}/>
           </>
         )
       }

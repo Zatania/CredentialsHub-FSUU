@@ -164,7 +164,7 @@ const DialogEditSA = ({ sa, refreshData }) => {
 
   return (
     <Card>
-      <Button size='small' startIcon={<EditIcon />} onClick={() => setShow(true)} variant='outlined'  style={{ marginRight: '8px' }} >
+      <Button size='small' startIcon={<EditIcon />} onClick={() => setShow(true)} variant='outlined'  sx={{ mr: 5 }} >
         Edit
       </Button>
         <Dialog
