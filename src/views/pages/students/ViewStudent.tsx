@@ -23,6 +23,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
+import dayjs from 'dayjs'
 
 const Transition = forwardRef(function Transition(
   props: FadeProps & { children?: ReactElement<any, any> },
@@ -35,18 +36,42 @@ interface StudentData {
   id: number
   studentNumber: number
   firstName: string
+  middleName: string
   lastName: string
   department: string
   course: string
+  major: string
   graduateCheck: string
   graduationDate: string
   yearLevel: string
   schoolYear: string
   semester: string
+  homeAddress: string
   contactNumber: string
   emailAddress: string
+  birthDate: string
+  birthPlace: string
+  religion: string
+  citizenship: string
+  sex: string
+  fatherName: string
+  motherName: string
+  guardianName: string
+  elementary: string
+  elementaryGraduated: string
+  secondary: string
+  secondaryGraduated: string
+  juniorHigh: string
+  juniorHighGraduated: string
+  seniorHigh: string
+  seniorHighGraduated: string
+  tertiary: string
+  tertiaryGraduated: string
+  employedAt: string
+  position: string
   image: string
   status: string
+  remarks: string
 }
 
 const DialogViewStudent  = ({ student, refreshData, actionType }) => {
@@ -64,18 +89,42 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
     defaultValues: {
       studentNumber: student.studentNumber,
       firstName: student.firstName,
+      middleName: student.middleName,
       lastName: student.lastName,
       department: student.department,
       course: student.course,
+      major: student.major,
       graduateCheck: student.graduateCheck,
       graduationDate: student.graduationDate,
       yearLevel: student.yearLevel,
       schoolYear: student.schoolYear,
       semester: student.semester,
+      homeAddress: student.homeAddress,
       contactNumber: student.contactNumber,
       emailAddress: student.emailAddress,
+      birthDate: student.birthDate,
+      birthPlace: student.birthPlace,
+      religion: student.religion,
+      citizenship: student.citizenship,
+      sex: student.sex,
+      fatherName: student.fatherName,
+      motherName: student.motherName,
+      guardianName: student.guardianName,
+      elementary: student.elementary,
+      elementaryGraduated: student.elementaryGraduated,
+      secondary: student.secondary,
+      secondaryGraduated: student.secondaryGraduated,
+      juniorHigh: student.juniorHigh,
+      juniorHighGraduated: student.juniorHighGraduated,
+      seniorHigh: student.seniorHigh,
+      seniorHighGraduated: student.seniorHighGraduated,
+      tertiary: student.tertiary,
+      tertiaryGraduated: student.tertiaryGraduated,
+      employedAt: student.employedAt,
+      position: student.position,
       image: student.image,
-      status: student.status
+      status: student.status,
+      remarks: student.remarks
     }
   })
 
@@ -178,7 +227,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                 )}
               </Box>
               <Grid container spacing={3} sx={{ textAlign: 'center' }}>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={3} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Student Number:
                   </Typography>
@@ -186,7 +235,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.studentNumber}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={3} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     First Name:
                   </Typography>
@@ -194,7 +243,15 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.firstName}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={3} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Middle Name:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.middleName}
+                  </Typography>
+                </Grid>
+                <Grid item sm={3} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Last Name:
                   </Typography>
@@ -207,7 +264,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     Department:
                   </Typography>
                   <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
-                    {student.department}
+                    {student.department || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
                 <Grid item sm={4} xs={12}>
@@ -215,15 +272,23 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     Course:
                   </Typography>
                   <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
-                    {student.course}
+                    {student.course || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
                 <Grid item sm={4} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
-                    Status:
+                    Major:
                   </Typography>
                   <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
-                    {student.status}
+                    {student.major || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={12} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Home Address:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.homeAddress || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
                 <Grid item sm={6} xs={12}>
@@ -231,7 +296,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     Contact Number:
                   </Typography>
                   <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
-                    {student.contactNumber}
+                    {student.contactNumber || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
                 <Grid item sm={6} xs={12}>
@@ -239,7 +304,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     Email Address:
                   </Typography>
                   <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
-                    {student.emailAddress}
+                    {student.emailAddress || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
                 {student.graduateCheck === 'yes' ? (
@@ -275,10 +340,193 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                 ) : null}
                 <Grid item sm={6} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Birth Date:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.birthDate ? dayjs(student.birthDate).format('MMMM DD, YYYY') : '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Birth Place:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.birthPlace || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={4} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Religion:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.religion || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={4} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Citizenship:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.citzenship || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={4} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Sex:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.sex || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={4} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Father's Name:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.fatherName || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={4} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Mother's Name:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.motherName || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={4} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Guardian's Name:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.guardianName || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Elementary School:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.elementary || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Date Graduated:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.elementaryGraduated ? dayjs(student.elementaryGraduated).format('MMMM DD, YYYY') : '[FIELD IS BLANK]'}
+                  </Typography>
+                </Grid>
+                {student.secondary ? (
+                  <>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Secondary High School:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.secondary || '[FIELD IS BLANK] '}
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Date Graduated:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.secondaryGraduated ? dayjs(student.secondaryGraduated).format('MMMM DD, YYYY') : '[FIELD IS BLANK]'}
+                      </Typography>
+                    </Grid>
+                  </>
+                ) : (
+                  <>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Junior High School:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.juniorHigh || '[FIELD IS BLANK] '}
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Date Graduated:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.juniorHighGraduated ? dayjs(student.juniorHighGraduated).format('MMMM DD, YYYY') : '[FIELD IS BLANK]'}
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Senior High School:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.seniorHigh || '[FIELD IS BLANK] '}
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Date Graduated:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.seniorHighGraduated ? dayjs(student.seniorHighGraduated).format('MMMM DD, YYYY') : '[FIELD IS BLANK]'}
+                      </Typography>
+                    </Grid>
+                  </>
+                )}
+                {student.tertiary ? (
+                  <>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Tertiary School:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.tertiary || '[FIELD IS BLANK] '}
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Date Graduated:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.tertiaryGraduated ? dayjs(student.tertiaryGraduated).format('MMMM DD, YYYY') : '[FIELD IS BLANK]'}
+                      </Typography>
+                    </Grid>
+                  </>
+                ) : null}
+                {student.employedAt ? (
+                  <>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Employed At:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.employedAt || '[FIELD IS BLANK]'}
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                        Position:
+                      </Typography>
+                      <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                        {student.position || '[FIELD IS BLANK]'}
+                      </Typography>
+                    </Grid>
+                  </>
+                ) : null}
+                <Grid item sm={12} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    Status:
+                  </Typography>
+                  <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
+                    {student.status || '[FIELD IS BLANK] '}
+                  </Typography>
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Remarks:
                   </Typography>
                   <Typography variant='body1' sx={{ fontSize: '16px', marginBottom: '4px' }}>
-                    {student.remarks}
+                    {student.remarks || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
                 <Grid item sm={6} xs={12}>

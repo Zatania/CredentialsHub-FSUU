@@ -10,13 +10,35 @@ interface StudentData {
   lastName: string
   department: string
   course: string
+  major: string
   graduateCheck: string
   graduationDate: string
   yearLevel: string
   schoolYear: string
   semester: string
+  homeAddress: string
   contactNumber: string
   emailAddress: string
+  birthDate: string
+  birthPlace: string
+  religion: string
+  citizenship: string
+  sex: string
+  fatherName: string
+  motherName: string
+  guardianName: string
+  elementary: string
+  elementaryGraduated: string
+  secondary: string
+  secondaryGraduated: string
+  juniorHigh: string
+  juniorHighGraduated: string
+  seniorHigh: string
+  seniorHighGraduated: string
+  tertiary: string
+  tertiaryGraduated: string
+  employedAt: string
+  position: string
   image: string
   status: string
   remarks: string
@@ -33,7 +55,7 @@ async function fetchStaffDepartments(staffId: number) {
 async function fetchStudents(status: string, departments: number[]) {
   try {
     const results = (await db.query(`
-      SELECT u.id, u.studentNumber, u.firstName, u.lastName, d.name AS department, u.course, u.image, u.status, u.emailAddress, u.contactNumber, u.graduateCheck, u.graduationDate, u.yearLevel, u.schoolYear, u.semester, u.remarks
+      SELECT *
       FROM users AS u
       INNER JOIN department AS d ON u.department = d.id
       WHERE u.status = ? AND d.id IN (?)
@@ -46,13 +68,35 @@ async function fetchStudents(status: string, departments: number[]) {
       lastName: row.lastName,
       department: row.department,
       course: row.course,
+      major: row.major,
       graduateCheck: row.graduateCheck,
       graduationDate: row.graduationDate,
       yearLevel: row.yearLevel,
       schoolYear: row.schoolYear,
       semester: row.semester,
+      homeAddress: row.homeAddress,
       contactNumber: row.contactNumber,
       emailAddress: row.emailAddress,
+      birthDate: row.birthDate,
+      birthPlace: row.birthPlace,
+      religion: row.religion,
+      citizenship: row.citizenship,
+      sex: row.sex,
+      fatherName: row.fatherName,
+      motherName: row.motherName,
+      guardianName: row.guardianName,
+      elementary: row.elementary,
+      elementaryGraduated: row.elementaryGraduated,
+      secondary: row.secondary,
+      secondaryGraduated: row.secondaryGraduated,
+      juniorHigh: row.juniorHigh,
+      juniorHighGraduated: row.juniorHighGraduated,
+      seniorHigh: row.seniorHigh,
+      seniorHighGraduated: row.seniorHighGraduated,
+      tertiary: row.tertiary,
+      tertiaryGraduated: row.tertiaryGraduated,
+      employedAt: row.employedAt,
+      position: row.position,
       image: row.image,
       status: row.status,
       remarks: row.remarks

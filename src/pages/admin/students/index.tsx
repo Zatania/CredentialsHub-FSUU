@@ -23,6 +23,7 @@ import DialogViewStudent from 'src/views/pages/students/ViewStudent'
 const AdminStudents = () => {
   // ** States
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 5 })
+  const [unverifiedPaginationModel, setUnverifiedPaginationModel] = useState({ page: 0, pageSize: 5 })
   const [studentsRows, setStudentsRows] = useState<GridRowsProp>([])
   const [unverifiedRows, setUnverifiedRows] = useState<GridRowsProp>([])
 
@@ -207,9 +208,9 @@ const AdminStudents = () => {
             columns={unverifiedColumns}
             rows={unverifiedRows}
             pageSizeOptions={[5, 10, 50, 100]}
-            paginationModel={paginationModel}
+            paginationModel={unverifiedPaginationModel}
             slots={{ toolbar: GridToolbar }}
-            onPaginationModelChange={setPaginationModel}
+            onPaginationModelChange={setUnverifiedPaginationModel}
             slotProps={{
               baseButton: {
                 variant: 'outlined'
