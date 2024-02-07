@@ -33,7 +33,6 @@ import { ApexOptions } from 'apexcharts'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-import StaffCredentialsTable from 'src/views/tables/StaffCredentialsTable'
 
 const DashboardStaff = () => {
   // ** States
@@ -68,7 +67,6 @@ const DashboardStaff = () => {
   // ** Hooks
   const theme = useTheme()
   const { data: session } = useSession()
-  const staffID = session?.user?.id
 
   const fetchLogs = useCallback(async (page: number) => {
     const role = session?.user?.role
@@ -631,13 +629,6 @@ const DashboardStaff = () => {
                 </Grid>
               </Grid>
             </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <Card>
-            <CardHeader title='Overview' />
-
-            <StaffCredentialsTable staff_id={staffID} />
           </Card>
         </Grid>
         <Grid item xs={12} md={12}>

@@ -16,6 +16,9 @@ import dayjs from 'dayjs'
 // ** Next Imports
 import { useSession } from 'next-auth/react'
 
+// ** Views Import
+import StaffCredentialsTable from 'src/views/tables/StaffCredentialsTable'
+
 interface StaffLog {
   id: number
   timestamp: string
@@ -36,6 +39,7 @@ const StaffLogs = () => {
   const [staffLogs, setStaffLogs] = useState<StaffLog[]>([])
 
   const { data: session } = useSession()
+  const staffID = session?.user?.id
 
   const id = session?.user?.id
   const staffName = session?.user?.firstName + ' ' + session?.user?.lastName
@@ -186,6 +190,13 @@ const StaffLogs = () => {
               }
             }}
           />
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={12}>
+        <Card>
+          <CardHeader title='Overview' />
+
+          <StaffCredentialsTable staff_id={staffID} />
         </Card>
       </Grid>
     </Grid>
