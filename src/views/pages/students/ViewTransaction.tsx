@@ -331,9 +331,9 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
               pb: theme => `${theme.spacing(8)} !important`,
               px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
               pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`],
-              textAlign: 'center',
-              alignItems: 'center',
-              justifyContent: 'center',
+              textAlign: 'left',
+              alignItems: 'left',
+              justifyContent: 'left',
             }}
           >
             <IconButton
