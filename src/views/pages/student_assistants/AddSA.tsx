@@ -39,7 +39,7 @@ interface SAData {
   lastName: string
   address: string
   departments: number[]
-  role: 'scheduling' | 'releasing'
+  role: 'Scheduling' | 'Releasing'
 }
 
 interface Department {
@@ -60,7 +60,7 @@ const DialogAddSA = ({ refreshData }) => {
   const [departments, setDepartments] = useState<Department[]>([])
   const [selectedDepartments, setSelectedDepartments] = useState<number[]>([])
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [selectedRole, setSelectedRole] = useState<'scheduling' | 'releasing'>('scheduling')
+  const [selectedRole, setSelectedRole] = useState<'Scheduling' | 'Releasing'>('Scheduling')
 
   const {
     control,
@@ -191,10 +191,10 @@ const DialogAddSA = ({ refreshData }) => {
                     labelId="role-label"
                     value={selectedRole}
                     label="Role"
-                    onChange={(event) => setSelectedRole(event.target.value as 'scheduling' | 'releasing')}
+                    onChange={(event) => setSelectedRole(event.target.value as 'Scheduling' | 'Releasing')}
                   >
-                    <MenuItem value="scheduling">Scheduling</MenuItem>
-                    <MenuItem value="releasing">Releasing</MenuItem>
+                    <MenuItem value="Scheduling">Scheduling</MenuItem>
+                    <MenuItem value="Releasing">Releasing</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

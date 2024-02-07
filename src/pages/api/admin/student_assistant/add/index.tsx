@@ -11,7 +11,7 @@ interface SAData {
   middleName: string
   lastName: string
   address: string
-  role: 'scheduling' | 'releasing'
+  role: 'Scheduling' | 'Releasing'
 }
 
 const insertSA = async (data: SAData, departments: number[]) => {

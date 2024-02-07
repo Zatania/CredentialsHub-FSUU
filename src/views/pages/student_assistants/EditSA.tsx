@@ -46,7 +46,7 @@ interface SAData {
   lastName: string
   address: string
   departments: Array<{ id: number, name: string }>
-  role: 'scheduling' | 'releasing'
+  role: 'Scheduling' | 'Releasing'
   transactionCounts: {
     Scheduled: {
       dailyCount: number
@@ -69,7 +69,7 @@ const DialogEditSA = ({ sa, refreshData }) => {
   const [show, setShow] = useState<boolean>(false)
   const [departments, setDepartments] = useState<Department[]>([])
   const [selectedDepartments, setSelectedDepartments] = useState<number[]>([])
-  const [selectedRole, setSelectedRole] = useState<'scheduling' | 'releasing'>('scheduling')
+  const [selectedRole, setSelectedRole] = useState<'Scheduling' | 'Releasing'>('scheduling')
 
   const {
     control,
@@ -218,7 +218,7 @@ const DialogEditSA = ({ sa, refreshData }) => {
                       labelId="role-label"
                       value={selectedRole}
                       label="Role"
-                      onChange={(event) => setSelectedRole(event.target.value as 'scheduling' | 'releasing')}
+                      onChange={(event) => setSelectedRole(event.target.value as 'Scheduling' | 'Releasing')}
                     >
                       <MenuItem value="Scheduling">Scheduling</MenuItem>
                       <MenuItem value="Releasing">Releasing</MenuItem>

@@ -36,7 +36,7 @@ interface SAData {
   middleName: string
   lastName: string
   address: string
-  role: 'scheduling' | 'releasing'
+  role: 'Scheduling' | 'Releasing'
   departments: Array<{ id: number, name: string }>
   transactionCounts: {
     Scheduled: {
