@@ -55,7 +55,7 @@ async function fetchStaffDepartments(staffId: number) {
 async function fetchStudents(status: string, departments: number[]) {
   try {
     const results = (await db.query(`
-      SELECT *
+    SELECT u.id, u.studentNumber, u.firstName, u.middleName, u.lastName, d.name AS department, u.course, u.major, u.graduateCheck, u.graduationDate, u.academicHonor, u.yearLevel, u.schoolYear, u.semester, u.homeAddress, u.contactNumber, u.emailAddress, u.birthDate, u.birthPlace, u.religion, u.citizenship, u.sex, u.fatherName, u.motherName, u.guardianName, u.elementary, u.elementaryGraduated, u.secondary, u.secondaryGraduated, u.juniorHigh, u.juniorHighGraduated, u.seniorHigh, u.seniorHighGraduated, u.tertiary, u.tertiaryGraduated, u.employedAt, u.position, u.image, u.status, u.remarks
       FROM users AS u
       INNER JOIN department AS d ON u.department = d.id
       WHERE u.status = ? AND d.id IN (?)

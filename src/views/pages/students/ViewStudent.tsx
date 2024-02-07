@@ -186,7 +186,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
 
   return (
     <Card>
-      <Button size='small' startIcon={<EditIcon />} onClick={() => setShow(true)} variant='outlined' >
+      <Button size='small' startIcon={<EditIcon />} onClick={() => setShow(true)} variant='outlined'>
         View
       </Button>
         <Dialog

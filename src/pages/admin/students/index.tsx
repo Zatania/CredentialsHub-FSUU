@@ -19,6 +19,7 @@ import axios from 'axios'
 
 // ** Views Imports
 import DialogViewStudent from 'src/views/pages/students/ViewStudent'
+import ChangePassword from 'src/views/popups/students/ChangePassword'
 
 const AdminStudents = () => {
   // ** States
@@ -63,7 +64,7 @@ const AdminStudents = () => {
   const studentsColumns: GridColDef[] = [
     {
       flex: 0.2,
-      minWidth: 110,
+      minWidth: 150,
       field: 'studentNumber',
       headerName: 'Student Number',
       renderCell: (params: GridRenderCellParams) => (
@@ -74,7 +75,7 @@ const AdminStudents = () => {
     },
     {
       flex: 0.2,
-      minWidth: 110,
+      minWidth: 150,
       field: 'firstName',
       headerName: 'First Name',
       renderCell: (params: GridRenderCellParams) => (
@@ -85,7 +86,7 @@ const AdminStudents = () => {
     },
     {
       flex: 0.2,
-      minWidth: 110,
+      minWidth: 150,
       field: 'lastName',
       headerName: 'Last Name',
       renderCell: (params: GridRenderCellParams) => (
@@ -96,7 +97,7 @@ const AdminStudents = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 150,
       field: 'department',
       headerName: 'department',
       renderCell: (params: GridRenderCellParams) => (
@@ -107,7 +108,7 @@ const AdminStudents = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 150,
       field: 'course',
       headerName: 'course',
       renderCell: (params: GridRenderCellParams) => (
@@ -118,12 +119,15 @@ const AdminStudents = () => {
     },
     {
       flex: 0.1,
-      minWidth: 140,
+      minWidth: 325,
       field: 'action',
       headerName: 'Actions',
       renderCell: (params: GridRenderCellParams) => {
         return (
-          <DialogViewStudent student={params.row} refreshData={fetchAll} actionType="unverify"/>
+          <>
+            <DialogViewStudent student={params.row} refreshData={fetchAll} actionType="unverify"/>
+            <ChangePassword student={params.row} refreshData={fetchAll}/>
+          </>
         )
       }
     }
