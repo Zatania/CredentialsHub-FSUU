@@ -126,13 +126,13 @@ const RequestCredentials = () => {
         !user.birthPlace ||
         !user.religion ||
         !user.citizenship ||
-        !user.sex ||
+        !user.sex/*  ||
         !user.elementary ||
         (!user.elementaryGraduated || user.elementaryGraduated === 'Invalid Date') ||
         (user.secondary && user.secondaryGraduated === 'Invalid Date') ||
         (user.juniorHigh && user.juniorHighGraduated === 'Invalid Date') ||
         (user.seniorHigh && user.seniorHighGraduated === 'Invalid Date') ||
-        (user.tertiary && user.tertiaryGraduated === 'Invalid Date')
+        (user.tertiary && user.tertiaryGraduated === 'Invalid Date') */
       ) {
         toast.error('Your information is incomplete. Please complete your profile first.');
         router.push('/student/profile');
