@@ -34,7 +34,7 @@ export default async function handler(
       const activity = `Claimed Transaction`
 
       // Insert into staff_logs
-      await db.query(`INSERT INTO student_assistants_logs (sa_activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, activity, dayjs().format('YYYY-MM-DD HH:mm:ss')])
+      await db.query(`INSERT INTO student_assistants_logs (sa_id, activity, activity_type, date) VALUES (?, ?, ?, ?)`, [user.id, message, activity, dayjs().format('YYYY-MM-DD HH:mm:ss')])
 
       // Send a success response
       res.status(200).json({ message: 'Transaction claimed successfully' })
