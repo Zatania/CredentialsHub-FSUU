@@ -46,8 +46,6 @@ async function fetchStaffCredentialsData(id: number): Promise<any[]> {
 
     const data = queryResult as RowDataPacket[];
 
-    console.log(data)
-
     // Organize the data by dates
     const dateData = {}; // Initialize an object to store date-wise data
 
