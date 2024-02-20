@@ -88,13 +88,6 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:home-outline'
     },
     {
-      title: 'Dashboard',
-      path: '/staff/dashboard',
-      action: 'read',
-      subject: 'staff-page',
-      icon: 'mdi:home-outline'
-    },
-    {
       path: '/student/request',
       title: 'Request Credentials',
       action: 'read',
