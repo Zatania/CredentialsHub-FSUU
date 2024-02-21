@@ -253,7 +253,7 @@ const AdminStudents = () => {
       </Grid>
       <Grid item sm={12} xs={12}>
         <Card>
-          <CardHeader title='Verified Students' />
+          <CardHeader title='Verified Clients' />
           <DataGrid
             autoHeight
             columns={studentsColumns}

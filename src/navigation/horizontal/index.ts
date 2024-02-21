@@ -11,7 +11,7 @@ const navigation = (): HorizontalNavItemsType => [
   },
   {
     path: '/admin/students',
-    title: 'Students',
+    title: 'Clients',
     action: 'read',
     subject: 'admin-students-page',
     icon: 'mdi:account-school'
@@ -109,7 +109,7 @@ const navigation = (): HorizontalNavItemsType => [
   },
   {
     path: '/staff/students',
-    title: 'Students',
+    title: 'Clients',
     action: 'read',
     subject: 'students-page',
     icon: 'mdi:account-school'
