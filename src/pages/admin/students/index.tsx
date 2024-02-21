@@ -206,7 +206,7 @@ const AdminStudents = () => {
     <Grid container spacing={8}>
       <Grid item sm={12} xs={12}>
         <Card>
-          <CardHeader title='Verification Clients' />
+          <CardHeader title='For Verification' />
           <DataGrid
             autoHeight
             columns={unverifiedColumns}
