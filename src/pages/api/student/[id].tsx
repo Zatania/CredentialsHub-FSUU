@@ -68,8 +68,31 @@ export default async function handler(
     } catch (error) {
       res.status(500).json({ message: 'Internal Server Error' })
     }
+  } else if (req.method === 'DELETE') {
+    try {
+      await db.query(`
+        DELETE FROM users_roles
+        WHERE user_id = ?
+      `, [id])
+
+      await db.query(`
+        DELETE FROM user_logs
+        WHERE user_id = ?
+      `, [id])
+
+      await db.query(`
+        DELETE FROM users
+        WHERE id = ?
+      `, [id])
+
+      res.status(200).end()
+    } catch(error) {
+      console.error(error)
+      const errorMessage = error.message || 'Internal Server Error'
+      res.status(500).json({ message: errorMessage })
+    }
   } else {
-    res.setHeader('Allow', ['PUT'])
+    res.setHeader('Allow', ['PUT', 'DELETE'])
     res.status(405).end(`Method ${req.method} Not Allowed`)
   }
 }

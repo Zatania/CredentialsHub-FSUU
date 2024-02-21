@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { useState, useEffect, SetStateAction } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -13,12 +13,19 @@ import {
   GridRenderCellParams,
  } from '@mui/x-data-grid'
 import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 
 // ** Third Party Props
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
 // ** Views Imports
 import DialogViewStudent from 'src/views/pages/students/ViewStudent'
+
+interface StudentData {
+  id: number
+}
 
 const Students = () => {
   // ** States
@@ -57,6 +64,19 @@ const Students = () => {
     axios.get(`/api/student/list/${status}`)
       .then(response => setUnverifiedRows(response.data))
       .catch(error => console.error("Error fetching data", error))
+  }
+
+  const handleDeleteClick = (id: SetStateAction<StudentData | null>) => {
+    axios.delete(`/api/student/${id}`)
+      .then(() => {
+        toast.success('Client declined successfully')
+        fetchAll()
+      })
+      .catch((error) => {
+        console.error(error)
+        const errorMessage = error.response?.data?.message || "Error deleting data";
+        toast.error('User has existing transactions. Cannot decline user.');
+      })
   }
 
   const studentsColumns: GridColDef[] = [
@@ -186,12 +206,17 @@ const Students = () => {
     },
     {
       flex: 0.1,
-      minWidth: 140,
+      minWidth: 250,
       field: 'action',
       headerName: 'Actions',
       renderCell: (params: GridRenderCellParams) => {
         return (
-          <DialogViewStudent student={params.row} refreshData={fetchAll} actionType="verify"/>
+          <>
+            <DialogViewStudent student={params.row} refreshData={fetchAll} actionType="verify"/>
+            <Button size='small' startIcon={<DeleteIcon />} variant='outlined' onClick={() => handleDeleteClick(params.row.id)}>
+              Decline
+            </Button>
+          </>
         )
       }
     }
