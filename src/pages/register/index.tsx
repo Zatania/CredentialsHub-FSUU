@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode, useState, useEffect } from 'react'
+import { ReactNode, useState, useEffect, forwardRef, ReactElement, Ref } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -27,6 +27,9 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { Checkbox } from '@mui/material'
+import { Dialog, DialogContent, DialogActions } from '@mui/material';
+import Fade, { FadeProps } from '@mui/material/Fade'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -51,6 +54,15 @@ import axios from "axios"
 
 // ** Views
 import ViewPrompt from 'src/views/pages/register/ViewPrompt'
+
+// ** Transition
+
+const Transition = forwardRef(function Transition(
+  props: FadeProps & { children?: ReactElement<any, any> },
+  ref: Ref<unknown>
+) {
+  return <Fade ref={ref} {...props} />
+})
 
 // ** Styled Components
 const RegisterIllustrationWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -149,6 +161,8 @@ const Register = () => {
   const [selectedFile, setSelectedFile] = useState<File>()
   const [viewPromptVisible, setViewPromptVisible] = useState(false)
   const [prompt, setPrompt] = useState({})
+  const [isDataPrivacyChecked, setIsDataPrivacyChecked] = useState<boolean>(false);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   // ** Hooks
   const theme = useTheme()
@@ -206,13 +220,29 @@ const Register = () => {
     }
   }
 
+
+  // ** Open dialog handler
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  // ** Close dialog handler
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
   // Define a function to check if an image is attached
   const isImageAttached = !!selectedFile
+
+  const handleDataPrivacyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDataPrivacyChecked(event.target.checked);
+  };
 
   const isRegisterButtonDisabled =
     graduateCheckValue === '' || // Check if "Yes" or "No" is selected
     !areAllFieldsFilled() || // Check if all required fields are filled
-    !isImageAttached // Check if an image is attached
+    !isImageAttached || // Check if an image is attached
+    !isDataPrivacyChecked // Check if the data privacy checkbox is checked
 
   const handleUpload = async () => {
     try {
@@ -879,6 +909,104 @@ const Register = () => {
                         </FormControl>
                       </Grid>
                     </Grid>
+                  </Grid>
+                  <Grid item sm={12} xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={isDataPrivacyChecked}
+                          onChange={handleDataPrivacyChange}
+                          color="primary"
+                        />
+                      }
+                      label={
+                        <>
+                          I agree to the{' '}
+                          <Link
+                            href="/"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleDialogOpen();
+                            }}
+                          >
+                            data privacy policy
+                          </Link>
+                          .
+                          <Dialog
+                            open={dialogOpen}
+                            onClose={handleDialogClose}
+                            maxWidth='md'
+                            scroll='body'
+                            TransitionComponent={Transition}
+                          >
+                            <DialogContent
+                              sx={{
+                                position: 'relative',
+                                pb: (theme: { spacing: (arg0: number) => any }) => `${theme.spacing(8)} !important`,
+                                px: (theme: { spacing: (arg0: number) => any }) => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
+                                pt: (theme: { spacing: (arg0: number) => any }) => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+                              }}
+                            >
+                              <IconButton
+                                size='small'
+                                onClick={() => handleDialogClose()}
+                                sx={{ position: 'absolute', right: '1rem', top: '1rem' }}
+                              >
+                                <Icon icon='mdi:close' />
+                              </IconButton>
+                              <Box sx={{ mb: 8, textAlign: 'center' }}>
+                                <Typography variant='h5' sx={{ mb: 3 }}>
+                                  Data Privacy Policy
+                                </Typography>
+                              </Box>
+                              {/* Insert your data privacy policy content here */}
+                              <strong>Last updated:</strong> February 21, 2024
+
+                              <br/><br/>Father Saturnino Urios University Registrar's Office operates CredentialHub. This page informs you of our policies regarding the collection, use, and disclosure of Personal Information we receive from users of the Site.
+
+                              <br/><br/><strong>Information Collection and Use</strong>
+
+                              <br/><br/>While using our Site, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you. Personally identifiable information may include, but is not limited to, your name, email address, postal address, and phone number ("Personal Information").
+
+                              <br/><br/><strong>Log Data</strong>
+
+                              <br/><br/> Like many site operators, we collect information that your browser sends whenever you visit our Site ("Log Data"). This Log Data may include information such as your computer's Internet Protocol ("IP") address, browser type, browser version, the pages of our Site that you visit, the time and date of your visit, the time spent on those pages, and other statistics.
+
+                              <br/><br/><strong>Cookies</strong>
+
+                              <br/><br/>Cookies are files with a small amount of data, which may include an anonymous unique identifier. Cookies are sent to your browser from a web site and stored on your computer's hard drive.
+
+                              <br/><br/>Like many sites, we use "cookies" to collect information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Site.
+
+                              <br/><br/><strong>Security</strong>
+
+                              <br/><br/>The security of your Personal Information is important to us, but remember that no method of transmission over the Internet, or method of electronic storage, is 100% secure. While we strive to use commercially acceptable means to protect your Personal Information, we cannot guarantee its absolute security.
+
+                              <br/><br/><strong>Changes to This Privacy Policy</strong>
+
+                              <br/><br/>This Privacy Policy is effective as of February 21, 2024 and will remain in effect except with respect to any changes in its provisions in the future, which will be in effect immediately after being posted on this page.
+
+                              <br/><br/>We reserve the right to update or change our Privacy Policy at any time, and you should check this Privacy Policy periodically. Your continued use of the Service after we post any modifications to the Privacy Policy on this page will constitute your acknowledgment of the modifications and your consent to abide and be bound by the modified Privacy Policy.
+
+                              <br/><br/><strong>Contact Us</strong>
+
+                              <br/><br/>If you have any questions about this Privacy Policy, please contact us.
+                            </DialogContent>
+                            <DialogActions
+                              sx={{
+                                justifyContent: 'center',
+                                px: (theme: { spacing: (arg0: number) => any }) => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
+                                pb: (theme: { spacing: (arg0: number) => any }) => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+                              }}
+                            >
+                              <Button variant='outlined' color='secondary' onClick={() => handleDialogClose()}>
+                                Close
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                        </>
+                      }
+                    />
                   </Grid>
                   <Grid item sm={12} xs={12}>
                     <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }} disabled={isRegisterButtonDisabled}>
