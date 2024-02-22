@@ -43,6 +43,7 @@ interface TransactionData {
   id: number
   user_id: number
   firstName: string
+  middleName: string
   lastName: string
   course: string
   major: string
@@ -309,25 +310,19 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                 </Typography>
                 <Typography variant='body1'>{dayjs(transaction.transaction_date).format('MMMM DD, YYYY HH:mm:ss A')}</Typography>
               </Grid>
-              <Grid item sm={6} xs={12}>
-                <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
-                  Total Amount:
-                </Typography>
-                <Typography variant='body1'>{formatNumberWithCommas(transaction.total_amount)}</Typography>
-              </Grid>
-              <Grid item sm={6} xs={12}>
-                <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
-                  Payment Date:
-                </Typography>
-                <Typography variant='body1'>{transaction.payment_date ? dayjs(transaction.payment_date).format('MMMM DD, YYYY') : 'Not Available'}</Typography>
-              </Grid>
-              <Grid item sm={6} xs={12}>
+              <Grid item sm={4} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   First Name:
                 </Typography>
                 <Typography variant='body1'>{transaction.firstName}</Typography>
               </Grid>
-              <Grid item sm={6} xs={12}>
+              <Grid item sm={4} xs={12}>
+                <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                  Middle Name:
+                </Typography>
+                <Typography variant='body1'>{transaction.middleName}</Typography>
+              </Grid>
+              <Grid item sm={4} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   Last Name:
                 </Typography>
@@ -387,6 +382,12 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                   </Grid>
                 </Grid>
               ) : null}
+              <Grid item sm={6} xs={12}>
+                <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                  Payment Date:
+                </Typography>
+                <Typography variant='body1'>{transaction.payment_date ? dayjs(transaction.payment_date).format('MMMM DD, YYYY HH:mm:ss A') : 'No Payment Date Provided'}</Typography>
+              </Grid>
               {(transaction.packages.length > 0) ? (
                 <>
                   <Grid item sm={12} xs={12}>
@@ -738,6 +739,12 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                 </Grid>
               </>
             ) : null }
+            <Grid item sm={6} xs={12}>
+              <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                Total Amount:
+              </Typography>
+              <Typography variant='body1'>{formatNumberWithCommas(transaction.total_amount)}</Typography>
+            </Grid>
             </Grid>
           </DialogContent>
           <DialogActions

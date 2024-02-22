@@ -102,6 +102,7 @@ async function formatData(transactions: any[]) {
     const userDetails = await fetchUserDetails(transaction.user_id)
     if (userDetails) {
       transaction.firstName = userDetails.firstName
+      transaction.middleName = userDetails.middleName
       transaction.lastName = userDetails.lastName
       transaction.course = userDetails.course
       transaction.major = userDetails.major
@@ -116,6 +117,7 @@ async function formatData(transactions: any[]) {
       id: transaction.id,
       user_id: transaction.user_id,
       firstName: transaction.firstName,
+      middleName: transaction.middleName,
       lastName: transaction.lastName,
       course: transaction.course,
       major: transaction.major,
