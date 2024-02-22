@@ -330,6 +330,17 @@ const StudentTransactions = () => {
 
   const submittedColumns: GridColDef[] = [
     {
+      flex: 0.1,
+      minWidth: 100,
+      field: 'id',
+      headerName: 'ID',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.id}
+        </Typography>
+      )
+    },
+    {
       flex: 0.3,
       minWidth: 110,
       field: 'requestType', // Change the field name to 'requestType'
@@ -418,6 +429,17 @@ const StudentTransactions = () => {
 
   const scheduledColumns: GridColDef[] = [
     {
+      flex: 0.1,
+      minWidth: 100,
+      field: 'id',
+      headerName: 'ID',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.id}
+        </Typography>
+      )
+    },
+    {
       flex: 0.3,
       minWidth: 110,
       field: 'requestType', // Change the field name to 'requestType'
@@ -502,6 +524,17 @@ const StudentTransactions = () => {
 
   const readyColumns: GridColDef[] = [
     {
+      flex: 0.1,
+      minWidth: 100,
+      field: 'id',
+      headerName: 'ID',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.id}
+        </Typography>
+      )
+    },
+    {
       flex: 0.3,
       minWidth: 110,
       field: 'requestType', // Change the field name to 'requestType'
@@ -585,6 +618,17 @@ const StudentTransactions = () => {
 
   const claimedColumns: GridColDef[] = [
     {
+      flex: 0.1,
+      minWidth: 100,
+      field: 'id',
+      headerName: 'ID',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.id}
+        </Typography>
+      )
+    },
+    {
       flex: 0.3,
       minWidth: 110,
       field: 'requestType', // Change the field name to 'requestType'
@@ -667,6 +711,17 @@ const StudentTransactions = () => {
   ]
 
   const rejectedColumns: GridColDef[] = [
+    {
+      flex: 0.1,
+      minWidth: 100,
+      field: 'id',
+      headerName: 'ID',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.id}
+        </Typography>
+      )
+    },
     {
       flex: 0.3,
       minWidth: 110,
