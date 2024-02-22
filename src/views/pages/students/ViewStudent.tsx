@@ -226,8 +226,8 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                   <Typography variant='body1'>No image attached</Typography>
                 )}
               </Box>
-              <Grid container spacing={3} sx={{ textAlign: 'center' }}>
-                <Grid item sm={3} xs={12}>
+              <Grid container spacing={3} sx={{ textAlign: 'left' }}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Student Number:
                   </Typography>
@@ -235,7 +235,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.studentNumber}
                   </Typography>
                 </Grid>
-                <Grid item sm={3} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     First Name:
                   </Typography>
@@ -243,7 +243,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.firstName}
                   </Typography>
                 </Grid>
-                <Grid item sm={3} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Middle Name:
                   </Typography>
@@ -251,7 +251,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.middleName}
                   </Typography>
                 </Grid>
-                <Grid item sm={3} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Last Name:
                   </Typography>
@@ -259,7 +259,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.lastName}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Department:
                   </Typography>
@@ -267,7 +267,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.department || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Course:
                   </Typography>
@@ -275,7 +275,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.course || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Major:
                   </Typography>
@@ -291,7 +291,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.homeAddress || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Contact Number:
                   </Typography>
@@ -299,7 +299,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.contactNumber || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Email Address:
                   </Typography>
@@ -317,19 +317,19 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                 ) : student.graduateCheck === 'no' ? (
                   <Grid item sm={12} xs={12}>
                     <Grid container spacing={6}>
-                      <Grid item sm={4} xs={12}>
+                      <Grid item sm={12} xs={12}>
                         <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                           Year Level:
                         </Typography>
                         <Typography variant='body1'>{student.yearLevel}</Typography>
                       </Grid>
-                      <Grid item sm={4} xs={12}>
+                      <Grid item sm={12} xs={12}>
                         <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                           School Year:
                         </Typography>
                         <Typography variant='body1'>{student.schoolYear}</Typography>
                       </Grid>
-                      <Grid item sm={4} xs={12}>
+                      <Grid item sm={12} xs={12}>
                         <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                           Semester:
                         </Typography>
@@ -338,7 +338,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     </Grid>
                   </Grid>
                 ) : null}
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Birth Date:
                   </Typography>
@@ -346,7 +346,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.birthDate ? dayjs(student.birthDate).format('MMMM DD, YYYY') : '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Birth Place:
                   </Typography>
@@ -354,7 +354,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.birthPlace || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Religion:
                   </Typography>
@@ -362,7 +362,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.religion || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Citizenship:
                   </Typography>
@@ -370,7 +370,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.citzenship || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Sex:
                   </Typography>
@@ -378,7 +378,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.sex || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Father's Name:
                   </Typography>
@@ -386,7 +386,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.fatherName || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Mother's Name:
                   </Typography>
@@ -394,7 +394,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.motherName || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Guardian's Name:
                   </Typography>
@@ -402,7 +402,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.guardianName || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Elementary School:
                   </Typography>
@@ -410,7 +410,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.elementary || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Date Graduated:
                   </Typography>
@@ -420,7 +420,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                 </Grid>
                 {student.secondary ? (
                   <>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Secondary High School:
                       </Typography>
@@ -428,7 +428,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                         {student.secondary || '[FIELD IS BLANK] '}
                       </Typography>
                     </Grid>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Date Graduated:
                       </Typography>
@@ -439,7 +439,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                   </>
                 ) : (
                   <>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Junior High School:
                       </Typography>
@@ -447,7 +447,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                         {student.juniorHigh || '[FIELD IS BLANK] '}
                       </Typography>
                     </Grid>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Date Graduated:
                       </Typography>
@@ -455,7 +455,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                         {student.juniorHighGraduated ? dayjs(student.juniorHighGraduated).format('MMMM DD, YYYY') : '[FIELD IS BLANK]'}
                       </Typography>
                     </Grid>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Senior High School:
                       </Typography>
@@ -463,7 +463,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                         {student.seniorHigh || '[FIELD IS BLANK] '}
                       </Typography>
                     </Grid>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Date Graduated:
                       </Typography>
@@ -475,7 +475,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                 )}
                 {student.tertiary ? (
                   <>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Tertiary School:
                       </Typography>
@@ -483,7 +483,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                         {student.tertiary || '[FIELD IS BLANK] '}
                       </Typography>
                     </Grid>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Date Graduated:
                       </Typography>
@@ -495,7 +495,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                 ) : null}
                 {student.employedAt ? (
                   <>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Employed At:
                       </Typography>
@@ -503,7 +503,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                         {student.employedAt || '[FIELD IS BLANK]'}
                       </Typography>
                     </Grid>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item sm={12} xs={12}>
                       <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                         Position:
                       </Typography>
@@ -521,7 +521,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.status || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
                     Remarks:
                   </Typography>
@@ -529,7 +529,7 @@ const DialogViewStudent  = ({ student, refreshData, actionType }) => {
                     {student.remarks || '[FIELD IS BLANK] '}
                   </Typography>
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={12} xs={12}>
                   <Typography variant='body1' sx={{ mb: 1 }}>
                     Remarks:
                   </Typography>
