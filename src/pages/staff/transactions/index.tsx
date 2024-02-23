@@ -343,7 +343,7 @@ const Transactions = () => {
       flex: 0.1,
       minWidth: 50,
       field: 'id',
-      headerName: 'ID',
+      headerName: 'TN',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
@@ -478,7 +478,7 @@ const Transactions = () => {
       flex: 0.1,
       minWidth: 50,
       field: 'id',
-      headerName: 'ID',
+      headerName: 'TN',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
@@ -610,7 +610,7 @@ const Transactions = () => {
       flex: 0.1,
       minWidth: 50,
       field: 'id',
-      headerName: 'ID',
+      headerName: 'TN',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
@@ -742,7 +742,7 @@ const Transactions = () => {
       flex: 0.1,
       minWidth: 50,
       field: 'id',
-      headerName: 'ID',
+      headerName: 'TN',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
@@ -874,7 +874,7 @@ const Transactions = () => {
       flex: 0.1,
       minWidth: 50,
       field: 'id',
-      headerName: 'ID',
+      headerName: 'TN',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
