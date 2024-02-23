@@ -378,8 +378,8 @@ const Transactions = () => {
     {
       flex: 0.3,
       minWidth: 150,
-      field: 'requestType',
-      headerName: 'Request Type',
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -390,13 +390,9 @@ const Transactions = () => {
         </Typography>
       ),
       valueGetter: (params) => {
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {
-            params.row.packages.length > 0 ? 'Package' :
+        return params.row.packages.length > 0 ? 'Package' :
             params.row.individualCredentials.length > 0 ? 'Credential/s' :
-            ''
-          }
-        </Typography>
+                '';
       }
     },
     {
@@ -513,8 +509,8 @@ const Transactions = () => {
     {
       flex: 0.3,
       minWidth: 150,
-      field: 'requestType',
-      headerName: 'Request Type',
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -525,13 +521,9 @@ const Transactions = () => {
         </Typography>
       ),
       valueGetter: (params) => {
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {
-            params.row.packages.length > 0 ? 'Package' :
+        return params.row.packages.length > 0 ? 'Package' :
             params.row.individualCredentials.length > 0 ? 'Credential/s' :
-            ''
-          }
-        </Typography>
+                '';
       }
     },
     {
@@ -645,8 +637,8 @@ const Transactions = () => {
     {
       flex: 0.3,
       minWidth: 150,
-      field: 'requestType',
-      headerName: 'Request Type',
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -657,13 +649,9 @@ const Transactions = () => {
         </Typography>
       ),
       valueGetter: (params) => {
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {
-            params.row.packages.length > 0 ? 'Package' :
+        return params.row.packages.length > 0 ? 'Package' :
             params.row.individualCredentials.length > 0 ? 'Credential/s' :
-            ''
-          }
-        </Typography>
+                '';
       }
     },
     {
@@ -777,8 +765,8 @@ const Transactions = () => {
     {
       flex: 0.3,
       minWidth: 150,
-      field: 'requestType',
-      headerName: 'Request Type',
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -789,13 +777,9 @@ const Transactions = () => {
         </Typography>
       ),
       valueGetter: (params) => {
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {
-            params.row.packages.length > 0 ? 'Package' :
+        return params.row.packages.length > 0 ? 'Package' :
             params.row.individualCredentials.length > 0 ? 'Credential/s' :
-            ''
-          }
-        </Typography>
+                '';
       }
     },
     {
@@ -909,8 +893,8 @@ const Transactions = () => {
     {
       flex: 0.3,
       minWidth: 150,
-      field: 'requestType',
-      headerName: 'Request Type',
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -921,13 +905,9 @@ const Transactions = () => {
         </Typography>
       ),
       valueGetter: (params) => {
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {
-            params.row.packages.length > 0 ? 'Package' :
+        return params.row.packages.length > 0 ? 'Package' :
             params.row.individualCredentials.length > 0 ? 'Credential/s' :
-            ''
-          }
-        </Typography>
+                '';
       }
     },
     {

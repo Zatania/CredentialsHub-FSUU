@@ -377,9 +377,9 @@ const SATransactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
-      field: 'requestType',
-      headerName: 'Request Type',
+      minWidth: 150,
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -388,7 +388,12 @@ const SATransactions = () => {
             ''
           }
         </Typography>
-      )
+      ),
+      valueGetter: (params) => {
+        return params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+                '';
+      }
     },
     {
       flex: 0.2,
@@ -498,9 +503,9 @@ const SATransactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
-      field: 'requestType',
-      headerName: 'Request Type',
+      minWidth: 150,
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -509,7 +514,12 @@ const SATransactions = () => {
             ''
           }
         </Typography>
-      )
+      ),
+      valueGetter: (params) => {
+        return params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+                '';
+      }
     },
     {
       flex: 0.2,
@@ -614,9 +624,9 @@ const SATransactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
-      field: 'requestType',
-      headerName: 'Request Type',
+      minWidth: 150,
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -625,7 +635,12 @@ const SATransactions = () => {
             ''
           }
         </Typography>
-      )
+      ),
+      valueGetter: (params) => {
+        return params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+                '';
+      }
     },
     {
       flex: 0.2,
@@ -730,9 +745,9 @@ const SATransactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
-      field: 'requestType',
-      headerName: 'Request Type',
+      minWidth: 150,
+      field: 'requestType', // Change the field name to 'requestType'
+      headerName: 'Request Type', // Change the header name to 'Request Type'
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {
@@ -741,7 +756,12 @@ const SATransactions = () => {
             ''
           }
         </Typography>
-      )
+      ),
+      valueGetter: (params) => {
+        return params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+                '';
+      }
     },
     {
       flex: 0.2,
