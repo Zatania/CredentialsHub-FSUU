@@ -408,27 +408,27 @@ const SATransactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'transactionDate',
       headerName: 'Transaction Date',
-      valueGetter: params => new Date(params.value),
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'paymentDate',
       headerName: 'Payment Date',
-      valueGetter: params => new Date(params.value),
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.payment_date ? dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A') : ''}
+          {dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A')}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A')
     },
     {
       flex: 0.2,
@@ -534,27 +534,27 @@ const SATransactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'transactionDate',
       headerName: 'Transaction Date',
-      valueGetter: params => new Date(params.value),
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'paymentDate',
       headerName: 'Payment Date',
-      valueGetter: params => new Date(params.value),
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.payment_date ? dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A') : ''}
+          {dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A')}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A')
     },
     {
       flex: 0.2,
@@ -655,27 +655,27 @@ const SATransactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'transactionDate',
       headerName: 'Transaction Date',
-      valueGetter: params => new Date(params.value),
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'paymentDate',
       headerName: 'Payment Date',
-      valueGetter: params => new Date(params.value),
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.payment_date ? dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A') : ''}
+          {dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A')}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A')
     },
     {
       flex: 0.2,
@@ -776,27 +776,27 @@ const SATransactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'transactionDate',
       headerName: 'Transaction Date',
-      valueGetter: params => new Date(params.value),
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => dayjs(params.row.transaction_date).format('MMMM DD, YYYY hh:mm A')
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'paymentDate',
       headerName: 'Payment Date',
-      valueGetter: params => new Date(params.value),
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.payment_date ? dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A') : ''}
+          {dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A')}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => dayjs(params.row.payment_date).format('MMMM DD, YYYY hh:mm A')
     },
     {
       flex: 0.2,
