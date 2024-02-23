@@ -272,25 +272,31 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
               ) : null}
             </Box>
             <Grid container spacing={6}>
-              <Grid item sm={6} xs={12}>
+              <Grid item sm={4} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   Transaction ID:
                 </Typography>
                 <Typography variant='body1'>{transaction.id}</Typography>
               </Grid>
-              <Grid item sm={6} xs={12}>
+              <Grid item sm={4} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   Transaction Date:
                 </Typography>
                 <Typography variant='body1'>{dayjs(transaction.transaction_date).format('MMMM DD, YYYY HH:mm:ss A')}</Typography>
               </Grid>
-              <Grid item sm={6} xs={12}>
+              <Grid item sm={4} xs={12}>
+                <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+
+                </Typography>
+                <Typography variant='body1'></Typography>
+              </Grid>
+              <Grid item sm={4} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   Payment Date:
                 </Typography>
                 <Typography variant='body1'>{transaction.payment_date ? dayjs(transaction.payment_date).format('MMMM DD, YYYY HH:mm:ss A') : 'No Payment Date Provided'}</Typography>
               </Grid>
-              <Grid item sm={6} xs={12}>
+              <Grid item sm={4} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                   Request Type:
                 </Typography>
@@ -303,6 +309,12 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
                     ) : null
                   }
                 </Typography>
+              </Grid>
+              <Grid item sm={4} xs={12}>
+                <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+
+                </Typography>
+                <Typography variant='body1'></Typography>
               </Grid>
               <Grid item sm={4} xs={12}>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
