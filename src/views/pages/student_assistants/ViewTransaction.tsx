@@ -419,8 +419,15 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                       </List>
                     </Box>
                   </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                      Total Amount:
+                    </Typography>
+                    <Typography variant='body1'>{formatNumberWithCommas(transaction.total_amount)}</Typography>
+                  </Grid>
                 </>
               ) : transaction.individualCredentials.length > 0 ? (
+                <>
                   <Grid item sm={12} xs={12}>
                     <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                       Credentials:
@@ -439,6 +446,13 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                       </List>
                     </Box>
                   </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                      Total Amount:
+                    </Typography>
+                    <Typography variant='body1'>{formatNumberWithCommas(transaction.total_amount)}</Typography>
+                  </Grid>
+                </>
               ) : null}
             {transaction.status === 'Submitted' ? (
               <>
@@ -700,12 +714,6 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                 </Grid>
               </>
             ) : null }
-            <Grid item sm={6} xs={12}>
-              <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
-                Total Amount:
-              </Typography>
-              <Typography variant='body1'>{formatNumberWithCommas(transaction.total_amount)}</Typography>
-            </Grid>
             </Grid>
           </DialogContent>
           <DialogActions
