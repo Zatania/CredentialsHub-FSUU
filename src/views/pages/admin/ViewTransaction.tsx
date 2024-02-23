@@ -324,17 +324,23 @@ const DialogViewAdminTransactions = ({ transaction, refreshData }: DialogViewAdm
               </Grid>
               {transaction.course && transaction.major ? (
                 <>
-                  <Grid item sm={6} xs={12}>
+                  <Grid item sm={4} xs={12}>
                     <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                       Course:
                     </Typography>
                     <Typography variant='body1'>{transaction.course}</Typography>
                   </Grid>
-                  <Grid item sm={6} xs={12}>
+                  <Grid item sm={4} xs={12}>
                     <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
                       Major:
                     </Typography>
                     <Typography variant='body1'>{transaction.major}</Typography>
+                  </Grid>
+                  <Grid item sm={4} xs={12}>
+                    <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+
+                    </Typography>
+                    <Typography variant='body1'></Typography>
                   </Grid>
                 </>
               ) : (

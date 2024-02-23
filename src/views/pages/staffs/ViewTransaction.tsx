@@ -342,6 +342,12 @@ const DialogViewTransaction = ({ transaction, refreshData }: DialogViewTransacti
                     </Typography>
                     <Typography variant='body1'>{transaction.major}</Typography>
                   </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+
+                    </Typography>
+                    <Typography variant='body1'></Typography>
+                  </Grid>
                 </>
               ) : (
                 <Grid item sm={12} xs={12}>
