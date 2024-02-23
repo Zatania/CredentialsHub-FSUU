@@ -966,7 +966,7 @@ const Register = () => {
 
                               <br/><br/><strong>Information Collection and Use</strong>
 
-                              <br/><br/>While using our site, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you. Personally identifiable information may include, but is not limited to, your name, email address, postal address, phone number, and picture holding valid id ("Personal Information").
+                              <br/><br/>While using our site, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you. Personally identifiable information may include, but is not limited to, your name, email address, postal address, phone number, and picture holding valid ID ("Personal Information").
 
                               <br/><br/><strong>Log Data</strong>
 
