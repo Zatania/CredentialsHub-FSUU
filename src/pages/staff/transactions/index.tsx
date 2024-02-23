@@ -341,40 +341,43 @@ const Transactions = () => {
   const submittedColumns: GridColDef[] = [
     {
       flex: 0.1,
-      minWidth: 100,
+      minWidth: 50,
       field: 'id',
       headerName: 'ID',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.id
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'firstName',
       headerName: 'First Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.firstName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.firstName
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'lastName',
       headerName: 'Last Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.lastName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.lastName
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 150,
       field: 'requestType',
       headerName: 'Request Type',
       renderCell: (params: GridRenderCellParams) => (
@@ -385,22 +388,32 @@ const Transactions = () => {
             ''
           }
         </Typography>
-      )
+      ),
+      valueGetter: (params) => {
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {
+            params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+            ''
+          }
+        </Typography>
+      }
     },
     {
       flex: 0.2,
-      minWidth: 110,
+      minWidth: 200,
       field: 'totalAmount',
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.total_amount
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'transactionDate',
       headerName: 'Transaction Date',
       valueGetter: params => new Date(params.value),
@@ -412,7 +425,7 @@ const Transactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'paymentDate',
       headerName: 'Payment Date',
       valueGetter: params => new Date(params.value),
@@ -439,7 +452,8 @@ const Transactions = () => {
             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
           />
         )
-      }
+      },
+      valueGetter: (params) => params.row.status
     },
     {
       flex: 0.1,
@@ -462,40 +476,43 @@ const Transactions = () => {
   const scheduledColumns: GridColDef[] = [
     {
       flex: 0.1,
-      minWidth: 100,
+      minWidth: 50,
       field: 'id',
       headerName: 'ID',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.id
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'firstName',
       headerName: 'First Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.firstName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.firstName
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'lastName',
       headerName: 'Last Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.lastName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.lastName
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 150,
       field: 'requestType',
       headerName: 'Request Type',
       renderCell: (params: GridRenderCellParams) => (
@@ -506,22 +523,32 @@ const Transactions = () => {
             ''
           }
         </Typography>
-      )
+      ),
+      valueGetter: (params) => {
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {
+            params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+            ''
+          }
+        </Typography>
+      }
     },
     {
       flex: 0.2,
-      minWidth: 110,
+      minWidth: 200,
       field: 'totalAmount',
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.total_amount
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'transactionDate',
       headerName: 'Transaction Date',
       valueGetter: params => new Date(params.value),
@@ -533,7 +560,7 @@ const Transactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'paymentDate',
       headerName: 'Payment Date',
       valueGetter: params => new Date(params.value),
@@ -560,16 +587,19 @@ const Transactions = () => {
             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
           />
         )
-      }
+      },
+      valueGetter: (params) => params.row.status
     },
     {
       flex: 0.1,
-      minWidth: 140,
+      minWidth: 250,
       field: 'action',
       headerName: 'Actions',
       renderCell: (params: GridRenderCellParams) => {
         return (
-          <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+          <>
+            <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+          </>
         )
       }
     }
@@ -578,40 +608,43 @@ const Transactions = () => {
   const readyColumns: GridColDef[] = [
     {
       flex: 0.1,
-      minWidth: 100,
+      minWidth: 50,
       field: 'id',
       headerName: 'ID',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.id
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'firstName',
       headerName: 'First Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.firstName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.firstName
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'lastName',
       headerName: 'Last Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.lastName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.lastName
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 150,
       field: 'requestType',
       headerName: 'Request Type',
       renderCell: (params: GridRenderCellParams) => (
@@ -622,22 +655,32 @@ const Transactions = () => {
             ''
           }
         </Typography>
-      )
+      ),
+      valueGetter: (params) => {
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {
+            params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+            ''
+          }
+        </Typography>
+      }
     },
     {
       flex: 0.2,
-      minWidth: 110,
+      minWidth: 200,
       field: 'totalAmount',
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.total_amount
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'transactionDate',
       headerName: 'Transaction Date',
       valueGetter: params => new Date(params.value),
@@ -649,7 +692,7 @@ const Transactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'paymentDate',
       headerName: 'Payment Date',
       valueGetter: params => new Date(params.value),
@@ -676,16 +719,19 @@ const Transactions = () => {
             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
           />
         )
-      }
+      },
+      valueGetter: (params) => params.row.status
     },
     {
       flex: 0.1,
-      minWidth: 140,
+      minWidth: 250,
       field: 'action',
       headerName: 'Actions',
       renderCell: (params: GridRenderCellParams) => {
         return (
-          <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+          <>
+            <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+          </>
         )
       }
     }
@@ -694,40 +740,43 @@ const Transactions = () => {
   const claimedColumns: GridColDef[] = [
     {
       flex: 0.1,
-      minWidth: 100,
+      minWidth: 50,
       field: 'id',
       headerName: 'ID',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.id
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'firstName',
       headerName: 'First Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.firstName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.firstName
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'lastName',
       headerName: 'Last Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.lastName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.lastName
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 150,
       field: 'requestType',
       headerName: 'Request Type',
       renderCell: (params: GridRenderCellParams) => (
@@ -738,22 +787,32 @@ const Transactions = () => {
             ''
           }
         </Typography>
-      )
+      ),
+      valueGetter: (params) => {
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {
+            params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+            ''
+          }
+        </Typography>
+      }
     },
     {
       flex: 0.2,
-      minWidth: 110,
+      minWidth: 200,
       field: 'totalAmount',
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.total_amount
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'transactionDate',
       headerName: 'Transaction Date',
       valueGetter: params => new Date(params.value),
@@ -765,7 +824,7 @@ const Transactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'paymentDate',
       headerName: 'Payment Date',
       valueGetter: params => new Date(params.value),
@@ -792,16 +851,19 @@ const Transactions = () => {
             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
           />
         )
-      }
+      },
+      valueGetter: (params) => params.row.status
     },
     {
       flex: 0.1,
-      minWidth: 140,
+      minWidth: 250,
       field: 'action',
       headerName: 'Actions',
       renderCell: (params: GridRenderCellParams) => {
         return (
-          <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+          <>
+            <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+          </>
         )
       }
     }
@@ -810,40 +872,43 @@ const Transactions = () => {
   const rejectedColumns: GridColDef[] = [
     {
       flex: 0.1,
-      minWidth: 100,
+      minWidth: 50,
       field: 'id',
       headerName: 'ID',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.id}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.id
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'firstName',
       headerName: 'First Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.firstName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.firstName
     },
     {
       flex: 0.3,
-      minWidth: 150,
+      minWidth: 200,
       field: 'lastName',
       headerName: 'Last Name',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.lastName}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.lastName
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 150,
       field: 'requestType',
       headerName: 'Request Type',
       renderCell: (params: GridRenderCellParams) => (
@@ -854,22 +919,32 @@ const Transactions = () => {
             ''
           }
         </Typography>
-      )
+      ),
+      valueGetter: (params) => {
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {
+            params.row.packages.length > 0 ? 'Package' :
+            params.row.individualCredentials.length > 0 ? 'Credential/s' :
+            ''
+          }
+        </Typography>
+      }
     },
     {
       flex: 0.2,
-      minWidth: 110,
+      minWidth: 200,
       field: 'totalAmount',
       headerName: 'Total Amount',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {formatNumberWithCommas(params.row.total_amount)}
         </Typography>
-      )
+      ),
+      valueGetter: (params) => params.row.total_amount
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'transactionDate',
       headerName: 'Transaction Date',
       valueGetter: params => new Date(params.value),
@@ -881,7 +956,7 @@ const Transactions = () => {
     },
     {
       flex: 0.3,
-      minWidth: 110,
+      minWidth: 250,
       field: 'paymentDate',
       headerName: 'Payment Date',
       valueGetter: params => new Date(params.value),
@@ -908,16 +983,19 @@ const Transactions = () => {
             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
           />
         )
-      }
+      },
+      valueGetter: (params) => params.row.status
     },
     {
       flex: 0.1,
-      minWidth: 140,
+      minWidth: 250,
       field: 'action',
       headerName: 'Actions',
       renderCell: (params: GridRenderCellParams) => {
         return (
-          <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+          <>
+            <DialogViewTransaction transaction={params.row} refreshData={fetchAllTransactions} />
+          </>
         )
       }
     }
