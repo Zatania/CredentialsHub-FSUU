@@ -877,7 +877,7 @@ const Register = () => {
                     <Grid container spacing={6} sx={{ textAlign: 'center' }}>
                       <Grid item sm={12} xs={12}>
                         <Typography variant='body1' sx={{ fontWeight: 600 }}>
-                          Upload Photo with your face and valid id in the same image.
+                          Upload an image with holding valid ID.
                         </Typography>
                       </Grid>
                       <Grid item sm={12} xs={12}>
